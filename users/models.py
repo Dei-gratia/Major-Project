@@ -75,8 +75,8 @@ class Profile(models.Model):
         ('F', 'Female'),
     )
     gender = models.CharField(max_length=1, choices=GENDER_CHOICES, blank=True)
-    date_of_birth = models.DateTimeField(max_length=50)
-    about = models.CharField(max_length=254, default=f"I am {profile_name}")
+    date_of_birth = models.DateTimeField(max_length=50, blank=True, null=True)
+    about = models.CharField(max_length=254, blank=True)
     school_level = models.ForeignKey(
         SchoolLevel, related_name='students', on_delete=models.SET_NULL, null=True, blank=True)
     program = models.CharField(max_length=254, blank=True)
@@ -89,7 +89,9 @@ class Profile(models.Model):
     def save(self, *args, **kwargs):
         if not self.profile_name:
             self.profile_name = f'{self.user}'.replace(" ", "")
-        super(User, self).save(*args, **kwargs)
+        if not self.about:
+            self.about = f"I am {self.profile_name}"
+        super(Profile, self).save(*args, **kwargs)
 
     def __str__(self):
-        return self.user
+        return f'{self.user} profile'

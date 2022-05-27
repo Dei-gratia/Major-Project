@@ -15,4 +15,4 @@ def home(request):
         'about': about,
     }
 
-    return render(request, 'front/index.html', context)
+    return render(request, 'front/main/index.html', context)

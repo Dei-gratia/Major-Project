@@ -41,6 +41,10 @@ INSTALLED_APPS = [
     'main',
     'users',
     'phone_field',
+    'courses',
+    'rest_framework',
+    'nested_inline',
+    'embed_video',
 ]
 
 MIDDLEWARE = [
