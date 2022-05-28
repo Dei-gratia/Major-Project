@@ -1,0 +1,31 @@
+{% extends 'front/master.html' %}
+{% load static %}
+
+{% block head %}
+<title>
+	{% if object %}
+		Edit quiz	"{{	object.title }}"
+	{%	else %}
+		Create a new quiz
+	{% endif %}
+</title>
+<link rel="stylesheet" href="">
+{% endblock %}
+
+{% block main %}
+	<h1>
+	{% if object %}
+	Edit quiz	"{{	object.title }}"
+	{% else %}
+	Create a new quiz
+	{% endif %}
+	</h1>
+	<div class="module">
+        <h2>Quiz info</h2>
+        <form	action="."	method="post">
+            {{	form.as_p	}}
+            {%	csrf_token	%}
+            <p><input	type="submit"	value="Save	quiz"></p>
+        </form>
+	</div>
+{%	endblock %}

@@ -22,11 +22,14 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include('main.urls')),
     path('users/', include('users.urls')),
+    path('courses/', include('courses.urls')),
     path('notes/', include('notes.urls')),
     path('users/', include('users.urls')),
-    path('api/',	include('courses.api.urls',	namespace='api')),
+    path('quizzes/', include('quizzes.urls')),
+    path('api/',	include('courses.api.urls',	namespace='courses_api')),
     path('api/',	include('main.api.urls',	namespace='api')),
-    path('api/',	include('notes.api.urls',	namespace='api')),
+    path('api/',	include('notes.api.urls',	namespace='notes_api')),
+    path('api/',	include('quizzes.api.urls',	namespace='quizzes_api')),
 ]
 
 if settings.DEBUG:

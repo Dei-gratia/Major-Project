@@ -1,0 +1,20 @@
+{% extends 'front/master.html' %}
+{% load static %}
+
+{% block head %}
+<title>
+	Delete note
+</title>
+<link rel="stylesheet" href="">
+{% endblock %}
+
+{% block main %}
+	<h1>Delete note"{{ object.title }}"</h1>
+	<div	class="module">
+        <form	action=""	method="post">
+            {%	csrf_token	%}
+            <p>Are	you	sure	you	want	to	delete	"{{	object	}}"?</p>
+            <input	type="submit"	class="button"	value="Confirm">
+        </form>
+	</div>
+{%	endblock	%}

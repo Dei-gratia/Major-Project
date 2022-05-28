@@ -23,7 +23,7 @@ class Note(models.Model):
     description = models.TextField(blank=True)
     body = models.TextField(blank=True)
     file = models.FileField(upload_to='notes/files/', blank=True)
-    total_ratings = models.CharField(max_length=254, default=0)
+    total_ratings = models.FloatField(max_length=254, default=0.0)
     num_ratings = models.CharField(max_length=254, default=0)
     downloads = models.CharField(max_length=254, default=0)
     tags = models.TextField(blank=True)
@@ -40,6 +40,6 @@ class Note(models.Model):
         return self.title
 
     def average_rating(self):
-        if int(self.num_ratings) == 0 or int(self.total_ratings) == 0:
+        if float(self.num_ratings) == 0.0 or float(self.total_ratings) == 0.0:
             return 0.000
-        return round(int(self.total_ratings) / int(self.num_ratings), 3)
+        return round(float(self.total_ratings) / float(self.num_ratings), 3)

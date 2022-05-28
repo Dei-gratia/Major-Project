@@ -114,7 +114,6 @@ class ModuleViewSet(GetSerializerClassMixin, viewsets.ModelViewSet):
         return Response(serializer.data)
 
     def destroy(self, request, *args, **kwargs):
-        print('delete')
         try:
             instance = self.get_object()
             self.perform_destroy(instance)

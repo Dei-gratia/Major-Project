@@ -1,0 +1,22 @@
+{% extends 'front/master.html' %}
+{% load static %}
+
+{% block head %}
+	<title>
+		Edit	"{{	quiz.title	}}"
+	</title>
+	<link rel="stylesheet" href="">
+{% endblock %}
+
+{% block main %}
+    <h1>Edit	"{{	quiz.title	}}"</h1>
+    <div	class="module">
+        <h2>Quiz	questions</h2>
+        <form	action=""	method="post">
+            {{	formset	}}
+            {{	formset.management_form	}}
+            {%	csrf_token	%}
+            <input	type="submit"	class="button"	value="Save	questions">
+        </form>
+    </div>
+{%	endblock	%}

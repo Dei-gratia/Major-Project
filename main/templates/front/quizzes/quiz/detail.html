@@ -1,0 +1,326 @@
+{% extends 'front/master.html' %}
+{% load static %}
+{% load mathfilters %}
+
+{% block head %}
+<title>Quiz</title>
+<link href="https://cdn.jsdelivr.net/gh/kartik-v/bootstrap-star-rating@4.1.2/css/star-rating.min.css" media="all" rel="stylesheet" type="text/css" />
+<link href="https://cdn.jsdelivr.net/gh/kartik-v/bootstrap-star-rating@4.1.2/themes/krajee-svg/theme.css" media="all" rel="stylesheet" type="text/css" />
+<link rel="stylesheet" href="{% static 'css/notes/note_detail.css' %}">
+<link rel="stylesheet" href="{% static 'css/quizzes/quiz_detail.css' %}">
+{% endblock %}
+
+{% block main %}
+	<div class="content">
+		<div class="content-header">
+			<div class="header-section">
+				<h2>
+					<i class="fa-solid fa-notes"></i>{{ quiz.title.title }}<br><small>you can take or share quizzes!</small>
+				</h2>
+			</div>
+		</div>
+		<nav aria-label="breadcrumb" >
+			<ol class="breadcrumb">
+			  <li class="breadcrumb-item"><a href="{% url 'home' %}">home</a></li>
+			  <li class="breadcrumb-item"><a href="{% url 'quiz_list' %}">quizzes</a></li>
+			  <li class="breadcrumb-item active" aria-current="page">{{ quiz.title.lower }}</li>
+			</ol>
+		</nav>
+		<div>
+
+		</div>
+		
+		<div class=" contact_container" style="max-width: 1200px; margin: auto;">
+			<h2 class="page_hearding"> {{ quiz.title.title }}</h2>
+			<div class="row" >
+				<div class="col-sm-6" style="padding: 0px;">
+					<img src="{% static 'images/c1.jpg' %}" style="height: 100px;">
+				</div>
+				<div class="col-sm-6">
+					<p style="text-align: end;">Uploaded:  {{ quiz.date }} <i id="bookmark" style="padding: 5px;" title="bookmark"
+						class="{% if bookmark %}fa-solid{% else %}fa-regular{% endif%} fa-bookmark"></i>
+						<i style="padding: 5px;" class="fa-solid fa-share-nodes"></i></p>
+					<p style="text-align: end; color: orange;" title="note rating">{{ quiz.average_rating|floatformat:"2" }}
+						{% with ''|center:quiz.average_rating as range %}
+							{% for i in range %}
+								<i class="fa-solid fa-star" style="color: orange;"></i>
+							{% endfor %}
+						{% endwith %}
+						{% with 5|sub:quiz.average_rating as x %}
+							{% with ''|center:x as range %}
+								{% for i in range %}
+									<i class="fa-regular fa-star" style="color: orange;"></i>
+								{% endfor %}
+							{% endwith %}
+						{% endwith %}
+					</p>
+				</div>
+			</div>
+			<br/>
+			
+			<div>
+				<p>{{ quiz.level.title }} <strong>{{ quiz.subject.title }}</strong></p>
+			</div>
+			<div style="display: flex; ">
+				<p><i class="fa-solid fa-list-ol"></i>{{ quiz.num_questions }}</p><p style="padding-left: 20px;"><i class="fa-solid fa-clock"></i> {{ quiz.duration }}mins</p>
+			</div>
+
+		
+
+			<p>{{ quiz.description }}</p>
+
+			<div class="card" style="align-items: center; box-shadow: 0px 10px 36px rgba(0, 0, 0, 0.486); max-width: 700px; margin: auto;">
+				<div  class="card-body" >
+				  <h1>Take Quiz</h1>
+				  <br>
+				  <br>
+				  
+				  <p1>Start when you are ready</p1>
+				  <br>
+				  <br>
+				  <a href="{% url 'start_quiz' quiz_id=quiz.pk %}" id="start_quiz"><button  style="background-color: black; padding: 8px; margin: auto; color: white;" class="button contact_btn">Start Quiz </button></a>
+				</div>
+			</div>
+			<br>
+			<button data-bs-toggle="modal" data-bs-target="#rateQuizModal" id="rate_note" >Rate quiz</button>
+			<div class="attempts" >
+				<p><strong>{{ quiz.attempts }}</strong> students have already attempted this quiz</p>
+			</div>
+		
+		</div>
+
+		<div class="row">
+			<div class="col-12">
+				<div class="card">
+					<div class="card-body" style="display: flex;">
+						<div style="margin-right: 5px;">Comments </div>
+					</div>
+				</div>
+
+				{% if user_comment %}
+					<div class="latest_sub_item" style="display: flex; flex-direction: row;">
+						<img class="comment_img" alt="latest" src="{% static 'images/default_profile.png' %}">
+						<div>
+							<div class="comment_top"  ><h6 class="comment_name">You </h6><p class="comment_rate">
+								{% with ''|center:user_comment.rate_value as range %}
+									{% for i in range %}
+										<i class="fa-solid fa-star" style="color: orange;"></i>
+									{% endfor %}
+								{% endwith %}
+								{% with 5|sub:user_comment.rate_value as x %}
+								{% with ''|center:x as range %}
+									{% for i in range %}
+										<i class="fa-regular fa-star" style="color: orange;"></i>
+									{% endfor %}
+								{% endwith %}
+								{% endwith %}
+								
+								</i></p></div>
+							
+							<p class="comment_txt">{{ user_comment.comment }}</p>
+							<p class="comment_date">{{ user_comment.date|timesince }} ago</p>
+						</div>					
+					</div>
+				{% endif %}
+
+				{% for rating in note.rating_set.all %}
+					{% if rating != user_comment %}
+						<div class="latest_sub_item" style="display: flex; flex-direction: row;">
+							<img class="comment_img" alt="latest" src="{% static 'images/default_profile.png' %}">
+							<div>
+								<div class="comment_top"  ><h6 class="comment_name">{{ rating.user_name.title}} </h6><p class="comment_rate">
+									{% with ''|center:rating.rate_value as range %}
+										{% for i in range %}
+											<i class="fa-solid fa-star" style="color: orange;"></i>
+										{% endfor %}
+									{% endwith %}
+									{% with 5|sub:rating.rate_value as x %}
+									{% with ''|center:x as range %}
+										{% for i in range %}
+											<i class="fa-regular fa-star" style="color: orange;"></i>
+										{% endfor %}
+									{% endwith %}
+									{% endwith %}
+									
+									</i></p></div>
+								
+								<p class="comment_txt">{{ rating.comment }}</p>
+								<p class="comment_date">{{ rating.date|timesince }} ago</p>
+							</div>
+							
+						</div>
+					{% endif %}
+				{% empty %}
+						<p id="no_comments">No comments, be the first to leave a comment! </p>
+				{% endfor %}
+
+				{% if not user_comment %}
+					<a data-bs-toggle="modal" data-bs-target="#rateNoteModal" id="leave_comment" ><p style="margin: 0  0 20px 20px;">Add Comment</p></a>					
+				{% endif %}
+
+			</div>
+		</div>
+
+		<div class="row">
+			<div class="col-sm-12 col-md-6 contact_container" >
+				<div class="card">
+					<div class="card-body" style="display: flex;">
+						<div style="margin-right: 5px;">Similar Uploads</div>
+					</div>
+				</div>
+				<div class="latest_sub">
+					<div class="latest_sub_item">
+						<img class="footer_latest_img" alt="latest" src="{% static 'images/c4.jpg' %}">
+						<h6>Heading</h6>
+						<p>Some latest upload content. Some latest upload content</p>
+					</div>
+					<br/>
+					<div class="latest_sub_item">
+						<img class="footer_latest_img" alt="latest" src="{% static 'images/c2.jpg' %}">
+						<h6>Heading</h6>
+						<p>Other latest upload</p>
+					</div>
+					<br/>
+					<div class="latest_sub_item">
+						<img class="footer_latest_img" alt="latest" src="{% static 'images/c3.jpg' %}">
+						<h6>Heading</h6>
+						<p>Some latest upload. Some latest upload content</p>
+					</div>
+					<br/>
+					<div class="latest_sub_item">
+						<img class="footer_latest_img" alt="latest" src="{% static 'images/c1.jpg' %}">
+						<h6>Heading</h6>
+						<p>Some latest upload. Some latest upload content</p>
+					</div>
+					
+				</div>
+			
+			</div>
+			<div class="col-sm-12 col-md-6" >
+				<div class="card">
+					<div class="card-body" style="display: flex;">
+						<div style="margin-right: 5px;">Latest Uploads </div>
+					</div>
+				</div>
+				<div class="latest_sub">
+					{% for item in latest %}
+					<div class="latest_sub_item">
+						<a href="{% url 'quiz_detail' pk=item.pk %} "><img class="latest_img_sm" alt="latest" src="{{ item.cover_img.url }}"></a>
+						<a href="{% url 'quiz_detail' pk=item.pk %}"><h5>{{ item.title.title}}</h5></a>
+						<p>{{ item.description }}</p>
+					</div>
+					<br>
+					{% endfor %}
+					
+				</div>
+	
+			</div>
+		</div>
+
+	</div>
+
+	<!--============ MODALS ===============-->
+	
+	<div class="modal fade" id="rateQuizModal" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel"
+		aria-hidden="true">
+		<div class="modal-dialog modal-lg modal-dialog-centered">
+			<div class="modal-content" >
+				<div class="modal-header">
+					<h5 class="modal-title">Rate And Comment</h5>
+					<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+				</div>
+				<div class="modal-body">
+					<div class=""  id="user_name">
+						<form role="form" id="form_rating" class="form-horizontal">
+							{% csrf_token %}
+							<div class="form-group">
+								<div class="row">
+									<label for="input-1" class="col-sm-2 control-label">Rate Quiz</label>
+									<div class="col-sm-10">
+										<input id="input-1" name="input-1" class=" " data-min="0" data-max="5" data-step="0.5">
+									</div>
+								</div>
+							</div>
+							<div class="form-group">
+								<div class="row">
+									<label for="comment" class="col-sm-2 control-label">
+										Comment: </label>
+									<div class="col-sm-10">
+										<textarea name="comment" id="comment" cols="0" rows="3" class="form-control contact_input" placeholder="Write your comment"
+										value="{{ field.value|default_if_none:'' }}"></textarea>
+										
+									</div>
+								</div>
+							</div>
+							<br/>
+							<div class="row">
+								<div class="col-sm-2">
+								</div>
+								<div class="col-sm-10">
+									<button type="submit"  class="btn btn-primary btn-sm">
+										Submit</button>
+									<button type="button" id="cancel" class="btn btn-default btn-sm" data-bs-dismiss="modal">
+										Cancel</button>
+								</div>
+							</div>
+						</form>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+{% endblock%}
+
+{% block script %}
+	<script src="https://cdn.jsdelivr.net/gh/kartik-v/bootstrap-star-rating@4.1.2/js/star-rating.min.js" type="text/javascript"></script>
+	<!-- with v4.1.0 Krajee SVG theme is used as default (and must be loaded as below) - include any of the other theme JS files as mentioned below (and change the theme property of the plugin) -->
+	<script src="https://cdn.jsdelivr.net/gh/kartik-v/bootstrap-star-rating@4.1.2/themes/krajee-svg/theme.js"></script>
+
+	<!-- optionally if you need translation for your language then include locale file as mentioned below (replace LANG.js with your own locale file) -->
+	<script src="https://cdn.jsdelivr.net/gh/kartik-v/bootstrap-star-rating@4.1.2/js/locales/LANG.js"></script>
+	<script src="{% static 'js/notes/note.js' %}" ></script>
+	<script>
+
+		(function(){
+		setTimeout(initRatingStar, 2000);
+		})();
+
+		function initRatingStar() {
+		var $element1 = $('#input-1');
+		$element1.rating({
+		step: 0.5,
+		starCaptions: { 0.5: 'Very Very Poor', 1: 'Very Poor', 1.5: 'Poor', 2: 'Poor',2.5: 'Ok', 3: 'Ok', 3.5: 'Ok', 4: 'Good', 4.5: 'Very Good', 5: 'Excellent'},
+		starCaptionClasses: { 0.5: 'caption-badge caption-danger', 1: 'caption-badge caption-danger', 1.5: 'caption-badge caption-warningg', 2: 'caption-badge caption-warning',2.5: 'caption-badge caption-info', 3: 'caption-badge caption-info', 3.5: 'caption-badge caption-primary', 4: 'caption-badge caption-primary',4.5: 'caption-badge caption-success', 5: 'caption-badge caption-success'}
+		});
+		};
+
+		$('#form_rating').submit(function(e){
+		e.preventDefault();
+		var form = $(e.target)
+	
+		$.ajax({
+			url: '{% url "quiz_detail" pk=quiz.pk %}',
+			type: 'post',
+			data: form.serialize(),
+			error: function(xhr, ajaxOptions, thrownError){ alert(thrownError); },
+			success: function(data){
+				if (data.success === true) {
+					console.log('success')
+					window.location = '{% url "quiz_detail" pk=quiz.pk %}';
+				} 
+				else {
+					console.log('error')
+					alert(`${data.message}`)
+				}
+			
+				
+			}
+		})
+		})
+
+		$('#bookmark').click(function() {
+			$(this).toggleClass('fa-solid fa-regular')
+		})
+
+	</script>
+{% endblock%}

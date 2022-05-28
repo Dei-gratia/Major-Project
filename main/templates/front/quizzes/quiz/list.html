@@ -1,25 +1,24 @@
 {% extends 'front/master.html' %}
 {% load static %}
+{% load mathfilters %}
 
 {% block head %}
-<title>Notes</title>
+<title>Quizzes</title>
 <link rel="stylesheet" href="{% static 'css/notes/note_list.css' %}">
-<link href="">
 {% endblock %}
 
 {% block main %}
-
 	<div class="content">
 		<nav aria-label="breadcrumb" style="--bs-breadcrumb-divider: '/';">
 			<ol class="breadcrumb">
 				<li class="breadcrumb-item"><a href="{% url 'home' %}">home</a></li>
-				<li class="breadcrumb-item active" aria-current="page">notes</li>
+				<li class="breadcrumb-item active" aria-current="page">quizzes</li>
 			</ol>
 		</nav>
-		<br>
-		<a href="{% url 'note_create' %}" style="color: black; text-align:right;"><h5>Upload Note</h5></a>
 
-		<h3>All Notes</h3>
+		<a href="{% url 'quiz_create' %}" style="color: black; text-align:right;"><h5>Upload Quiz</h5></a>
+
+		<h3>All Quizzes</h3>
 
 		<div class="row">
 			<div class="col-sm-12 col-md-8" >
@@ -30,22 +29,24 @@
 						</div>
 					</div>
 					<div class="row">
-						{% for note in notes %}
-							{% if note.subject == subject %}
+						{% for quiz in quizzes %}
+							{% if quiz.subject == subject %}
 							<div class="col-xl-6">
 								<div class="card">
 									<div class="row">
-										<a class="col-sm-4" href="{% url 'note_detail' pk=note.pk %}"><img src="{{ note.cover_img.url }}" class="img_note" alt="..."></a>
+										<a class="col-sm-4" href="{% url 'quiz_detail' pk=quiz.pk %}"><img src="{{ quiz.cover_img.url }}" class="img_note" alt="..."></a>
 										<div class="card-body col-sm-8">
 											<div style="display: flex; justify-content: space-between;">
-												<a href="{% url 'note_detail' pk=note.pk %}"><h4>{{ note.title }}</h4></a>
-												<p style="opacity: 70%;">{{ note.created|timesince }} ago</p>
+												<a href="{% url 'quiz_detail' pk=quiz.pk %}"><h4>{{ quiz.title }}</h4></a>
+												<p style="opacity: 70%;">{{ quiz.created|timesince }} ago</p>
 											</div>
-											<p class="card-text">{{ note.description }}</p>
+											<p class="card-text">{{ quiz.description }}</p>
 											<div class="row">
-												<p class="col-4" style="opacity: 70%;">{{ note.school_level }}</p>
-												<p class="col-5"style="opacity: 70%;">{{ note.subject }}</p>
-												<p class="col-3" style="text-align: end; color: #FF9529;">{{ note.average_rating|floatformat:"2"  }} <i class="fa-solid fa-star-half-stroke"></i></p>
+												<p class="col-4" style="opacity: 70%;">{{ quiz.school_level }}</p>
+												<p class="col-5"style="opacity: 70%;">{{ quiz.subject }}</p>
+												<p class="col-3" style="text-align: end; color: #FF9529;">
+													{{ quiz.average_rating|floatformat:"2" }}
+													<i class="fa-solid fa-star-half-stroke"></i></p>
 											</div>
 											
 										</div>
@@ -150,10 +151,10 @@
 					<div class="col-xl-6">
 						<div class="card">
 							<div class="row">
-								<a class="col-sm-4" href="{% url 'note_detail' pk=item.pk %}"><img src="{{ item.cover_img.url }}" class="img_note" alt="..."></a>
+								<a class="col-sm-4" href="{% url 'quiz_detail' pk=item.pk %}"><img src="{{ item.cover_img.url }}" class="img_note" alt="..."></a>
 								<div class="card-body col-sm-8">
 									<div style="display: flex; justify-content: space-between;">
-										<a href="{% url 'note_detail' pk=item.pk %}"><h4>{{ note.title }}</h4></a>
+										<a href="{% url 'quiz_detail' pk=item.pk %}"><h4>{{ quiz.title }}</h4></a>
 										<p style="opacity: 70%;">{{ item.date|timesince }} ago</p>
 									</div>
 									<p class="card-text">{{ item.description }}</p>

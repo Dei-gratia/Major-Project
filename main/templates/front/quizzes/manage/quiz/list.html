@@ -1,0 +1,29 @@
+{% extends 'front/master.html' %}
+{% load static %}
+
+{% block head %}
+<title>My quizzes</title>
+<link rel="stylesheet" href="">
+{% endblock %}
+
+{% block main %}
+	<h1>My quizzes</h1>
+	<div class="module">
+		{% for quiz in object_list %}
+		<div class="quiz-info">
+			<h3>{{ quiz.title	}}</h3>
+			<p>
+			<a href="{% url 'quiz_edit' quiz.id %}">Edit</a>
+			<a href="{% url 'quiz_delete' quiz.id %}">Delete</a>
+			<a href="{% url 'quiz_questions_update' quiz.id %}">Edit questions</a>
+			</p>
+		</div>
+		{% empty %}
+		<p>You haven't created any quizzes yet.</p>
+		{% endfor %}
+		<p>
+			<a	href="{% url 'quiz_create' %}" class="button">Create	new	quiz</a>
+		</p>
+	</div>
+
+{%	endblock	%}

@@ -1,0 +1,211 @@
+{% load static %}
+{% load mathfilters %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+	<!-- Bootstrap CSS -->
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+
+	<!-- Fontawesome -->
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css" />
+
+	<link rel="stylesheet" href="{% static 'css/quizzes/question_list.css' %}">
+
+	<title>Questions</title>
+</head>
+<body onbeforeunload="assignValue()">
+	<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+		<div class="container-fluid">
+			  <a class="navbar-brand" >
+				<img src="{% static 'images/edu.jpg' %}" alt="" width="25" height="20" class="d-inline-block align-text-center">
+				Major
+			</a>
+	</nav>
+	<div class="content">
+		<h1>{{ quiz.title.title }}</h1>
+
+		<p><strong> {{ quiz.num_questions }} Questions</strong></p>
+		<p class="notice" style="color: red"><strong>Note:</strong> Do not leave this window before the quiz is over. The quiz will auto submit when the time is up</p>
+
+		<br>
+		
+		<div id="displaytimer" ><b>Timer: {{ quiz.duration }}:00</b></div>
+		
+		<form method='post' action='{% url "start_quiz" quiz_id=quiz.pk %}'>
+			{% csrf_token %}
+			{% for question in quiz.questions.all %}
+				<div class="form-group">
+				<label for="question">{{ forloop.counter }}. {{ question.question }}.</label>
+				</div>
+				<div class="form-check">
+					{% if question.option1 %}
+					<div class="form-check">
+						<input class="form-check-input" type="radio" name="{{question.question}}" id="gridRadios1" value="1">
+						<label class="form-check-label" for="gridRadios1">
+							a. {{ question.option1 }} 
+						</label>
+					</div>
+					{% endif %}
+
+					{% if question.option2 %}
+					<div class="form-check">
+						<input class="form-check-input" type="radio" name="{{question.question}}" id="gridRadios2" value="2">
+						<label class="form-check-label" for="gridRadios2">
+							b. {{ question.option2 }} 
+						</label>
+					</div>
+					{% endif %}
+
+					{% if question.option3 %}
+					<div class="form-check">
+						<input class="form-check-input" type="radio" name="{{question.question}}" id="gridRadios2" value="3">
+						<label class="form-check-label" for="gridRadios3">
+							c. {{ question.option3 }} 
+						</label>
+					</div>
+					{% endif %}
+
+					{% if question.option4 %}
+					<div class="form-check">
+						<input class="form-check-input" type="radio" name="{{question.question}}" id="gridRadios2" value="4">
+						<label class="form-check-label" for="gridRadios4">
+							d. {{ question.option4 }} 
+						</label>
+					</div>
+					{% endif %}
+					<br>
+				</div>   
+			{% endfor %}
+			 
+		
+			<br>
+			<h5 style="text-align: center;">End of Questions </h5>
+			<br>
+			<div class="form-group">
+				<input  class="button submit_btn" value="Submit" type="submit" >
+			</div>
+		</form>
+
+		<br>
+	</div>
+	<input type="hidden" id="reloaded" name="reloaded" value="">
+	<div class="banner" id="banner">
+
+	</div>
+
+
+	<!--=============== Modal ================-->
+
+	<div class="modal fade" id="quizOverModal" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel"
+		aria-hidden="true">
+		<div class="modal-dialog modal-lg modal-dialog-centered">
+			<div class="modal-content" >
+				<div class="modal-header">
+					<h5 class="modal-title">Quiz over</h5>
+					<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+				</div>
+				<div class="modal-body">
+					<div class=""  id="user_name">
+						<form role="form" id="form_rating" class="form-horizontal">
+							<!-- {% csrf_token %} -->
+							<div class="form-group">
+								<div class="row">
+									<label for="comment" style="text-align: center;" class="control-label">
+										Congradulations: </label>
+								</div>
+							</div>
+							<br>
+							<div class="form-group">
+								<div class="row">
+									<div class="col-6">
+										<label for="input-1" style="color: green;" class="control-label">Correct: 5</label>
+									</div>
+									<div class="col-6">
+										<label for="input-1" style="color: green;" class="control-label">Score: 5/10</label>
+									</div>
+									
+								</div>
+							</div>
+							<br>
+							<div class="form-group">
+								<div class="row">
+									<div class="col-6">
+										<label for="input-1" style="color: red;" class="control-label">Incorrect: 3</label>
+									</div>
+									<div class="col-6">
+										<label for="input-1" style="color: grey;" class="control-label">Skipped: 2</label>	
+									</div>
+									
+								</div>
+							</div>
+							<br/>
+							<div class="row">
+								<div class="col-sm-2">
+								</div>
+								<div class="col-sm-10">
+									<button type="submit"  class="btn btn-primary btn-sm">
+										Retry Quiz</button>
+									<button type="submit"  class="btn btn-primary btn-sm">
+										New Quiz</button>
+										<button type="submit"  class="btn btn-primary btn-sm">
+											Review Answers</button>
+									<button type="button" id="cancel" class="btn btn-default btn-sm" data-bs-dismiss="modal">
+										Cancel</button>
+								</div>
+							</div>
+						</form>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<!-- jQuery first, then Popper.js, then Bootstrap JS -->
+	<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+	<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js" integrity="sha384-IQsoLXl5PILFhosVNubq5LC7Qb9DXgDA9i+tQ8Zj3iwWAwPtgFTxbJ8NT4GN1R8p" crossorigin="anonymous"></script>
+	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.min.js" integrity="sha384-cVKIPhGWiC2Al4u+LWgxfKTRIcfu0JTxR+EQDz/bgldoEyl4H0zUF0QKbrJ0EcQF" crossorigin="anonymous"></script>
+    
+	<script>
+		
+		t="{{ quiz.duration }}:01"
+		setInterval(()=>{
+			
+			t2 = t.split(':')
+			minutes = parseInt(t2[0], 10)
+			seconds = parseInt(t2[1], 10)
+			--seconds
+			minutes = (seconds < 0) ? --minutes : minutes
+			if (minutes < 0) clearInterval(interval)
+			seconds = (seconds < 0) ? 59 : seconds
+			seconds = (seconds < 10) ? '0' + seconds : seconds
+			t = minutes + ':' + seconds
+			$('#displaytimer').html("<b>Timer: " + t +" </b>")
+
+			if (minutes < 2 ) {
+				$('#displaytimer').css('background-color', 'red')
+			
+			}
+			else {
+				$('#displaytimer').css('background-color', 'green')
+			}
+			if (minutes < 1 && seconds < 59 && seconds > 0 ) {
+				$('#displaytimer').addClass('blink')
+			
+			}
+			else if (minutes < 1 && seconds < 1) {
+				$('#displaytimer').removeClass('blink')
+			}
+
+			
+		},1000)
+
+		function assignValue(){
+			document.getElementById("anyId").value="reloaded";
+		}
+	</script>
+</body>
+</html>

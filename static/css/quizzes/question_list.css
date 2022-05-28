@@ -1,0 +1,35 @@
+
+#displaytimer {
+	position:fixed;
+	top:5px;
+	right: 5px;
+	width:200px;
+	background-color: green;
+	border-radius: 10px;
+	padding: 10px;
+	text-align: center;
+	color: white;
+  }
+
+  .submit_btn {
+	display: block;
+	border: none;
+	outline: none;
+	font-size: 15px;
+	cursor: pointer;
+	margin-left: auto;
+	background-color: black;
+	color: white;
+	padding: 5px 20px;
+	text-align: center;
+	border-radius: 5px;
+  }
+
+  @keyframes blink {
+	25% {
+	  opacity: 0.0;
+	}
+  }
+  .blink {
+	animation: blink 2s step-start 0s infinite;
+  }
