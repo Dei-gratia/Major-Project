@@ -1,0 +1,21 @@
+
+.img_note {
+	max-width: 100%;
+
+}
+
+@media screen and (max-width: 575px) {
+	.img_note {
+		height: 180px;
+	}
+
+}
+
+@media screen and (min-width: 576px) {
+	.img_note {
+		height: 180px;
+		margin-top: 20px;
+	}
+
+}
+

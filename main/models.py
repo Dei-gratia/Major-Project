@@ -2,10 +2,11 @@ from django.db import models
 from phone_field import PhoneField
 from django.utils.text import slugify
 
+
 # Create your models here.
 
 
-# ======HOME SECTION=======
+# ======HOME MODEL=======
 class Home(models.Model):
     banner_txt = models.CharField(max_length=254)
     slider1_txt = models.CharField(max_length=254)
@@ -29,7 +30,7 @@ class HomeImage(models.Model):
     img_txt = models.TextField(blank=True)
 
 
-# ======ABOUT SECTION======
+# ======ABOUT MODEL======
 class About(models.Model):
     heading = models.CharField(max_length=254)
     about_txt = models.TextField()
@@ -88,7 +89,7 @@ class Contact(models.Model):
         return self.email
 
 
-# ======SCHOOL LEVEL SECTION======
+# ======SCHOOL LEVEL MODEL======
 class SchoolLevel(models.Model):
     title = models.CharField(max_length=254)
     slug = models.SlugField(max_length=254,	unique=True)
@@ -105,7 +106,7 @@ class SchoolLevel(models.Model):
         ordering = ['title']
 
 
-# ======SPECIALISATION SECTION======
+# ======SPECIALISATION MODEL======
 class Specialisation(models.Model):
     title = models.CharField(max_length=254)
     slug = models.SlugField(max_length=254,	unique=True)
@@ -122,7 +123,7 @@ class Specialisation(models.Model):
         ordering = ['title']
 
 
-# ======PROGRAM======
+# ====== PROGRAM MODEL======
 class Program(models.Model):
     title = models.CharField(max_length=254)
     slug = models.SlugField(max_length=254,	unique=True)
@@ -139,7 +140,7 @@ class Program(models.Model):
         ordering = ['title']
 
 
-# ======SUBJECT SECTION======
+# ======SUBJECT MODEL======
 class Subject(models.Model):
     title = models.CharField(max_length=254)
     slug = models.SlugField(max_length=254,	unique=True)

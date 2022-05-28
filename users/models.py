@@ -4,6 +4,8 @@ from django.utils import timezone
 from phone_field import PhoneField
 from django.utils.text import slugify
 from main.models import SchoolLevel
+from django.contrib.contenttypes.models import ContentType
+from django.contrib.contenttypes import fields
 
 # Create your models here.
 
@@ -95,3 +97,24 @@ class Profile(models.Model):
 
     def __str__(self):
         return f'{self.user} profile'
+
+
+# ====== RATING MODEL ======
+class Review(models.Model):
+    user = models.ForeignKey(User,
+                             related_name='reviews_given',
+                             on_delete=models.SET_NULL, blank=True, null=True)
+    rate_value = models.CharField(max_length=254)
+    comment = models.TextField()
+    content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE,
+                                     limit_choices_to={'model__in': (
+                                         'note',
+                                         'quiz',
+                                         'course',)})
+    object_id = models.PositiveIntegerField()
+    content_object = fields.GenericForeignKey('content_type', 'object_id')
+
+    date = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return f'{self.rate_value} {self.comment}'

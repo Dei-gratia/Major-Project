@@ -1,0 +1,29 @@
+{% extends 'front/master.html' %}
+{% load static %}
+
+{% block head %}
+<title>My notes</title>
+<link rel="stylesheet" href="">
+{% endblock %}
+
+{% block main %}
+	<h1>My Notes</h1>
+	<div class="module">
+		{% for note in object_list %}
+		<div class="note-info">
+			<h3>{{ note.title	}}</h3>
+			<p>
+			<a href="{% url 'note_edit' note.id %}">Edit</a>
+			<a href="{% url 'note_delete' note.id %}">Delete</a>
+			
+			</p>
+		</div>
+		{% empty %}
+		<p>You haven't created any notes yet.</p>
+		{% endfor %}
+		<p>
+			<a	href="{% url 'note_create' %}" class="button">Create	new	note</a>
+		</p>
+	</div>
+
+{%	endblock	%}

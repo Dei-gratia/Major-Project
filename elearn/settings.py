@@ -45,6 +45,8 @@ INSTALLED_APPS = [
     'rest_framework',
     'nested_inline',
     'embed_video',
+    'notes',
+    'mathfilters',
 ]
 
 MIDDLEWARE = [
