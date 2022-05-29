@@ -59,7 +59,7 @@ class User(AbstractBaseUser, PermissionsMixin):
         return "/users/%i/" % (self.pk)
 
     def __str__(self):
-        return f'{self.first_name} {self.last_name}'
+        return f'{self.email}'
 
     class Meta:
         ordering = ['email']
@@ -90,7 +90,8 @@ class Profile(models.Model):
 
     def save(self, *args, **kwargs):
         if not self.profile_name:
-            self.profile_name = f'{self.user}'.replace(" ", "")
+            self.profile_name = f'{self.user.first_name}{self.user.last_name}'.replace(
+                " ", "")
         if not self.about:
             self.about = f"I am {self.profile_name}"
         super(Profile, self).save(*args, **kwargs)

@@ -1,0 +1,56 @@
+{% extends 'front/master.html' %}
+{% load static %}
+
+{% block head %}
+<title>
+	{%	block	title	%}
+	{%	if	subject	%}
+			{{	subject.title	}}	discussion topics
+	{%	else	%}
+        All	discussion topics
+    {%	endif	%}
+{%	endblock	%}
+</title>
+<link rel="stylesheet" href="">
+{% endblock %}
+
+{% block main %}
+
+    <h1>
+	{%	if	subject	%}
+			{{	subject.title	}}	discussion topics
+	{%	else	%}
+	    All	discussion topics
+    {%	endif	%}
+    </h1>
+    <div	class="contents">
+        <h3>Subjects</h3>
+        <ul	id="modules">
+        <li	{%	if	not	subject	%}class="selected"{%	endif	%}>
+        <a	href="{%	url	'discussion_topic_list'	%}">All</a>
+        </li>
+        {%	for	s	in	subjects	%}
+        <li	{%	if	subject	==	s	%}class="selected"{%	endif	%}>
+        <a	href="{% url 'discussion_topic_list_subject' s.slug %}">
+        {{	s.title	}}
+        <br><span>{{	s.total_discussion_topics	}}	discussion topics</span>
+        </a>
+        </li>
+        {%	endfor	%}
+                </ul>
+    </div>
+    <div	class="module">
+        {%	for	discussion_topic	in	discussion_topics	%}
+        {%	with	subject=discussion_topic.subject	%}
+        <h3><a	href="{% url 'discussion_topic_detail' discussion_topic.pk %}">
+        {{	discussion_topic.title	}}</a></h3>
+        <p>
+        <a	href="{% url 'discussion_topic_list_subject' subject.slug %}">
+        {{	subject	}}</a>.
+        {{	discussion_topic.total_posts	}}	posts.
+        Instructor:	{{	discussion_topic.owner	}}
+        </p>
+        {%	endwith	%}
+                {%	endfor	%}
+    </div>
+{%	endblock	%}

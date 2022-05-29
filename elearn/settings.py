@@ -47,7 +47,8 @@ INSTALLED_APPS = [
     'embed_video',
     'notes',
     'mathfilters',
-    'quizzes'
+    'quizzes',
+    'discussions'
 ]
 
 MIDDLEWARE = [

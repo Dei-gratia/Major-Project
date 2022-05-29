@@ -1,0 +1,146 @@
+{% extends 'front/master.html' %}
+{% load static %}
+
+{% block head %}
+	<title>{{ post.title }}</title>
+	<link rel="stylesheet" href="{% static 'css/about.css' %}">
+	<link rel="stylesheet" href="{% static 'css/discussions/post_detail.css' %}">
+{% endblock %}
+
+{% block main %}
+
+	<nav aria-label="breadcrumb" style="--bs-breadcrumb-divider: '/';" >
+		<ol class="breadcrumb">
+		  <li class="breadcrumb-item"><a href="index.html">home</a></li>
+		  <li class="breadcrumb-item"><a href="index.html">discussions</a></li>
+		  <li class="breadcrumb-item"><a href="index.html">topic</a></li>
+		  <li class="breadcrumb-item active" aria-current="page">discussion</li>
+		</ol>
+	</nav>
+
+	<div class="content" >
+		<div>
+			<div id="reply_success" class="alert alert-success d-flex align-items-center alert-dismissible fade show" style="margin-top: 10px;" role="alert">
+				<i style="margin-right: 10px; font-size: 60px;" class="fa-regular fa-circle-check"></i>
+				<div>
+					<h4 class="alert-heading">Reply posted!</h4>
+					<p>Thank you for you reply</p>
+				</div>
+				<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+			</div>
+		</div>
+		<div class="row">
+			<div class="col-md-4" id="abt_h1_container">
+				<h2 id="abt_h1">{{ post.title }}</h2>
+				<div class="jumbotron">
+					<div class="card topic_card">
+						<div class="div_top">
+							<a href="topic.html"><img src="{{ post.image.url }}" class="topic_img"></a>
+							<a href="topic.html" class="topic_title">{{ post.owner.profile.profile_name }} </a>
+							<div class="date small">
+								<div>Date and Time Of Post: </div>
+                            <div ><strong>{{ post.date }} </strong></div>
+							</div>
+						</div>
+						<hr style="margin: 0px;">
+						<p class="qns">{{ post.post_content }}?</p>
+						<hr style="margin: 0px;">
+						<button class="btn btn-primary btn-lg" data-bs-target="#questions" data-bs-toggle="modal" role="button">Reply</button>
+					</div>
+				</div>
+				<br>
+			</div>
+			<div class="col-md-8">
+				<div class="replies">
+					<p id="replies_hd"><i class="fa-solid fa-reply-all"></i> Replies</p>
+					{% for reply in post.replies.all %}
+					<div class=" reply_card" >
+						<div class="div_top">
+							<a href="topic.html"><img src="{{ reply.image.url }}" class="topic_img"></a>
+							<h4 class="topic_title">{{ reply.user.profile.profile_name }} </h4>
+							<h5 class="date small">{{ reply.date }}</h5>
+						</div>
+						<p class="qns">{{ reply.replie_content }}?</p>
+						<hr style="margin-left: 5px; margin-right: 5px;">
+					</div>
+					{% endfor %}
+
+				</div>
+				
+				
+
+				
+				
+				<div class="social_icons_abt">
+					<a id="fb"><i class="fa-brands fa-facebook-f"></i></a>
+					<a id="tw"><i class="fa-brands fa-twitter"></i></a>
+					<a id="ig"><i class="fa-brands fa-instagram-square"></i></a>
+					<a id="in"><i class="fa-brands fa-linkedin"></i></a>
+					<a id="yt"><i class="fa-brands fa-youtube"></i></a>
+				</div>
+			</div>
+		</div>
+
+	</div>
+	
+	<div class="modal fade" id="questions" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+		<div class="modal-dialog" role="document">
+		  <div class="modal-content">
+			<div class="modal-header">
+			  <h5 class="modal-title" id="exampleModalLabel">Reply</h5>
+			  <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+				<span aria-hidden="true">&times;</span>
+			  </button>
+			</div>
+			<div class="modal-body">
+			  <form action="" id="form_reply" method="POST"> 
+			  <div class="form-group">
+				<label for="exampleFormControlTextarea1">Post Your Reply Here</label>
+				<textarea class="form-control" id="reply_content" name="reply_content" rows="3"></textarea>
+			  </div>
+			</div>
+		
+			<div class="modal-footer">
+			  <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+			  <button type="submit" class="btn btn-primary">Post Reply</button>
+			</div>
+		  </div>
+		</div>
+	</div>
+
+{% endblock%}
+
+{% block script %}
+
+<script>
+	$('#form_reply').submit(function(e){
+		e.preventDefault();
+		var form = $(e.target)
+	
+		$.ajax({
+			url: "{% url 'post_detail' topic_id=topic.pk post_id=post.pk %}",
+			type: 'post',
+			data: form.serialize(),
+			error: function(xhr, ajaxOptions, thrownError){ alert(thrownError); },
+			success: function(data){
+				if (data.success === true) {
+					$('#questions').modal('toggle');
+					$('html,body').animate({scrollTop:distance},0)
+					$('#reply_success').toggleClass('shown')
+					window.setTimeout(function() {
+						$('#reply_success').toggleClass('shown')
+					}, 4000);
+					
+				} 
+				else {
+					console.log('error')
+					alert(`${data.message}`)
+				}
+				
+			}
+		})
+		})
+
+</script>
+
+{% endblock %}

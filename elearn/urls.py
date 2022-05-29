@@ -26,10 +26,12 @@ urlpatterns = [
     path('notes/', include('notes.urls')),
     path('users/', include('users.urls')),
     path('quizzes/', include('quizzes.urls')),
+    path('discussions/', include('discussions.urls')),
     path('api/',	include('courses.api.urls',	namespace='courses_api')),
     path('api/',	include('main.api.urls',	namespace='api')),
     path('api/',	include('notes.api.urls',	namespace='notes_api')),
     path('api/',	include('quizzes.api.urls',	namespace='quizzes_api')),
+    path('api/',	include('discussions.api.urls',	namespace='discussion_api')),
 ]
 
 if settings.DEBUG:

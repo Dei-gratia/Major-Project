@@ -1,0 +1,135 @@
+{% extends 'front/master.html' %}
+{% load static %}
+
+{% block head %}
+	<title>Topic</title>
+	<link rel="stylesheet" href="{% static 'css/about.css' %}">
+	<link rel="stylesheet" href="{% static 'css/discussions/post_list.css' %}">
+{% endblock %}
+
+{% block main %}
+
+	<nav aria-label="breadcrumb" style="--bs-breadcrumb-divider: '/';" >
+		<ol class="breadcrumb">
+		  <li class="breadcrumb-item"><a href="index.html">home</a></li>
+		  <li class="breadcrumb-item"><a href="index.html">discussions</a></li>
+		  <li class="breadcrumb-item active" aria-current="page">topic</li>
+		</ol>
+	</nav>
+
+	<div class="content" >
+		<div>
+			<div id="post_success" class="alert alert-success d-flex align-items-center alert-dismissible fade show" style="margin-top: 10px;" role="alert">
+				<i style="margin-right: 10px; font-size: 60px;" class="fa-regular fa-circle-check"></i>
+				<div>
+					<h4 class="alert-heading">Post submitted!</h4>
+					<p>You will be notified whenever someone replies to your post</p>
+				</div>
+				<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+			</div>
+		</div>
+		<div class="row">
+			<div class="col-md-4" id="abt_h1_container">
+				<h2 id="abt_h1"> Topic1</h2>
+				<div class="jumbotron">
+					<h1 class="display-4">ProjectMajor Disscussion Forum</h1>
+					<p class="lead">Welcome to our discussion forum. You can post your question or any related queries by simply clicking on the add post button. <br> Thankyou and Have a nice day!!</p>
+					<hr class="my-4">
+					<p>You can also reply to others post by clicking on their post and replying them.</p>
+					<button class="btn btn-primary btn-lg" data-bs-target="#new_post" data-bs-toggle="modal" role="button">Add Post</button>
+				</div>
+				<br>
+			</div>
+			<div class="col-md-8 ">
+				{% for post in topic.posts.all %}
+					<div class="card topic_card" >
+						<div class="div_top">
+							<a href="{% url 'post_detail' topic_id=topic.pk post_id=post.pk %}"><img src="{{ post.image.url }}" class="topic_img"></a>
+							<a href="{% url 'post_detail' topic_id=topic.pk post_id=post.pk %}" class="topic_title">{{ post.user1.profile.nickname }}</a>
+							<p class="date small">{{ post.date }} </p>
+						</div>
+						<hr style="margin: 5px;">
+						<h6 class="qns">{{ post.title }}</h6>
+						<p class="qns">{{ post.post_content }}?</p>
+						<hr style="margin-left: 5px; margin-right: 5px;">
+					</div>
+				{% endfor %}
+
+				
+				<div class="social_icons_abt">
+					<a id="fb"><i class="fa-brands fa-facebook-f"></i></a>
+					<a id="tw"><i class="fa-brands fa-twitter"></i></a>
+					<a id="ig"><i class="fa-brands fa-instagram-square"></i></a>
+					<a id="in"><i class="fa-brands fa-linkedin"></i></a>
+					<a id="yt"><i class="fa-brands fa-youtube"></i></a>
+		
+				</div>
+			</div>
+		</div>
+
+	</div>
+
+
+	<div class="modal fade" id="new_post" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+		<div class="modal-dialog" role="document">
+		  <div class="modal-content">
+			<div class="modal-header">
+			  <h5 class="modal-title" id="exampleModalLabel">Add New Post</h5>
+			  <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+			</div>
+			<div class="modal-body">
+			  <form id="form_new_post" action="" method="POST"> 
+				<div class="form-group">
+					<label for="post_title">Post Your Question Here</label>
+					<input type="text" class="form-control" id="post_title" name="post_title" placeholder="Post Title"></textarea>
+				</div>
+				<br/>
+				<div class="form-group">
+					<label for="exampleFormControlTextarea1">Question Full Explanation</label>
+					<textarea class="form-control" id="post_content" name="post_content" rows="3" placeholder="Post Content"></textarea>
+				</div>
+			</div>
+		
+			<div class="modal-footer">
+			  <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+			  <button type="submit" class="btn btn-primary">Post</button>
+			</div>
+		  </div>
+		</div>
+	</div>
+
+{% endblock%}
+
+{% block script %}
+
+<script>
+	$('#form_new_post').submit(function(e){
+		e.preventDefault();
+		var form = $(e.target)
+	
+		$.ajax({
+			url: '{% url "post_list" topic_id=topic.pk %}',
+			type: 'post',
+			data: form.serialize(),
+			error: function(xhr, ajaxOptions, thrownError){ alert(thrownError); },
+			success: function(data){
+				if (data.success === true) {
+					$('#new_post').modal('toggle');
+					$('#post_success').toggleClass('shown')
+					window.setTimeout(function() {
+						$('#post_success').toggleClass('shown')
+					}, 5000);
+					
+				} 
+				else {
+					console.log('error')
+					alert(`${data.message}`)
+				}
+				
+			}
+		})
+		})
+
+</script>
+
+{% endblock %}

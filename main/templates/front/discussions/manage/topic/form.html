@@ -1,0 +1,31 @@
+{% extends 'front/master.html' %}
+{% load static %}
+
+{% block head %}
+<title>
+	{% if object %}
+		Edit discussion topic	"{{	object.title }}"
+	{%	else %}
+		Create a new discussion topic
+	{% endif %}
+</title>
+<link rel="stylesheet" href="">
+{% endblock %}
+
+{% block main %}
+	<h1>
+	{% if object %}
+	Edit discussion topic	"{{	object.title }}"
+	{% else %}
+	Create a new discussion topic
+	{% endif %}
+	</h1>
+	<div class="module">
+        <h2>Discussion topic info</h2>
+        <form	action="."	method="post">
+            {{ form.as_p }}
+            {% csrf_token %}
+            <p><input type="submit" value="Save discussion topic"></p>
+        </form>
+	</div>
+{%	endblock %}

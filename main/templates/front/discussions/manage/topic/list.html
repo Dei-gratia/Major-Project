@@ -1,0 +1,32 @@
+{% extends 'front/master.html' %}
+{% load static %}
+
+{% block head %}
+<title>My discussions</title>
+<link rel="stylesheet" href="">
+{% endblock %}
+
+{% block main %}
+	<h1>My discussions</h1>
+	<div class="module">
+		{% for discussion_topic in object_list %}
+		<div class="discussion_topic-info">
+			<h3>{{ discussion_topic.title	}}</h3>
+			<p>
+			<a href="{% url 'discussion_topic_edit' discussion_topic.id %}">Edit</a>
+			<a href="{% url 'discussion_topic_delete' discussion_topic.id %}">Delete</a>
+			<a href="{% url 'discussion_topic_post_update' discussion_topic.id %}">Edit posts</a>
+			{% if discussion_topic.posts.count > 0 %}
+				<a href="{% url 'module_content_list' discussion_topic.posts.first.id %}">Manage replies</a>
+			{% endif %}
+			</p>
+		</div>
+		{% empty %}
+		<p>You haven't	created	any	discussions	yet.</p>
+		{% endfor %}
+		<p>
+			<a	href="{% url 'discussion_topic_create' %}" class="button">Create	new	discussion topic</a>
+		</p>
+	</div>
+
+{%	endblock	%}
