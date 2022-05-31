@@ -6,65 +6,76 @@
 	<title>
 		Module	{{	module.order|add:1	}}:	{{	module.title	}}
 	</title>
-	<link rel="stylesheet" href="">
+	<link rel="stylesheet" href="{% static 'css/common.css' %}">
+	<link rel="stylesheet" href="{% static 'css/courses/manage/content_list.css' %}">
 {% endblock %}
 
 {% block main %}
 
 {%	with	course=module.course	%}
-    <h1>Course	"{{	course.title	}}"</h1>
-    <div	class="contents">
-        <h3>Modules</h3>
-        <ul	id="modules">
-            {%	for	m	in	course.modules.all	%}
-                <li	data-id="{{	m.id	}}"	{%	if	m	==	module	%}
-                class="selected"{%	endif	%}>
-                    <a	href="{% url 'module_content_list' m.id	%}">
-                        <span>
-                                Module	<span	class="order">{{	m.order|add:1	}}</span>
-                        </span>
-                        <br>
-                        {{	m.title	}}
-                    </a>
-                </li>
-            {%	empty	%}
-                    <li>No	modules	yet.</li>
-            {%	endfor	%}
-        </ul>
-        <p><a	href="{%	url	'course_module_update'	course.id	%}">
-        Edit	modules</a></p>
-    </div>
-    <div	class="module">
-        <h2>Module	{{	module.order|add:1	}}:	{{	module.title	}}</h2>
-        <h3>Module	contents:</h3>
-        <div	id="module-contents">
-            {%	for	content	in	module.contents.all	%}
-                <div	data-id="{{	content.id	}}">
-                    {%	with	item=content.item	%}
-                    <p>{{	item	}}	({{	item|model_name	}})</p>
-                    <a	href="{%	url	'module_content_update'	module.id	item|model_name	item.id	%}">Edit</a>
-                        <form	action="{%	url	'module_content_delete'	content.id	%}"	
-                            method="post">
-                                <input	type="submit"	value="Delete">
-                                {%	csrf_token	%}
-                        </form>
-                    {%	endwith	%}
-                </div>
-            {%	empty	%}
-            <p>This	module	has	no	contents	yet.</p>
-            {%	endfor	%}
-        </div>
-        <h3>Add	new	content:</h3>
-        <ul	class="content-types">
-                <li><a	href="{%	url	'module_content_create'	module.id	'text'	%}">
-                Text</a></li>
-                <li><a	href="{%	url	'module_content_create'	module.id	'image'	%}">
-                Image</a></li>
-                <li><a	href="{%	url	'module_content_create'	module.id	'video'	%}">
-                Video</a></li>
-                <li><a	href="{%	url	'module_content_create'	module.id	'file'	%}">
-                File</a></li>
-        </ul>
+<div class="content">
+	<div class="page-heading-container">
+    	<h1 class="page-heading">Course	"{{	course.title }}"</h1>
+	</div>
+    <div class="contents-container">
+		<div class="side-bar">
+			<h3 class="side-bar-heading">Modules</h3>
+				<ul	id="modules" class="side-bar-list">
+					{% for m in course.modules.all %}
+						<li	class="side-bar-list-item {% if	module == m %}selected{%	endif	%}"
+						data-id="{{	m.id }}"	{% if m	== module %}
+						class="selected"{% endif %}>
+							<a	href="{% url 'module_content_list' m.id	%}">
+								<span>
+										Module <span class="order">{{ m.order|add:1	}}</span>
+								</span>
+								<br>
+								{{	m.title	}}
+							</a>
+						</li>
+					{%	empty	%}
+							<li>No	modules	yet.</li>
+					{%	endfor	%}
+				</ul>
+				<p><a class="edit-modules"	href="{%	url	'course_module_update'	course.id	%}">
+				Edit	modules</a></p>
+		</div>
+		<div class="details-block jumbotron" id="details-block">
+			<h2 class="details-block-heading">Module	{{	module.order|add:1	}}:	{{	module.title	}}</h2>
+			<h3>Module	contents:</h3>
+			<div id="module-contents">
+				{%	for	content	in	module.contents.all	%}
+					<div class="details-block-item"	data-id="{{	content.id	}}">
+						{%	with	item=content.item	%}
+						<p>{{	item	}}	({{	item|model_name	}})</p>
+						<div class="edit">
+							<a class="btn" id="btn-edit"	href="{%	url	'module_content_update'	module.id	item|model_name	item.id	%}">Edit</a>
+							<form class="form-delete"	action="{%	url	'module_content_delete'	content.id	%}"	
+								method="post">
+									<input	type="submit" id="btn-delete" class="btn"	value="Delete">
+									{%	csrf_token	%}
+							</form>
+						</div>
+						
+						{%	endwith	%}
+					</div>
+				{%	empty	%}
+				<p>This	module	has	no	contents	yet.</p>
+				{%	endfor	%}
+			</div>
+			<h3>Add	new	content:</h3>
+			<ul	class="content-types">
+					<li ><a	href="{%	url	'module_content_create'	module.id	'text'	%}">
+					Text</a></li>
+					<li><a	href="{%	url	'module_content_create'	module.id	'image'	%}">
+					Image</a></li>
+					<li><a	href="{%	url	'module_content_create'	module.id	'video'	%}">
+					Video</a></li>
+					<li><a	href="{%	url	'module_content_create'	module.id	'file'	%}">
+					File</a></li>
+			</ul>
+		</div>
+        
     </div>
 {% endwith	%}
 {% endblock %}

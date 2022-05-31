@@ -3,9 +3,10 @@ from main.fields import OrderField
 from django.contrib.contenttypes.models import ContentType
 from django.contrib.contenttypes.fields import GenericForeignKey
 from django.utils.text import slugify
-from users.models import User
+from users.models import User, Review
 from main.models import Subject, SchoolLevel
 from django.template.loader import render_to_string
+from django.contrib.contenttypes import fields
 
 # Create your models here.
 
@@ -24,9 +25,14 @@ class Course(models.Model):
     title = models.CharField(max_length=200)
     slug = models.SlugField(max_length=200,	unique=True)
     overview = models.TextField()
+    total_ratings = models.FloatField(default=0.0)
+    num_ratings = models.IntegerField(default=0)
+    average_rating = models.FloatField(default=0.0)
     created = models.DateTimeField(auto_now_add=True)
     students = models.ManyToManyField(
         User, related_name='courses_enrolled', blank=True)
+
+    reviews = fields.GenericRelation(Review)
 
     class Meta:
         ordering = ['-created']
@@ -34,10 +40,16 @@ class Course(models.Model):
     def save(self, *args, **kwargs):
         if not self.slug:
             self.slug = slugify(self.title)
+        self.average_rating = self.get_average_rating()
         super(Course, self).save(*args, **kwargs)
 
     def __str__(self):
         return self.title
+
+    def get_average_rating(self):
+        if float(self.num_ratings) == 0.0 or float(self.total_ratings) == 0.0:
+            return 0.000
+        return round(float(self.total_ratings) / float(self.num_ratings), 3)
 
 
 # ====== COURSE MODULE MODEL ======

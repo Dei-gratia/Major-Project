@@ -1,5 +1,7 @@
 {% extends 'front/master.html' %}
 {% load static %}
+{% load crispy_forms_tags %}
+
 
 {% block head %}
 <title>
@@ -9,23 +11,27 @@
 		Add new content
 	{% endif %}
 </title>
-<link rel="stylesheet" href="">
+<link rel="stylesheet" href="{% static 'css/courses/manage/form.css' %}">
+<link rel="stylesheet" href="{% static 'css/common.css' %}">
 {% endblock %}
 
 {% block main %}
-    <h1>
-        {% if object %}
-            Edit content "{{ object.title }}"
-        {% else %}
-            Add	a new content
-        {% endif %}
-    </h1>
-    <div class="module">
-        <h2>Course	info</h2>
-        <form	action=""	method="post"	enctype="multipart/form-data">
-                {{	form.as_p	}}
+<div class="content">
+	<div class="page-heading-container">
+		<h1 class="page-heading">
+			{% if object %}
+				Edit content "{{ object.title }}"
+			{% else %}
+				Add	a new content
+			{% endif %}
+		</h1>
+	</div>
+    <div class="contents-container">
+        <h2 class="page-sub-heading">Course	info</h2>
+        <form class="form-horizontal" action=""	method="post" enctype="multipart/form-data">
+				{{form|crispy }}
                 {%	csrf_token	%}
-                <p><input	type="submit"	value="Save	content"></p>
+                <p><input type="submit" class="button btn" value="Save	content"></p>
         </form>
     </div>
 {%	endblock	%}

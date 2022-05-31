@@ -1,0 +1,73 @@
+{% extends 'front/master.html' %}
+{% load static %}
+
+{% block head %}
+<title>
+	{%	block	title	%}
+	{%	if	subject	%}
+			{{	subject.title	}}	courses
+	{%	else	%}
+        All	courses
+    {%	endif	%}
+{%	endblock	%}
+</title>
+<link rel="stylesheet" href="{% static 'css/courses/course_list.css' %}">
+<link rel="stylesheet" href="{% static 'css/common.css' %}">
+{% endblock %}
+
+{% block main %}
+	<div class="content">
+		<h1 class="page-heading">
+			{%	if	subject	%}
+					{{	subject.title	}}	courses
+			{%	else	%}
+				All	courses
+			{%	endif	%}
+		</h1>
+		<h5 class="page-navigation"> 
+			Filter
+			<a href="">Levels</a>
+			<a href="">Date</a>
+			<a href="">Rating</a>
+			<a href="">O Level</a>
+			<a href="">Primary Level</a>
+			<a href="">Elementary Level</a>
+		</h5>
+		<div class="contents-container">
+			<div class="side-bar">
+				<h3 class="side-bar-heading">Subjects</h3>
+				<ul	id="side-bar-list" class="side-bar-list">
+					<li class="side-bar-list-item {%	if	not	subject	%}selected{%	endif	%}">
+					<a	href="{% url 'course_list' %}">All</a>
+					</li>
+					{%	for	s	in	subjects	%}
+					<li	class="side-bar-list-item {%	if	subject	==	s	%}selected{%	endif	%}">
+					<a	href="{% url 'course_list_subject' s.slug %}">
+					{{	s.title	}}
+					<br><span class="total-item">{{	s.total_courses	}}	courses</span>
+					</a>
+					</li>
+					{%	endfor	%}
+				</ul>
+			</div>
+			<div class="details-block">
+				{%	for	course	in	courses	%}
+				{%	with	subject=course.subject	%}
+				<h3 class="details-block-heading"><a	href="{% url 'course_detail' course.slug %}">
+				{{	course.title	}}</a></h3>
+				<p >
+				<a class="details-block-subject" href="{% url 'course_list_subject' subject.slug %}">
+				{{	subject	}}</a>.
+				{{	course.total_modules	}}	modules.
+				Instructor:	{{	course.owner	}}
+				</p>
+				{%	endwith	%}
+				{% empty %}
+				<h3>No courses for {{ subject }} yet. Please try another subject!</h3>
+				{%	endfor	%}
+			</div>
+		</div>
+		
+	</div>
+    
+{%	endblock	%}

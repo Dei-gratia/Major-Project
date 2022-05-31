@@ -1,5 +1,6 @@
 {% extends 'front/master.html' %}
 {% load static %}
+{% load index %}
 
 {% block head %}
 <title>
@@ -11,46 +12,121 @@
     {%	endif	%}
 {%	endblock	%}
 </title>
-<link rel="stylesheet" href="">
+<link rel="stylesheet" href="{% static 'css/courses/course_list.css' %}">
+<link rel="stylesheet" href="{% static 'css/common.css' %}">
 {% endblock %}
 
 {% block main %}
-
-    <h1>
-	{%	if	subject	%}
-			{{	subject.title	}}	courses
-	{%	else	%}
-	    All	courses
-    {%	endif	%}
-    </h1>
-    <div	class="contents">
-        <h3>Subjects</h3>
-        <ul	id="modules">
-        <li	{%	if	not	subject	%}class="selected"{%	endif	%}>
-        <a	href="{%	url	'course_list'	%}">All</a>
-        </li>
-        {%	for	s	in	subjects	%}
-        <li	{%	if	subject	==	s	%}class="selected"{%	endif	%}>
-        <a	href="{% url 'course_list_subject' s.slug %}">
-        {{	s.title	}}
-        <br><span>{{	s.total_courses	}}	courses</span>
-        </a>
-        </li>
-        {%	endfor	%}
-                </ul>
-    </div>
-    <div	class="module">
-        {%	for	course	in	courses	%}
-        {%	with	subject=course.subject	%}
-        <h3><a	href="{% url 'course_detail' course.slug %}">
-        {{	course.title	}}</a></h3>
-        <p>
-        <a	href="{% url 'course_list_subject' subject.slug %}">
-        {{	subject	}}</a>.
-        {{	course.total_modules	}}	modules.
-        Instructor:	{{	course.owner	}}
-        </p>
-        {%	endwith	%}
-                {%	endfor	%}
-    </div>
+	<div class="content">
+		<div class="page-heading-container">
+			<h1 class="page-heading">
+				{%	if	subject	%}
+						{{	subject.title	}}	courses
+				{%	else	%}
+					All	courses
+				{%	endif	%} 
+			</h1>
+			<div class='filter'>
+				<div class="btn-group">
+					<button type="button" class="btn dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+					  Filter
+					</button>
+					<ul class="dropdown-menu dropdown-menu-end">
+						<li><a class="dropdown-item {%	if not school_level %}selected{%	endif	%}" href="
+							{% if subject %}
+							{% url 'course_list_subject' subject=subject.slug order=order %}
+							{% else %}
+							{% url 'course_list' order=order %}
+							{% endif%}">All</a></li>
+						<li><hr class="dropdown-divider"></li>
+						{% for l in school_levels %}
+						<li><a class="dropdown-item {% if	school_level ==	l %}selected{%	endif	%}" href="
+							{% if subject %}
+							{% url 'course_list_level_subject' school_level=l.slug subject=subject.slug order=order %}
+							{% else %}
+							{% url 'course_list_level' school_level=l.slug order=order %}
+							{% endif%}
+							">{{ l.title }}
+							<br><span class="total-item">{{	l.total_courses	}} courses</span>
+						</a></li>
+						{% endfor %}
+					</ul>
+				</div>
+				<div class="btn-group">
+					<button type="button" class="btn dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+					  Sort 
+					</button>
+					<ul class="dropdown-menu dropdown-menu-end">
+						&nbsp;Date
+					  <li><a class="dropdown-item" href="{{ request.path|sort_url:'created' }}">Ascending</a></li>
+					  <li><a class="dropdown-item" href="{{ request.path|sort_url:'-created' }}">Descending</a></li>
+					  <li><hr class="dropdown-divider"></li>
+					  &nbsp;Rating
+					  <li><a class="dropdown-item" href="{{ request.path|sort_url:'average_rating' }}">Ascending</a></li>
+					  <li><a class="dropdown-item" href="{{ request.path|sort_url:'-average_rating' }}">Descending</a></li>
+					</ul>
+				</div>
+			</div>	
+		</div>
+		
+		<div class="contents-container">
+			<div class="side-bar">
+				<h3 class="side-bar-heading">Subjects</h3>
+				<ul	id="side-bar-list" class="side-bar-list">
+					<li class="side-bar-list-item {%	if	not	subject	%}selected{%	endif	%}">
+					<a	href="{% if school_level %}
+					{% url 'course_list_level' school_level=school_level.slug order=order %}
+					{% else %}
+					{% url 'course_list' order=order %}
+					{% endif %}">All</a>
+					</li>
+					{%	for	s	in	subjects	%}
+					<li	class="side-bar-list-item {%	if	subject	==	s	%}selected{%	endif	%}">
+					<a	href="
+					{% if school_level %}
+					{% url 'course_list_level_subject' school_level=school_level.slug subject=s.slug order=order %}
+					{% else %}
+					{% url 'course_list_subject' subject=s.slug order=order %}
+					{% endif %}">
+					{{	s.title	}}
+					<br><span class="total-item">{{	s.total_courses	}}	courses</span>
+					</a>
+					</li>
+					{%	endfor	%}
+				</ul>
+			</div>
+			<div class="details-block" id="details-block">
+				{%	for	course	in	courses%}
+				<div class="details-block-item" id="details-block-item">
+					{%	with	subject=course.subject	%}
+					<h3 class="details-block-heading"><a href="{% url 'course_detail' slug=course.slug %}">
+					{{	course.title	}}</a> <span class="rating">{{ course.average_rating}}
+						{% if course.average_rating > 1.0 %} <i class="fa-solid fa-star-half-stroke"></i>
+						{% elif course.average_rating > 4.5 %} <i class="fa-solid fa-star"></i>
+						{% else %} <i class="fa-regular fa-star"></i>
+						{% endif %}
+					</span></h3>
+					<p >
+					<a class="details-block-subject" href="{% url 'course_list_subject' subject=subject.slug order=order %}">
+					{{	subject	}}</a>.
+					{{	course.total_modules	}}	modules.
+					Instructor:	{% if course.owner %}{{	course.owner.profile.profile_name	}} 
+					{% else %}Uknown {% endif %}
+					</p>
+					{%	endwith	%}
+					
+				</div>
+				
+				{% empty %}
+				<h3>No courses for {% if school_level %} {{ school_level }} {% endif %}{% if subject %} {{ subject }} {% endif %} yet. Please try another subject!</h3>
+				{%	endfor	%}
+			</div>
+		</div>
+		
+	</div>
+    
 {%	endblock	%}
+{% block script%}
+	<script src="{% static 'js/common.js' %}"></script>
+	
+{% endblock %}

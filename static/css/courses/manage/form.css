@@ -1,0 +1,16 @@
+.search_form_lg {
+	display: none !important;
+}
+
+.contents-container {
+	flex-direction: column;
+	padding: 10px 20px;
+}
+
+.page-sub-heading {
+	padding: 20px 0;
+}
+
+form {
+	max-width: 700px;
+}

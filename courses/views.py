@@ -15,7 +15,7 @@ from django.db.models import Count
 from .models import Subject
 from django.views.generic.detail import DetailView
 from users.forms import CourseEnrollForm
-from main.models import Home, About
+from main.models import Home, About, SchoolLevel
 from main.mixins import OwnerEditMixin, OwnerMixin
 
 
@@ -29,7 +29,7 @@ class OwnerCourseMixin(OwnerMixin, LoginRequiredMixin):
 
 
 class OwnerCourseEditMixin(OwnerCourseMixin,	OwnerEditMixin):
-    fields = ['school_level', 'subject', 'title', 'slug', 'overview']
+    fields = ['school_level', 'subject', 'title', 'overview']
     success_url = reverse_lazy('manage_course_list')
     template_name = 'front/courses/manage/course/form.html'
     extra_context = {'site': Home.objects.latest('updated'),
@@ -170,19 +170,43 @@ class CourseListView(TemplateResponseMixin,	View):
     model = Course
     template_name = 'front/courses/course/list.html'
 
-    def get(self,	request,	subject=None):
+    def get_queryset(self):
+        result = super(CourseListView, self).get_queryset()
+        query = self.request.GET.get('search')
+        print(query)
+        if query:
+            postresult = Course.objects.filter(
+                title__contains=query, oeverview__contains=query)
+            result = postresult
+        else:
+            result = None
+        print(result)
+        return result
+
+    def get(self,	request, order='-created', subject=None, school_level=None):
+        school_levels = SchoolLevel.objects.annotate(
+            total_courses=Count('courses'))
         subjects = Subject.objects.annotate(total_courses=Count('courses'))
-        courses = Course.objects.annotate(total_modules=Count('modules'))
+        courses = Course.objects.annotate(
+            total_modules=Count('modules')).order_by(order)
+
+        if school_level:
+            school_level = get_object_or_404(SchoolLevel, slug=school_level)
+            courses = courses.filter(school_level=school_level).order_by(order)
 
         if subject:
             subject = get_object_or_404(Subject, slug=subject)
-            courses = courses.filter(subject=subject)
+            courses = courses.filter(subject=subject).order_by(order)
 
-        return self.render_to_response({'subjects':	subjects,
-                                        'subject':	subject,
-                                        'courses':	courses,
-                                        'site': Home.objects.latest('updated'),
-                                        'about': About.objects.latest('updated')})
+        return self.render_to_response({
+            'school_levels': school_levels,
+            'school_level': school_level,
+            'subjects':	subjects,
+            'subject':	subject,
+            'courses':	courses,
+            'order': order,
+            'site': Home.objects.latest('updated'),
+            'about': About.objects.latest('updated')})
 
 
 class CourseDetailView(DetailView):
@@ -195,4 +219,8 @@ class CourseDetailView(DetailView):
             initial={'course': self.object})
         context['site'] = Home.objects.latest('updated')
         context['about'] = About.objects.latest('updated')
+        students = kwargs['object'].students.all()
+        if self.request.user in students:
+            context['student'] = self.request.user
+        print(kwargs['object'].students.all())
         return context

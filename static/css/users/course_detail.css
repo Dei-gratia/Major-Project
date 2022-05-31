@@ -1,0 +1,8 @@
+.course_image {
+	max-width: 100%;
+	max-height: 500px;
+}
+
+.search_form_lg {
+	display: none !important;
+}

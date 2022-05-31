@@ -1,0 +1,23 @@
+.contents-container {
+	flex-direction: column;
+	padding: 5px 10px;
+}
+
+.course-card {
+	padding: 30px 20px 10px 20px;
+	border-radius: 2px;
+}
+
+.course-card a {
+	color: #3f6ad8;
+	padding: 0px 12px 0px 0px;
+}
+
+.course-card a:hover {
+	opacity: 0.8;
+	text-decoration: underline;
+}
+
+.btn {
+	margin-top: 10px;
+}

@@ -1,0 +1,76 @@
+{% extends 'front/master.html' %}
+{% load static %}
+
+{% block head %}
+<title>About</title>
+<link rel="stylesheet" href="{% static 'css/about.css' %}">
+{% endblock %}
+
+{% block main %}
+	<nav aria-label="breadcrumb" style="--bs-breadcrumb-divider: '/';">
+		<ol class="breadcrumb">
+		  <li class="breadcrumb-item"><a href="/">home</a></li>
+		  <li class="breadcrumb-item active" aria-current="page">dashboard</li>
+		</ol>
+	  </nav>
+
+	<div class="content">
+		<div class="row" >
+			<h2 id="abt_h2"> {{ about.heading }}</h2>
+			<div class="col-md-4" id="abt_h2_container">
+				<div class="abt_img" style="display: flex; flex-direction: column; align-items: center;">
+					<img id="abt_img" class="" alt="about" src="{{ about.aboutimage_set.first.img.url}}" >
+					<p>{{ about.aboutimage_set.first.img_txt}}</p>
+				</div>
+			</div>
+			
+			<div class="col-md-8 main_txt">
+				<p class="abt_txt">{{ about.about_txt|linebreaks }}
+				</p>
+				<br/>
+				<div class="social_icons_abt">
+					{% for social in about.social_set.all %}
+					<a id="{% if social.social_name == 'facebook' %}cfb{% elif social.social_name == 'twitter' %}ctw{% elif social.social_name == 'instagram' %}cig{% elif social.social_name == 'linkedin' %}cin{% elif social.social_name == 'youtube' %}cyt{% endif %}"
+					 title="{{ social.display_title }}">
+					 <i class="{{ social.social_font_owesome_icon }}"></i></a>
+					{% endfor %}
+				</div>
+			</div>
+		</div>	
+
+	</div>
+	<div class="content_bm" style="text-align: left;">
+		<div class="card">
+			<div class="card-body" style="display: flex;">
+				<div style="margin-right: 5px;">Latest Uploads </div>
+			</div>
+		</div>
+		<div class="latest_sub">
+			<div class="latest_sub_item">
+				<img class="footer_latest_img" alt="latest" src="{% static 'images/c4.jpg' %}">
+				<p>Some latest upload content. Some latest upload content</p>
+			</div>
+			<br/>
+			<div class="latest_sub_item">
+				<img class="footer_latest_img" alt="latest" src="{% static 'images/c2.jpg' %}">
+				<p>Other latest upload</p>
+			</div>
+			<br/>
+			<div class="latest_sub_item">
+				<img class="footer_latest_img" alt="latest" src="{% static 'images/c3.jpg' %}">
+				<p>Some latest upload. Some latest upload content</p>
+			</div>
+			<br/>
+			<div class="latest_sub_item">
+				<img class="footer_latest_img" alt="latest" src="{% static 'images/c1.jpg' %}">
+				<p>Some latest upload. Some latest upload content</p>
+			</div>
+			<br/>
+			
+		</div>
+
+	</div>
+{% endblock%}
+
+{% block script %}
+{% endblock %}

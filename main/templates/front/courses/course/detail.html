@@ -5,34 +5,54 @@
 <title>
 	{{	object.title	}}
 </title>
-<link rel="stylesheet" href="">
+<link rel="stylesheet" href="{% static 'css/common.css' %}">
+<link rel="stylesheet" href="{% static 'css/courses/course_detail.css' %}">
+
 {% endblock %}
 
 {% block main %}
-	{%	with	subject=course.subject	%}
-	<h1>
-			{{	object.title	}}
+	<div class="content">
+		{%	with	subject=course.subject	%}
+	<div class="page-heading-container">
+		<h1 class="page-heading">
+			{{ object.title	}}
 	</h1>
-	<div	class="module">
-		<h2>Overview</h2>
-		<p>
-		<a	href="{%	url	'course_list_subject'	subject.slug	%}">
-		{{	subject.title	}}</a>.
-		{{	course.modules.count	}}	modules.
-		Instructor:	{{	course.owner.get_full_name	}}
-		</p>
-		{{	object.overview|linebreaks	}}
-		{%	if	request.user.is_authenticated	%}
-		<form	action="{%	url	'student_enroll_course'	%}"	method="post">
-			{{	enroll_form	}}
-			{%	csrf_token	%}
-			<input	type="submit"	class="button"	value="Enroll	now">
-		</form>
-		{%	else	%}
-		<a	href="{%	url	'student_registration'	%}"	class="button">
-		Register	to	enroll
-		</a>
-		{%	endif	%}
 	</div>
+	
+	<div class="jumbotron">
+		<div	class="details-block ">
+			<h2 class="details-block-heading">Overview</h2>
+			<p>
+			<a class="details-block-subject" href="{% url 'course_list_subject' subject=subject.slug order='-created'	%}">
+			{{	subject.title	}}</a>.
+			{{	course.modules.count	}}	modules.
+			Instructor:	{% if course.owner %}
+			{{	course.owner.profile.profile_name	}}
+			{% else %}Unknown{% endif %}
+	
+			</p>
+			{{	object.overview|linebreaks	}}
+			{%	if	request.user.is_authenticated	%}
+				{% if student %}
+				<br>
+				<p>Already Enrolled </p>
+				<a	href="{%	url	'student_course_detail'	course.id	%}"	class="">Go to Course</a>
+				{% else%}
+				<form	action="{%	url	'student_enroll_course'	%}"	method="post">
+					{{	enroll_form	}}
+					{%	csrf_token	%}
+					<input	type="submit"	class="button btn enroll"	value="Enroll now">
+				</form>
+				{% endif %}
+			{%	else	%}
+			<a	href="{%	url	'student_registration'	%}"	class="button btn enroll">
+			Register to enroll
+			</a>
+			{%	endif	%}
+		</div>
+	</div>
+	
 	{%	endwith	%}
+	</div>
+	
 {%	endblock	%}

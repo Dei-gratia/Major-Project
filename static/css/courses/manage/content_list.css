@@ -1,0 +1,52 @@
+.search_form_lg {
+	display: none !important;
+}
+
+.details-block-heading {
+	margin-bottom: 20px;
+}
+
+ul.content-types {
+	
+	list-style:none;
+}
+
+ul.content-types li {
+	width: auto;
+  	float: left;
+	padding: 5px  10px;
+	margin: 5px;
+	background-color: rgb(233, 233, 233);
+	color: #3f6ad8;
+}
+
+.edit-modules {
+	color: #3f6ad8;
+}
+
+.btn {
+
+}
+
+.edit {
+	display: flex;
+}
+
+#btn-edit {
+	color: #3f6ad8 !important;
+	margin: 10px 10px 10px 0px;
+}
+
+
+.form-delete {
+	display: inline;
+	margin: 10px 20px;
+}
+
+#btn-delete {
+	color: #3f6ad8 !important;
+}
+
+#btn-delete:hover {
+	color: red !important;
+}

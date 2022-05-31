@@ -5,40 +5,56 @@
 	<title>
 		{{	object.title	}}
 	</title>
-	<link rel="stylesheet" href="">
+	<link rel="stylesheet" href="{% static 'css/users/course_detail.css' %}">
+	<link rel="stylesheet" href="{% static 'css/common.css' %}">
 {% endblock %}
 
 {% block main %}
-	<h1>
-		{{	module.title	}}
-	</h1>
+<div class="content">
+	<div class="page-heading-container">
+		<h1 class="page-heading">
+			{{ module.title }}
+		</h1>
+	</div>
 	<div	class="contents">
-	<h3>Modules</h3>
-	<ul	id="modules">
-	{%	for	m	in	object.modules.all	%}
-	<li	data-id="{{	m.id	}}"	
-	{%	if	m	==	module %} class="selected"
-	{%	endif	%}>
-	<a	href="{% url	'student_course_detail_module'	object.id	m.id	%}">
-	<span>
-			Module	<span	class="order">{{	m.order|add:1	}}
-	</span>
-	</span>
-	<br>
-	{{	m.title	}}
-	</a>
-	</li>
-	{%	empty	%}
-<li>No	modules	yet.</li>
-	{%	endfor	%}
-	</ul>
+		<div class="contents-container">
+			<div class="side-bar">
+				<h3 class="side-bar-heading">Modules</h3>
+				<ul	id="side-bar-list" class="side-bar-list">
+					{%	for	m	in	object.modules.all	%}
+					<li class="side-bar-list-item {% if	module == m %}selected{% endif %}"	data-id="{{	m.id	}}"	
+						{%	if	m	==	module %} class="selected"
+						{%	endif	%}>
+						<a	href="{% url	'student_course_detail_module'	object.id	m.id	%}">
+						<span>
+								Module	<span	class="order">{{ m.order|add:1 }}
+						</span>
+						</span>
+						<br>
+						{{	m.title	}}
+						</a>
+					</li>
+					{%	empty	%}
+					<li class="side-bar-list-item {% if not	module %}selected{% endif %}">No	modules	yet.</li>
+						{%	endfor	%}
+				</ul>
+			</div>
+			<div class="details-block" id="details-block">
+				{%	for	content	in	module.contents.all	%}
+					<div class="details-block-item" id="details-block-item">
+						{%	with	item=content.item	%}
+					<h2 class="details-block-heading">{{ item.title.title }}</h2>
+					{{	item.render	}}
+					{%	endwith	%}
+					</div>
+					{% empty %}
+					<h3>No modules for {{ module.title }} module yet. Please select another module!</h3>		
+				{%	endfor	%}
+			</div>
+			
+		</div>
+	
+		
 	</div>
-	<div	class="module">
-	{%	for	content	in	module.contents.all	%}
-		{%	with	item=content.item	%}
-		<h2>{{	item.title	}}</h2>
-		{{	item.render	}}
-		{%	endwith	%}
-	{%	endfor	%}
-	</div>
+	
 {%	endblock	%}
