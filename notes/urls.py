@@ -22,4 +22,22 @@ urlpatterns = [
     path('<pk>/delete/',
          views.NoteDeleteView.as_view(),
          name='note_delete'),
+
+    path('subject/<slug:subject>)/<order>/',
+         views.NoteListView.as_view(),
+         name='note_list_subject'),
+
+    path('school_level/<slug:school_level>/<order>/',
+         views.NoteListView.as_view(),
+         name='note_list_level'),
+
+    path('school_level/<slug:school_level>/subject/<slug:subject>)/<order>/',
+         views.NoteListView.as_view(),
+         name='note_list_level_subject'),
+
+    path('note/<slug:slug>/',
+         views.NoteDetailView.as_view(),
+         name='note_detail'),
+
+    path('<order>', views.NoteListView.as_view(), name='note_list'),
 ]

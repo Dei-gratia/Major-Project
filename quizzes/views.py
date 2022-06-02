@@ -22,21 +22,30 @@ class QuizListView(TemplateResponseMixin,	View):
     model = Quiz
     template_name = 'front/quizzes/quiz/list.html'
 
-    def get(self,	request,	subject=None):
-        subjects = Subject.objects.annotate(total_courses=Count('quizzes'))
+    def get(self,	request, order='-created',	subject=None, school_level=None):
+        subjects = Subject.objects.annotate(total_quizzes=Count('quizzes'))
+        school_levels = SchoolLevel.objects.annotate(
+            total_quizzes=Count('quizzes'))
         quizzes = Quiz.objects.annotate(total_reviews=Count('reviews'))
         latest = Quiz.objects.all().order_by('-created')[:5]
+
+        if school_level:
+            school_level = get_object_or_404(SchoolLevel, slug=school_level)
+            quizzes = quizzes.filter(school_level=school_level).order_by(order)
 
         if subject:
             subject = get_object_or_404(Subject, slug=subject)
             quizzes = quizzes.filter(subject=subject)
 
-        return self.render_to_response({'subjects':	subjects,
-                                        'subject':	subject,
-                                        'quizzes':	quizzes,
-                                        'site': Home.objects.latest('updated'),
-                                        'about': About.objects.latest('updated'),
-                                        'latest': latest})
+        return self.render_to_response({
+            'order': order,
+            'school_levels': school_levels,
+            'subjects':	subjects,
+            'subject':	subject,
+            'quizzes':	quizzes,
+            'site': Home.objects.latest('updated'),
+            'about': About.objects.latest('updated'),
+            'latest': latest})
 
 
 class QuizDetailView(DetailView):
@@ -164,7 +173,7 @@ class QuizQuestionListView(TemplateResponseMixin,	View):
 
     def get(self,	request,	quiz_id):
         quiz = get_object_or_404(
-            Quiz, id=quiz_id, owner=request.user)
+            Quiz, id=quiz_id)
         return self.render_to_response({'quiz':	quiz, 'site': Home.objects.latest('updated'),
                                         'about': About.objects.latest('updated')})
 

@@ -29,7 +29,7 @@
 			</a>
 
 			{% if not user.is_authenticated %}
-			<a class="d-flex ms-auto login d-none d-lg-block" style="color: white;"  href="{% url 'login' %}">Login | SignUp</a>
+			<a class="d-flex ms-auto login d-none d-lg-block" style="color: white;"  href="">Login | SignUp</a>
 			{% endif %}
 		  <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
 			<span class="navbar-toggler-icon"></span>
@@ -39,7 +39,7 @@
 			<ul class="navbar-nav ms-auto mb-2 mb-lg-0">
 			  {% if not user.is_authenticated %}
 			  <li class="nav-item d-lg-none">
-				<a class="nav-link" href="{% url 'login' %}">Login | SignUp</a>
+				<a class="nav-link" href="">Login | SignUp</a>
 			  </li>
 			  {% endif %}
 			  <li class="nav-item">
@@ -52,10 +52,10 @@
 				<a class="nav-link" href="{% url 'course_list' %}">Courses</a>
 			  </li>
 			  <li class="nav-item">
-				<a class="nav-link" href="">Notes</a>
+				<a class="nav-link" href="{% url 'note_list' %}">Notes</a>
 			  </li>
 			  <li class="nav-item">
-				<a class="nav-link" href="">Quizzes</a>
+				<a class="nav-link" href="{% url 'quiz_list' %}">Quizzes</a>
 			  </li>
 			  <li class="nav-item">
 				<a class="nav-link" href="#">Bookmarks</a>

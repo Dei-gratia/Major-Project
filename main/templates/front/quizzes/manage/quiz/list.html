@@ -3,14 +3,19 @@
 
 {% block head %}
 <title>My quizzes</title>
+<link rel="stylesheet" href="{% static 'css/common.css' %}">
+<link rel="stylesheet" href="{% static 'css/courses/manage/list.css' %}">
 <link rel="stylesheet" href="">
 {% endblock %}
 
 {% block main %}
-	<h1>My quizzes</h1>
-	<div class="module">
+<div class="content">
+	<div class="page-heading-container">
+		<h1 class="page-heading">My quizzes</h1>
+	</div>
+	<div class="contents-container">
 		{% for quiz in object_list %}
-		<div class="quiz-info">
+		<div class="card course-card">
 			<h3>{{ quiz.title	}}</h3>
 			<p>
 			<a href="{% url 'quiz_edit' quiz.id %}">Edit</a>
@@ -21,9 +26,9 @@
 		{% empty %}
 		<p>You haven't created any quizzes yet.</p>
 		{% endfor %}
-		<p>
-			<a	href="{% url 'quiz_create' %}" class="button">Create	new	quiz</a>
-		</p>
+		
+		<a	href="{% url 'quiz_create' %}" class="button btn">Create new quiz</a>
+		
 	</div>
 
 {%	endblock	%}

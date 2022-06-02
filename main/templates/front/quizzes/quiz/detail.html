@@ -6,19 +6,13 @@
 <title>Quiz</title>
 <link href="https://cdn.jsdelivr.net/gh/kartik-v/bootstrap-star-rating@4.1.2/css/star-rating.min.css" media="all" rel="stylesheet" type="text/css" />
 <link href="https://cdn.jsdelivr.net/gh/kartik-v/bootstrap-star-rating@4.1.2/themes/krajee-svg/theme.css" media="all" rel="stylesheet" type="text/css" />
+<link rel="stylesheet" href="{% static 'css/common.css' %}">
 <link rel="stylesheet" href="{% static 'css/notes/note_detail.css' %}">
 <link rel="stylesheet" href="{% static 'css/quizzes/quiz_detail.css' %}">
 {% endblock %}
 
 {% block main %}
 	<div class="content">
-		<div class="content-header">
-			<div class="header-section">
-				<h2>
-					<i class="fa-solid fa-notes"></i>{{ quiz.title.title }}<br><small>you can take or share quizzes!</small>
-				</h2>
-			</div>
-		</div>
 		<nav aria-label="breadcrumb" >
 			<ol class="breadcrumb">
 			  <li class="breadcrumb-item"><a href="{% url 'home' %}">home</a></li>
@@ -26,68 +20,79 @@
 			  <li class="breadcrumb-item active" aria-current="page">{{ quiz.title.lower }}</li>
 			</ol>
 		</nav>
-		<div>
-
+		<div class="page-heading-container">
+			<h2 class="page-heading">
+				<i class="fa-solid fa-notes"></i>{{ quiz.title.title }}
+			</h2>
 		</div>
 		
-		<div class=" contact_container" style="max-width: 1200px; margin: auto;">
-			<h2 class="page_hearding"> {{ quiz.title.title }}</h2>
-			<div class="row" >
-				<div class="col-sm-6" style="padding: 0px;">
-					<img src="{% static 'images/c1.jpg' %}" style="height: 100px;">
-				</div>
-				<div class="col-sm-6">
-					<p style="text-align: end;">Uploaded:  {{ quiz.date }} <i id="bookmark" style="padding: 5px;" title="bookmark"
-						class="{% if bookmark %}fa-solid{% else %}fa-regular{% endif%} fa-bookmark"></i>
-						<i style="padding: 5px;" class="fa-solid fa-share-nodes"></i></p>
-					<p style="text-align: end; color: orange;" title="note rating">{{ quiz.average_rating|floatformat:"2" }}
-						{% with ''|center:quiz.average_rating as range %}
-							{% for i in range %}
-								<i class="fa-solid fa-star" style="color: orange;"></i>
-							{% endfor %}
-						{% endwith %}
-						{% with 5|sub:quiz.average_rating as x %}
-							{% with ''|center:x as range %}
+		<div class="jumbotron">
+			<div class="details-block">
+				<div class="row" >
+					<div class="col-sm-6" style="padding: 0px;">
+						<img src="{% static 'images/c1.jpg' %}" style="height: 100px;">
+					</div>
+					<div class="col-sm-6">
+						<p style="text-align: end; color: orange;" title="note rating">{{ quiz.average_rating|floatformat:"2" }}
+							{% with ''|center:quiz.average_rating as range %}
 								{% for i in range %}
-									<i class="fa-regular fa-star" style="color: orange;"></i>
+									<i class="fa-solid fa-star" style="color: orange;"></i>
 								{% endfor %}
 							{% endwith %}
-						{% endwith %}
-					</p>
+							{% with 5|sub:quiz.average_rating as x %}
+								{% with ''|center:x as range %}
+									{% for i in range %}
+										<i class="fa-regular fa-star" style="color: orange;"></i>
+									{% endfor %}
+								{% endwith %}
+							{% endwith %}
+						</p>
+
+						<p style="text-align: end;">Uploaded:  {{ quiz.date }} <i id="bookmark" style="padding: 5px;" title="bookmark"
+							class="{% if bookmark %}fa-solid{% else %}fa-regular{% endif%} fa-bookmark"></i>
+							<i style="padding: 5px;" class="fa-solid fa-share-nodes"></i>
+						</p>
+						
+					</div>
 				</div>
-			</div>
-			<br/>
+				<br/>
+				<div class="p-inline-container" >
+					<div>
+						<p style="opacity: 75%; font-style: italic;" class="p-inline" title="quiz school level "><a class="details-block-subject" href="{% url 'quiz_list_level' school_level=quiz.school_level.slug order='-created' %}">{% if quiz.school_level %}{{ quiz.school_level }}{% endif %}</a></p>&nbsp;
+						<strong>&nbsp;&nbsp;<p class="p-inline" title="quiz subject"><a class="details-block-subject" href="{% url 'quiz_list_subject' subject=quiz.subject.slug order='-created' %}">{% if quiz.subject %}{{ quiz.subject }}{% endif %}</a></p></strong>
+					</div>
+					&nbsp;<p class="p-inline uploader"> <span style="opacity: 75%; font-style: italic;">Uploded by: </span>{% if quiz.owner != None or quiz.owner != "" %}{{	quiz.owner.profile.profile_name	}} 
+						{% else %}Uknown {% endif %}</p>
+				</div>
+				<div style="display: flex; ">
+					<p><i class="fa-solid fa-list-ol"></i> {{ quiz.number_of_questions }} questions</p><p style="padding-left: 20px;"><i class="fa-solid fa-clock"></i> {{ quiz.duration }}mins</p>
+				</div>
+	
+				<h2 class="details-block-heading">Quiz overview</h2>
+	
+				<p>{{ quiz.description }}</p>
+	
+				<div class="card" style="align-items: center; box-shadow: 0px 10px 36px rgba(0, 0, 0, 0.486); max-width: 700px; margin: auto;">
+					<div  class="card-body" >
+					  <h1>Take Quiz</h1>
+					  <br>
+					  <br>
+					  
+					  <p1>Start when you are ready</p1>
+					  <br>
+					  <br>
+					  <a href="{% url 'start_quiz' quiz_id=quiz.pk %}" id="start_quiz"><button  style="background-color: black; padding: 8px; margin: auto; color: white;" class="button contact_btn">Start Quiz </button></a>
+					</div>
+				</div>
+				<br>
+				<button data-bs-toggle="modal" data-bs-target="#rateQuizModal" id="rate_note" >Rate quiz</button>
+				<div class="attempts" >
+					<p><strong>{{ quiz.attempts }}</strong> students have already attempted this quiz</p>
+				</div>
 			
-			<div>
-				<p>{{ quiz.level.title }} <strong>{{ quiz.subject.title }}</strong></p>
 			</div>
-			<div style="display: flex; ">
-				<p><i class="fa-solid fa-list-ol"></i>{{ quiz.num_questions }}</p><p style="padding-left: 20px;"><i class="fa-solid fa-clock"></i> {{ quiz.duration }}mins</p>
-			</div>
-
-		
-
-			<p>{{ quiz.description }}</p>
-
-			<div class="card" style="align-items: center; box-shadow: 0px 10px 36px rgba(0, 0, 0, 0.486); max-width: 700px; margin: auto;">
-				<div  class="card-body" >
-				  <h1>Take Quiz</h1>
-				  <br>
-				  <br>
-				  
-				  <p1>Start when you are ready</p1>
-				  <br>
-				  <br>
-				  <a href="{% url 'start_quiz' quiz_id=quiz.pk %}" id="start_quiz"><button  style="background-color: black; padding: 8px; margin: auto; color: white;" class="button contact_btn">Start Quiz </button></a>
-				</div>
-			</div>
-			<br>
-			<button data-bs-toggle="modal" data-bs-target="#rateQuizModal" id="rate_note" >Rate quiz</button>
-			<div class="attempts" >
-				<p><strong>{{ quiz.attempts }}</strong> students have already attempted this quiz</p>
-			</div>
-		
 		</div>
+		
 
 		<div class="row">
 			<div class="col-12">

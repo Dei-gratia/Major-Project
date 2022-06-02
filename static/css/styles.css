@@ -312,7 +312,7 @@ span
 
 .breadcrumb {
 	padding: 10px;
-	background-color: rgba(37, 37, 37, 0.945);
+	background-color: rgb(55, 55, 55);
   }
 
   .breadcrumb > .breadcrumb-item a {

@@ -5,16 +5,22 @@
 <title>
 	Delete note
 </title>
+
+<link rel="stylesheet" href="{% static 'css/common.css' %}">
+<link rel="stylesheet" href="{% static 'css/courses/manage/delete.css' %}">
 <link rel="stylesheet" href="">
 {% endblock %}
 
 {% block main %}
-	<h1>Delete note"{{ object.title }}"</h1>
-	<div	class="module">
-        <form	action=""	method="post">
-            {%	csrf_token	%}
-            <p>Are	you	sure	you	want	to	delete	"{{	object	}}"?</p>
-            <input	type="submit"	class="button"	value="Confirm">
-        </form>
-	</div>
+	<div class="content">
+		<div class="page-heading-container">
+			<h1 class="page-heading">Delete note "{{ object.title }}"</h1>
+		</div>
+		<div	class="contents-container">
+			<form class="form-delete"	action=""	method="post">
+				{%	csrf_token	%}
+				<p>Are	you	sure	you	want	to	delete	"{{	object	}}"?</p>
+				<input id="btn-delete"	type="submit"	class="btn"	value="Confirm">
+			</form>
+		</div>
 {%	endblock	%}

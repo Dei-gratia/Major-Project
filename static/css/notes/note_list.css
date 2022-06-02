@@ -1,20 +1,52 @@
+.note-image {
+	float: left; 
+	margin:10px
+}
+
 
 .img_note {
-	max-width: 100%;
+	max-width: 100px;
+	max-height: 100px;
 
+}
+
+.img_note:hover {
+	transform: scale(1.1)
+}
+
+#note-title:hover {
+	transform: scale(1.1);
+	text-decoration: underline;
+}
+
+.uploader {
+	font-style: italic;
+	opacity: 0.7;
+
+}
+.p-inline-container {
+	display: flex;
+	justify-content: space-between;
+}
+
+.p-inline {
+	display: inline;
+	
 }
 
 @media screen and (max-width: 575px) {
 	.img_note {
-		height: 180px;
+		max-height: 100px;
+		max-width: 200;
 	}
 
 }
 
 @media screen and (min-width: 576px) {
 	.img_note {
-		height: 180px;
+		max-height: 100px;
 		margin-top: 20px;
+		max-width: 100px;
 	}
 
 }

@@ -3,20 +3,25 @@
 
 {% block head %}
 	<title>
-		Edit	"{{	quiz.title	}}"
+		Edit	"{{	quiz	}}"
 	</title>
+	<link rel="stylesheet" href="{% static 'css/common.css' %}">
+	<link rel="stylesheet" href="{% static 'css/courses/manage/form.css' %}">
 	<link rel="stylesheet" href="">
 {% endblock %}
 
 {% block main %}
-    <h1>Edit	"{{	quiz.title	}}"</h1>
-    <div	class="module">
-        <h2>Quiz	questions</h2>
-        <form	action=""	method="post">
+<div class="content">
+	<div class="page-heading-container">
+    	<h1>Edit	"{{	quiz.title	}}"</h1>
+	</div>
+    <div	class="contents-container">
+        <h2 class="page-sub-heading">Quiz	questions</h2>
+        <form class="form-horizontal"	action=""	method="post">
             {{	formset	}}
             {{	formset.management_form	}}
             {%	csrf_token	%}
-            <input	type="submit"	class="button"	value="Save	questions">
+            <input	type="submit"	class="button btn"	value="Save	questions">
         </form>
     </div>
 {%	endblock	%}

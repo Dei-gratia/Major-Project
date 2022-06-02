@@ -309,3 +309,18 @@ margin: 16px;
 	text-decoration: underline;
 	
 }
+
+.search_form_lg {
+	display: none !important;
+}
+
+.p-inline-container {
+	display: flex;
+	justify-content: space-between;
+}
+
+.p-inline {
+	display: inline;
+	
+}
+

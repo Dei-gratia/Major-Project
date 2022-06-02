@@ -12,7 +12,7 @@
 
 	<!-- Fontawesome -->
 	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css" />
-
+	<link rel="stylesheet" href="{% static 'css/common.css' %}">
 	<link rel="stylesheet" href="{% static 'css/quizzes/question_list.css' %}">
 
 	<title>Questions</title>
@@ -26,75 +26,82 @@
 			</a>
 	</nav>
 	<div class="content">
-		<h1>{{ quiz.title.title }}</h1>
+		<div class="page-heading-container">
+			<h1 class="page-heading">{{ quiz.title.title }}</h1>
+		</div>
 
-		<p><strong> {{ quiz.num_questions }} Questions</strong></p>
-		<p class="notice" style="color: red"><strong>Note:</strong> Do not leave this window before the quiz is over. The quiz will auto submit when the time is up</p>
+		<div class="jumbotron">
+			<div class="details-block">
 
-		<br>
-		
-		<div id="displaytimer" ><b>Timer: {{ quiz.duration }}:00</b></div>
-		
-		<form method='post' action='{% url "start_quiz" quiz_id=quiz.pk %}'>
-			{% csrf_token %}
-			{% for question in quiz.questions.all %}
-				<div class="form-group">
-				<label for="question">{{ forloop.counter }}. {{ question.question }}.</label>
-				</div>
-				<div class="form-check">
-					{% if question.option1 %}
-					<div class="form-check">
-						<input class="form-check-input" type="radio" name="{{question.question}}" id="gridRadios1" value="1">
-						<label class="form-check-label" for="gridRadios1">
-							a. {{ question.option1 }} 
-						</label>
-					</div>
-					{% endif %}
+				<p><strong> {{ quiz.number_of_questions }} Questions</strong></p>
+				<p class="notice" style="color: red"><strong>Note:</strong> Do not leave this window before the quiz is over. The quiz will auto submit when the time is up</p>
 
-					{% if question.option2 %}
-					<div class="form-check">
-						<input class="form-check-input" type="radio" name="{{question.question}}" id="gridRadios2" value="2">
-						<label class="form-check-label" for="gridRadios2">
-							b. {{ question.option2 }} 
-						</label>
-					</div>
-					{% endif %}
+				<br>
+				
+				<div id="displaytimer" ><b>Timer: {{ quiz.duration }}:00</b></div>
+				
+				<form method='post' action='{% url "start_quiz" quiz_id=quiz.pk %}'>
+					{% csrf_token %}
+					{% for question in quiz.questions.all %}
+						<div class="form-group">
+						<label for="question">{{ forloop.counter }}. {{ question.question }}.</label>
+						</div>
+						<div class="form-check">
+							{% if question.option1 %}
+							<div class="form-check">
+								<input class="form-check-input" type="radio" name="{{question.question}}" id="gridRadios1" value="1">
+								<label class="form-check-label" for="gridRadios1">
+									a. {{ question.option1 }} 
+								</label>
+							</div>
+							{% endif %}
 
-					{% if question.option3 %}
-					<div class="form-check">
-						<input class="form-check-input" type="radio" name="{{question.question}}" id="gridRadios2" value="3">
-						<label class="form-check-label" for="gridRadios3">
-							c. {{ question.option3 }} 
-						</label>
-					</div>
-					{% endif %}
+							{% if question.option2 %}
+							<div class="form-check">
+								<input class="form-check-input" type="radio" name="{{question.question}}" id="gridRadios2" value="2">
+								<label class="form-check-label" for="gridRadios2">
+									b. {{ question.option2 }} 
+								</label>
+							</div>
+							{% endif %}
 
-					{% if question.option4 %}
-					<div class="form-check">
-						<input class="form-check-input" type="radio" name="{{question.question}}" id="gridRadios2" value="4">
-						<label class="form-check-label" for="gridRadios4">
-							d. {{ question.option4 }} 
-						</label>
-					</div>
-					{% endif %}
+							{% if question.option3 %}
+							<div class="form-check">
+								<input class="form-check-input" type="radio" name="{{question.question}}" id="gridRadios2" value="3">
+								<label class="form-check-label" for="gridRadios3">
+									c. {{ question.option3 }} 
+								</label>
+							</div>
+							{% endif %}
+
+							{% if question.option4 %}
+							<div class="form-check">
+								<input class="form-check-input" type="radio" name="{{question.question}}" id="gridRadios2" value="4">
+								<label class="form-check-label" for="gridRadios4">
+									d. {{ question.option4 }} 
+								</label>
+							</div>
+							{% endif %}
+							<br>
+						</div>   
+					{% endfor %}
+					
+				
 					<br>
-				</div>   
-			{% endfor %}
-			 
-		
-			<br>
-			<h5 style="text-align: center;">End of Questions </h5>
-			<br>
-			<div class="form-group">
-				<input  class="button submit_btn" value="Submit" type="submit" >
+					<h5 style="text-align: center;">End of Questions </h5>
+					<br>
+					<div class="form-group">
+						<input  class="button submit_btn" value="Submit" type="submit" >
+					</div>
+				</form>
+
+				<br>
 			</div>
-		</form>
+			<input type="hidden" id="reloaded" name="reloaded" value="">
+		</div>
+		<div class="banner" id="banner">
 
-		<br>
-	</div>
-	<input type="hidden" id="reloaded" name="reloaded" value="">
-	<div class="banner" id="banner">
-
+		</div>
 	</div>
 
 

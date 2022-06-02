@@ -20,23 +20,31 @@ class NoteListView(TemplateResponseMixin,	View):
     model = Note
     template_name = 'front/notes/note/list.html'
 
-    def get(self,	request,	subject=None):
-        subjects = Subject.objects.annotate(total_courses=Count('notes'))
+    def get(self,	request,	order='-created', subject=None, school_level=None):
+        subjects = Subject.objects.annotate(total_notes=Count('notes'))
+        school_levels = SchoolLevel.objects.annotate(
+            total_notes=Count('notes'))
         notes = Note.objects.annotate(total_reviews=Count('reviews'))
         latest = Note.objects.all().order_by('-created')[:5]
-        avg_rating = 0
+
+        if school_level:
+            school_level = get_object_or_404(SchoolLevel, slug=school_level)
+            notes = notes.filter(school_level=school_level).order_by(order)
 
         if subject:
             subject = get_object_or_404(Subject, slug=subject)
             notes = notes.filter(subject=subject)
 
-        return self.render_to_response({'subjects':	subjects,
-                                        'subject':	subject,
-                                        'notes':	notes,
-                                        'site': Home.objects.latest('updated'),
-                                        'about': About.objects.latest('updated'),
-                                        'latest': latest,
-                                        'avg_rating': avg_rating, })
+        return self.render_to_response({
+            'order': order,
+            'school_levels': school_levels,
+            'school_level': school_level, 'subjects':	subjects,
+            'subject':	subject,
+            'notes':	notes,
+            'site': Home.objects.latest('updated'),
+            'about': About.objects.latest('updated'),
+            'latest': latest,
+        })
 
 
 class NoteDetailView(DetailView):
@@ -71,7 +79,7 @@ class NoteDetailView(DetailView):
             note_total_ratings = int(note.total_ratings) -\
                 int(user_review[0].rate_value) + int(rating)
             note_num_ratings = int(note.num_ratings)
-            #Review.objects.filter(user=user_review.user).update(rate_value=rating, comment=comment)
+            # Review.objects.filter(user=user_review.user).update(rate_value=rating, comment=comment)
             user_review.update(rate_value=rating, comment=comment)
             print(user_review[0])
             print(note_num_ratings, note_total_ratings)

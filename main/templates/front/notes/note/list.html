@@ -1,216 +1,148 @@
 {% extends 'front/master.html' %}
 {% load static %}
+{% load index %}
 
 {% block head %}
-<title>Notes</title>
+<title>
+	{%	block	title	%}
+	{%	if	subject	%}
+			{{	subject.title	}}	Notes
+	{%	else	%}
+        All	Notes
+    {%	endif	%}
+{%	endblock	%}
+</title>
 <link rel="stylesheet" href="{% static 'css/notes/note_list.css' %}">
-<link href="">
+<link rel="stylesheet" href="{% static 'css/common.css' %}">
 {% endblock %}
 
 {% block main %}
-
 	<div class="content">
-		<nav aria-label="breadcrumb" style="--bs-breadcrumb-divider: '/';">
-			<ol class="breadcrumb">
-				<li class="breadcrumb-item"><a href="{% url 'home' %}">home</a></li>
-				<li class="breadcrumb-item active" aria-current="page">notes</li>
-			</ol>
-		</nav>
-		<br>
-		<a href="{% url 'note_create' %}" style="color: black; text-align:right;"><h5>Upload Note</h5></a>
-
-		<h3>All Notes</h3>
-
-		<div class="row">
-			<div class="col-sm-12 col-md-8" >
-				{% for subject in subjects %}
-					<div class="card">
-						<div class="card-body" style="display: flex;">
-							<div style="margin-right: 5px;">{{ subject.title }} </div>
-						</div>
-					</div>
-					<div class="row">
-						{% for note in notes %}
-							{% if note.subject == subject %}
-							<div class="col-xl-6">
-								<div class="card">
-									<div class="row">
-										<a class="col-sm-4" href="{% url 'note_detail' pk=note.pk %}"><img src="{{ note.cover_img.url }}" class="img_note" alt="..."></a>
-										<div class="card-body col-sm-8">
-											<div style="display: flex; justify-content: space-between;">
-												<a href="{% url 'note_detail' pk=note.pk %}"><h4>{{ note.title }}</h4></a>
-												<p style="opacity: 70%;">{{ note.created|timesince }} ago</p>
-											</div>
-											<p class="card-text">{{ note.description }}</p>
-											<div class="row">
-												<p class="col-4" style="opacity: 70%;">{{ note.school_level }}</p>
-												<p class="col-5"style="opacity: 70%;">{{ note.subject }}</p>
-												<p class="col-3" style="text-align: end; color: #FF9529;">{{ note.average_rating|floatformat:"2"  }} <i class="fa-solid fa-star-half-stroke"></i></p>
-											</div>
-											
-										</div>
-									</div>
-									
-								</div>
-							</div>
-							{% endif %}
+		<div class="page-heading-container">
+			<h1 class="page-heading">
+				{%	if	subject	%}
+						{{	subject.title	}}	Notes
+				{%	else	%}
+					All	Notes
+				{%	endif	%} 
+			</h1>
+			<div class='filter'>
+				<div class="btn-group">
+					<button type="button" class="btn dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+					  Filter
+					</button>
+					<ul class="dropdown-menu dropdown-menu-end">
+						<li><a class="dropdown-item {%	if not school_level %}selected{%	endif	%}" href="
+							{% if subject %}
+							{% url 'note_list_subject' subject=subject.slug order=order %}
+							{% else %}
+							{% url 'note_list' order=order %}
+							{% endif%}">All</a></li>
+						<li><hr class="dropdown-divider"></li>
+						{% for l in school_levels %}
+						<li><a class="dropdown-item {% if	school_level ==	l %}selected{%	endif	%}" href="
+							{% if subject %}
+							{% url 'note_list_level_subject' school_level=l.slug subject=subject.slug order=order %}
+							{% else %}
+							{% url 'note_list_level' school_level=l.slug order=order %}
+							{% endif%}
+							">{{ l.title }}
+							<br><span class="total-item">{{	l.total_notes	}} notes</span>
+						</a></li>
 						{% endfor %}
-
-					</div>
-				{% endfor %}
-			</div>
-			<div class="col-sm-12 col-md-4" >
-				<div>
-
+					</ul>
 				</div>
-				<div class="card">
-					<div class="card-body" style="display: flex;">
-						<div style="margin-right: 5px;">Latest </div>
-					</div>
+				<div class="btn-group">
+					<button type="button" class="btn dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+					  Sort 
+					</button>
+					<ul class="dropdown-menu dropdown-menu-end">
+						&nbsp;Date
+					  <li><a class="dropdown-item" href="{{ request.path|sort_url:'created' }}">Ascending</a></li>
+					  <li><a class="dropdown-item" href="{{ request.path|sort_url:'-created' }}">Descending</a></li>
+					  <li><hr class="dropdown-divider"></li>
+					  &nbsp;Rating
+					  <li><a class="dropdown-item" href="{{ request.path|sort_url:'average_rating' }}">Ascending</a></li>
+					  <li><a class="dropdown-item" href="{{ request.path|sort_url:'-average_rating' }}">Descending</a></li>
+					</ul>
 				</div>
-				<div>
-					{% for item in latest %}
-						<h6>
-							{{ forloop.counter }}. {{ item.title }}
-						</h6>
-					{% endfor %}
-				</div>
-
-				<div class="card">
-					<div class="card-body" style="display: flex;">
-						<div style="margin-right: 5px;">Your Recent Searches </div>
-					</div>
-				</div>
-				<div>
-					<h6>
-						1. You wish lorem ipsum dolor sit amet consectetur
-					</h6>
-	
-					<h6>
-						2. You wish lorem ipsum dolor sit amet consectetur
-					</h6>
-	
-					<h6>
-						3. You wish lorem ipsum dolor sit amet consectetur
-					</h6>
-	
-					<h6>
-						4. You wish lorem ipsum dolor sit amet consectetur
-					</h6>
-	
-					<h6>
-						5. You wish lorem ipsum dolor sit amet consectetur
-					</h6>
-				</div>
-
-				<div class="card">
-					<div class="card-body" style="display: flex;">
-						<div style="margin-right: 5px;">Most Popular </div>
-					</div>
-				</div>
-				<div>
-					<h6>
-						1. You wish lorem ipsum dolor sit amet consectetur
-					</h6>
-	
-					<h6>
-						2. You wish lorem ipsum dolor sit amet consectetur
-					</h6>
-	
-					<h6>
-						3. You wish lorem ipsum dolor sit amet consectetur
-					</h6>
-	
-					<h6>
-						4. You wish lorem ipsum dolor sit amet consectetur
-					</h6>
-	
-					<h6>
-						5. You wish lorem ipsum dolor sit amet consectetur
-					</h6>
-				</div>
-				
-			</div>
-
+			</div>	
 		</div>
-
-		<div class="banner">
-
-		</div>
-
-		<div class="row">
-			<div class="col-sm-12 col-md-8" >
+		
+		<div class="contents-container">
+			<div class="side-bar">
+				<h3 class="side-bar-heading">Subjects</h3>
+				<ul	id="side-bar-list" class="side-bar-list">
+					<li class="side-bar-list-item {%	if	not	subject	%}selected{%	endif	%}">
+					<a	href="{% if school_level %}
+					{% url 'note_list_level' school_level=school_level.slug order=order %}
+					{% else %}
+					{% url 'note_list' order=order %}
+					{% endif %}">All</a>
+					</li>
+					{%	for	s	in	subjects	%}
+					<li	class="side-bar-list-item {% if subject == s %}selected{% endif %}">
+					<a	href="
+					{% if school_level %}
+					{% url 'note_list_level_subject' school_level=school_level.slug subject=s.slug order=order %}
+					{% else %}
+					{% url 'note_list_subject' subject=s.slug order=order %}
+					{% endif %}">
+					{{	s.title	}}
+					<br><span class="total-item">{{	s.total_notes	}}	notes</span>
+					</a>
+					</li>
+					{%	endfor	%}
+				</ul>
+			</div>
+			
+			<div class="details-block" id="details-block">
+				{%	for	note	in	notes %}
 				<div class="card">
-					<div class="card-body" style="display: flex;">
-						<div style="margin-right: 5px;">Latest Uploads </div>
-					</div>
-				</div>
-				<div class="row">
-					{% for item in latest %}
-					<div class="col-xl-6">
-						<div class="card">
-							<div class="row">
-								<a class="col-sm-4" href="{% url 'note_detail' pk=item.pk %}"><img src="{{ item.cover_img.url }}" class="img_note" alt="..."></a>
-								<div class="card-body col-sm-8">
-									<div style="display: flex; justify-content: space-between;">
-										<a href="{% url 'note_detail' pk=item.pk %}"><h4>{{ note.title }}</h4></a>
-										<p style="opacity: 70%;">{{ item.date|timesince }} ago</p>
-									</div>
-									<p class="card-text">{{ item.description }}</p>
-									<div class="row">
-										<p class="col-3" style="opacity: 70%;">{{ item.level }}</p>
-										<p class="col-6"style="opacity: 70%;">{{ item.subject }}</p>
-										<p class="col-3" style="text-align: end; color: #FF9529;">{{ item.avg_rating }} <i class="fa-solid fa-star-half-stroke"></i></p>
-									</div>
-									
+					<div class="row">
+						<div class="">
+							<a class="note-image" href="{% url 'note_detail' pk=note.pk %}"><img src="{{ note.cover_img.url }}" class="img_note" alt="..."></a>
+						`	<div class="card-body ">
+							<div style="display: flex; justify-content: space-between;">
+								<a id="note-title" href="{% url 'note_detail' pk=note.pk %}"><h4>{{ note.title }}</h4></a>
+								<div style="display: flex;">
+									<p style="opacity: 70%;">{{ note.created|timesince }} ago &nbsp; </p>
+									<p class="" style="display: inline; text-align: end; color: #FF9529;"> {{ note.average_rating|floatformat:"2"  }} {% if note.average_rating > 1.0 %} <i class="fa-solid fa-star-half-stroke"></i>
+										{% elif note.average_rating > 4.5 %} <i class="fa-solid fa-star"></i>
+										{% else %} <i class="fa-regular fa-star"></i>
+										{% endif %}</p>
 								</div>
+								
 							</div>
+							<p class="card-text">{{ note.description }}</p>
 							
 						</div>
+
+						</div>
+					
+						<div class="p-inline-container" >
+							<div>
+								<p class="p-inline"><a class="details-block-subject" href="{% url 'note_list_level' school_level=note.school_level.slug order=order %}">{% if note.school_level %}{{ note.school_level }}{% endif %}</a></p>&nbsp;
+								<p class="p-inline"><a class="details-block-subject" href="{% url 'note_list_subject' subject=note.subject.slug order=order %}">{% if note.school_level %}{{ note.subject }}{% endif %}</a></p>
+							</div>
+							&nbsp;<p class="p-inline uploader"> Uploded by: {% if note.owner != None or note.owner != "" %}{{	note.owner.profile.profile_name	}} 
+								{% else %}Uknown {% endif %}</p>
+						</div>
+						
 					</div>
-					{% endfor %}
 					
 				</div>
-	
+				
+				{% empty %}
+				<h3>No notes for {% if school_level %} {{ school_level }} {% endif %}{% if subject %} {{ subject }} {% endif %} yet. Please try another subject!</h3>
+				{%	endfor	%}
 			</div>
-
-			<div class="col-sm-12 col-md-4" >
-				<div class="card">
-					<div class="card-body" style="display: flex;">
-						<div style="margin-right: 5px;">Get Notified </div>
-					</div>
-				</div>
-				<div class="subscribe">
-					<h3 class="subscribe_txt" >Subscribe</h3>
-					<form class="subscribe_form" >
-						<input class="subscribe_input" type="email" id="email" name="email" placeholder="Email">
-						<button class="subscribe_button" type="submit"><i class="fa fa-arrow-right"></i></button>
-					</form>
-				</div>
-	
-				<div class="card">
-					<div class="card-body" style="display: flex;">
-						<div style="margin-right: 5px;">Tags </div>
-					</div>
-				</div>
-	
-				<div class="tags">
-					<p class="tag">Zimsec</p>
-					<p class="tag">Exam Paper</p>
-					<p class="tag">Revision</p>
-					<p class="tag">2022</p>
-					<p class="tag">Maths</p>
-				</div>
-			</div>
-
-	
 		</div>
-
+		
 	</div>
-
-{% endblock%}
-
-{% block script %}
-	<script src=""></script> 
-
+    
+{%	endblock	%}
+{% block script%}
+	<script src="{% static 'js/common.js' %}"></script>
+	
 {% endblock %}

@@ -1,0 +1,22 @@
+.form-delete {
+	width: 100%;
+}
+
+#btn-delete {
+	background-color: transparent;
+	color: red;
+	outline: 1px solid red;
+	display: block;
+	cursor: pointer;
+	margin-left: auto;
+}
+
+#btn-delete:hover {
+	background-color: red;
+	color: white;
+	outline: 1px solid red;
+}
+
+.contents-container {
+	padding: 10px;
+}

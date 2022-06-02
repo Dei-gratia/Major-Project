@@ -3,27 +3,33 @@
 
 {% block head %}
 <title>My notes</title>
+<link rel="stylesheet" href="{% static 'css/courses/manage/list.css' %}">
+<link rel="stylesheet" href="{% static 'css/common.css' %}">
 <link rel="stylesheet" href="">
 {% endblock %}
 
 {% block main %}
-	<h1>My Notes</h1>
-	<div class="module">
-		{% for note in object_list %}
-		<div class="note-info">
-			<h3>{{ note.title	}}</h3>
+	<div class="content">
+		<div class="page-heading-container">
+			<h1 class="page-heading">My Notes</h1>
+		</div>
+		<div class="contents-container">
+			{% for note in object_list %}
+			<div class="card course-card">
+				<h3>{{ note.title	}}</h3>
+				<p>
+				<a href="{% url 'note_edit' note.id %}">Edit</a>
+				<a href="{% url 'note_delete' note.id %}">Delete</a>
+				
+				</p>
+			</div>
+			{% empty %}
+			<p>You haven't created any notes yet.</p>
+			{% endfor %}
 			<p>
-			<a href="{% url 'note_edit' note.id %}">Edit</a>
-			<a href="{% url 'note_delete' note.id %}">Delete</a>
-			
+			<a href="{% url 'note_create' %}" class="button btn">CREATE NEW NOTE</a>
 			</p>
 		</div>
-		{% empty %}
-		<p>You haven't created any notes yet.</p>
-		{% endfor %}
-		<p>
-			<a	href="{% url 'note_create' %}" class="button">Create	new	note</a>
-		</p>
 	</div>
 
 {%	endblock	%}

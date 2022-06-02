@@ -5,99 +5,112 @@
 
 {% block head %}
 <title>Quiz Result</title>
+<link rel="stylesheet" href="{% static 'css/common.css' %}">
 <link rel="stylesheet" href="{% static 'css/questions.css' %}">
 <link rel="stylesheet" href="{% static 'css/quizzes/result.css' %}">
 {% endblock %}
 
 {% block main %}
-<br>
-<form role="form" id="form_rating" class="form-horizontal">
-	<!-- {% csrf_token %} -->
-	<div class="form-group">
-		<div class="row">
-			<label for="comment" style="text-align: center; font-weight: 600; font-size: large; color: {% if correct > quiz.num_questions %}
-			green
-			{% else %} red
-			{% endif %}" class="control-label">
-				{{ message }} </label>
-		</div>
-	</div>
-	<br>
-	<div class="form-group" style="font-weight: 600;">
-		<div class="row">
-			<div class="col-6">
-				<label for="input-1" style="color: green;" class="control-label">Correct: {{ correct }}</label>
-			</div>
-			<div class="col-6">
-				<label for="input-1" style="color: green;" class="control-label">Score: {{ correct }}/{{ quiz.number_of_questions}}</label>
-			</div>
-			
-		</div>
-	</div>
-	<br>
-	<div class="form-group" style="font-weight: 600;">
-		<div class="row">
-			<div class="col-6">
-				<label for="input-1" style="color: red;" class="control-label">Incorrect: {{ wrong }}</label>
-			</div>
-			<div class="col-6">
-				<label for="input-1" style="color: grey;" class="control-label">Skipped: {{ skipped }}</label>	
-			</div>
-			
-		</div>
-	</div>
-	<br/>
-	<div class="row">
-		<div class="col-sm-2">
-		</div>
-		<div class="col-sm-10">
-			<button type="" href="{% url 'quiz_detail' pk=quiz.pk %}" class="btn btn-primary btn-sm">
-				Retry Quiz</button>
-			<button type="" href="{% url 'quiz_list' %}"  class="btn btn-primary btn-sm">
-				New Quiz</button>
-			<button type="" id="home" class="btn btn-default btn-sm" href="{% url 'home' %}">
-				Home</button>
-		</div>
-	</div>
-</form>
-<br>
-<br>
-{% for question in quiz.questions.all %}
-{% with a=result|index:forloop.counter %}
-	<div style="width: 100%; margin: 5px;border-radius: 5px; border: 3px solid black; padding: 5px; color: black;">
-		<p><strong>Question: </strong> {{ forloop.counter }}. {{ question.question }}<br><strong>Your answer:</strong> <span style="color: {% if result|index:forloop.counter == question.correct_option %}
-			green
-			{% elif result|index:forloop.counter == 'None' %} grey
-			{% else %} red
-			{% endif %}"> {% if a == '1' %}
-			{{ question.option1 }}
-		{% elif a == '2' %}
-			{{ question.option2 }}
-		{% elif a == '3' %}
-			{{ question.option3 }}
-		{% elif a == '4' %}
-			{{ question.option4 }}
-		{% else %} 
-		No attempt
-		{% endif %}</p></span>
-	</div>
-	
-{% endwith%}
-{% endfor %}
-<br/>
-	<div class="row">
-		<div class="col-sm-2">
-		</div>
-		<div class="col-sm-10">
-			<button type="" href="{% url 'quiz_detail' pk=quiz.pk %}" class="btn btn-primary btn-sm">
-				Retry Quiz</button>
-			<button type="" href="{% url 'quiz_list' %}"  class="btn btn-primary btn-sm">
-				New Quiz</button>
-			<button type="" id="cancel" class="btn btn-default btn-sm" href="{% url 'home' %}">
-				Home</button>
-		</div>
+<div class="content">
+
+	<div class="page-heading-container">
+		<h1 class="page-heading">Quiz Result</h1>
 	</div>
 
+	<div class="jumbotron">
+		<div	class="details-block ">
+
+			<form role="form" id="form_rating" class="form-horizontal">
+				<!-- {% csrf_token %} -->
+				<div class="form-group">
+					<div class="row">
+						<label for="comment" style="text-align: center; font-weight: 600; font-size: large; color: {% if correct > quiz.num_questions %}
+						green
+						{% else %} red
+						{% endif %}" class="control-label">
+							{{ message }} </label>
+					</div>
+				</div>
+				<br>
+				<div class="form-group" style="font-weight: 600;">
+					<div class="row">
+						<div class="col-6">
+							<label for="input-1" style="color: green;" class="control-label">Correct: {{ correct }}</label>
+						</div>
+						<div class="col-6">
+							<label for="input-1" style="color: green;" class="control-label">Score: {{ correct }}/{{ quiz.number_of_questions}}</label>
+						</div>
+						
+					</div>
+				</div>
+				<br>
+				<div class="form-group" style="font-weight: 600;">
+					<div class="row">
+						<div class="col-6">
+							<label for="input-1" style="color: red;" class="control-label">Incorrect: {{ wrong }}</label>
+						</div>
+						<div class="col-6">
+							<label for="input-1" style="color: grey;" class="control-label">Skipped: {{ skipped }}</label>	
+						</div>
+						
+					</div>
+				</div>
+				<br/>
+				<div class="row">
+					<div class="col-sm-2">
+					</div>
+					<div class="col-sm-10">
+						<a type="" href="{% url 'quiz_detail' pk=quiz.pk %}" class="btn btn-primary btn-sm">
+							Retry Quiz</a>
+						<a type="" href="{% url 'quiz_list' %}"  class="btn btn-primary btn-sm">
+							New Quiz</a>
+						<a type="" id="home" class="btn btn-default btn-sm" href="{% url 'home' %}">
+							Home</a>
+					</div>
+				</div>
+			</form>
+			<br>
+			<br>
+			{% for question in quiz.questions.all %}
+			{% with a=result|index:forloop.counter %}
+				<div style="width: 100%; margin: 5px;border-radius: 5px; border: 3px solid black; padding: 5px; color: black;">
+					<p><strong>Question: </strong> {{ forloop.counter }}. {{ question.question }}<br><strong>Your answer:</strong> <span style="color: {% if result|index:forloop.counter == question.correct_option %}
+						green
+						{% elif result|index:forloop.counter == 'None' %} grey
+						{% else %} red
+						{% endif %}"> {% if a == '1' %}
+						{{ question.option1 }}
+					{% elif a == '2' %}
+						{{ question.option2 }}
+					{% elif a == '3' %}
+						{{ question.option3 }}
+					{% elif a == '4' %}
+						{{ question.option4 }}
+					{% else %} 
+					No attempt
+					{% endif %}</p></span>
+				</div>
+				
+			{% endwith%}
+			{% endfor %}
+			<br/>
+			<div class="row">
+				<div class="col-sm-2">
+				</div>
+				<div class="col-sm-10">
+					<a type="" href="{% url 'quiz_detail' pk=quiz.pk %}" class="btn btn-primary btn-sm">
+						Retry Quiz</a>
+					<a type="" href="{% url 'quiz_list'  %}"  class="btn btn-primary btn-sm">
+						New Quiz</a>
+					<a type="" id="cancel" class="btn btn-default btn-sm" href="{% url 'home' %}">
+						Home</a>
+				</div>
+			</div>
+			<br>
+			<br>
+		</div>
+	</div>
+</div>
 {% endblock%}
 
 {% block script %}

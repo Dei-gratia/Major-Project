@@ -1,3 +1,4 @@
+import profile
 from django.db import models
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, PermissionsMixin
 from django.utils import timezone
@@ -90,10 +91,18 @@ class Profile(models.Model):
 
     def save(self, *args, **kwargs):
         if not self.profile_name:
-            self.profile_name = f'{self.user.first_name}{self.user.last_name}'.replace(
-                " ", "")
+            profile_name = ""
+            if self.user.first_name:
+                profile_name = self.user.first_name.replace(
+                    " ", "")
+            if self.user.last_name:
+                profile_name += self.user.last_name.replace(
+                    " ", "")
+            if profile_name:
+                self.profile_name = profile_name
         if not self.about:
-            self.about = f"I am {self.profile_name}"
+            if self.profile_name:
+                self.about = f"I am {self.profile_name}"
         super(Profile, self).save(*args, **kwargs)
 
     def __str__(self):

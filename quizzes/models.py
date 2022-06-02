@@ -3,10 +3,12 @@ from main.models import SchoolLevel, Subject
 from users.models import User, Review
 from main.fields import OrderField
 from django.contrib.contenttypes import fields
+from django.utils.text import slugify
 
 # Create your models here.
 
 
+# ====== QUIZMODEL ======
 class Quiz(models.Model):
     owner = models.ForeignKey(User,
                               related_name='quizzes_uploaded',
@@ -28,9 +30,13 @@ class Quiz(models.Model):
     num_ratings = models.IntegerField(default=0)
     attempts = models.IntegerField(default=0)
     tags = models.TextField(blank=True)
+    slug = models.SlugField(max_length=200,	unique=True, default='')
     verified = models.IntegerField(default=0)
 
     created = models.DateTimeField(auto_now=True)
+
+    students = models.ManyToManyField(
+        User, related_name='quiz_taken', blank=True)
 
     reviews = fields.GenericRelation(Review)
 
@@ -44,6 +50,11 @@ class Quiz(models.Model):
         if int(self.num_ratings) == 0 or float(self.total_ratings) == 0:
             return 0.000
         return round(float(self.total_ratings) / float(self.num_ratings), 3)
+
+    def save(self, *args, **kwargs):
+        if not self.slug:
+            self.slug = slugify(self.title)
+        super(Quiz, self).save(*args, **kwargs)
 
 
 class Question(models.Model):

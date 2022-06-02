@@ -1,10 +1,12 @@
 {% extends 'front/master.html' %}
 {% load static %}
 {% load mathfilters %}
+{% load index %}
 
 {% block head %}
 <title>Quizzes</title>
 <link rel="stylesheet" href="{% static 'css/notes/note_list.css' %}">
+<link rel="stylesheet" href="{% static 'css/common.css' %}">
 {% endblock %}
 
 {% block main %}
@@ -15,198 +17,178 @@
 				<li class="breadcrumb-item active" aria-current="page">quizzes</li>
 			</ol>
 		</nav>
+		<div class="page-heading-container">
+			<h1 class="page-heading">
+				{%	if	subject	%}
+						{{	subject.title	}}	Quizzes
+				{%	else	%}
+					All	Quizzes
+				{%	endif	%} 
+			</h1>
+			<div class='filter'>
+				<div class="btn-group">
+					<a href="{% url 'quiz_create' %}" style="color: black; text-align:right;"><h5>Upload Quiz</h5></a>
+					<button type="button" class="btn dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+					  Filter
+					</button>
+					<ul class="dropdown-menu dropdown-menu-end">
+						<li><a class="dropdown-item {%	if not school_level %}selected{%	endif	%}" href="
+							{% if subject %}
+							{% url 'quiz_list_subject' subject=subject.slug order=order %}
+							{% else %}
+							{% url 'quiz_list' order=order %}
+							{% endif%}">All</a></li>
+						<li><hr class="dropdown-divider"></li>
+						{% for l in school_levels %}
+						<li><a class="dropdown-item {% if	school_level ==	l %}selected{%	endif	%}" href="
+							{% if subject %}
+							{% url 'quiz_list_level_subject' school_level=l.slug subject=subject.slug order=order %}
+							{% else %}
+							{% url 'quiz_list_level' school_level=l.slug order=order %}
+							{% endif%}
+							">{{ l.title }}
+							<br><span class="total-item">{{	l.total_quizzes	}} quizzes</span>
+						</a></li>
+						{% endfor %}
+					</ul>
+				</div>
+				<div class="btn-group">
+					<button type="button" class="btn dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+					  Sort 
+					</button>
+					<ul class="dropdown-menu dropdown-menu-end">
+						&nbsp;Date
+					  <li><a class="dropdown-item" href="{{ request.path|sort_url:'created' }}">Ascending</a></li>
+					  <li><a class="dropdown-item" href="{{ request.path|sort_url:'-created' }}">Descending</a></li>
+					  <li><hr class="dropdown-divider"></li>
+					  &nbsp;Rating
+					  <li><a class="dropdown-item" href="{{ request.path|sort_url:'average_rating' }}">Ascending</a></li>
+					  <li><a class="dropdown-item" href="{{ request.path|sort_url:'-average_rating' }}">Descending</a></li>
+					</ul>
+				</div>
+			</div>	
+		</div>
 
-		<a href="{% url 'quiz_create' %}" style="color: black; text-align:right;"><h5>Upload Quiz</h5></a>
+		<div class="contents-container">
+			<div class="side-bar">
+				<h3 class="side-bar-heading">Subjects</h3>
+				<ul	id="side-bar-list" class="side-bar-list">
+					<li class="side-bar-list-item {%	if	not	subject	%}selected{%	endif	%}">
+					<a	href="{% if school_level %}
+					{% url 'quiz_list_level' school_level=school_level.slug order=order %}
+					{% else %}
+					{% url 'quiz_list' order=order %}
+					{% endif %}">All</a>
+					</li>
+					{%	for	s	in	subjects	%}
+					<li	class="side-bar-list-item {% if subject == s %}selected{% endif %}">
+					<a	href="
+					{% if school_level %}
+					{% url 'quiz_list_level_subject' school_level=school_level.slug subject=s.slug order=order %}
+					{% else %}
+					{% url 'quiz_list_subject' subject=s.slug order=order %}
+					{% endif %}">
+					{{	s.title	}}
+					<br><span class="total-item">{{	s.total_quizzes	}}	quizzes</span>
+					</a>
+					</li>
+					{%	endfor	%}
+				</ul>
+			</div>
 
-		<h3>All Quizzes</h3>
+			<div class="details-block" id="details-block">
+				{%	for	quiz	in	quizzes %}
+				<div class="card">
+					<div class="row">
+						<div class="">
+							<a class="note-image" href="{% url 'quiz_detail' pk=quiz.pk %}"><img src="{{ quiz.cover_img.url }}" class="img_note" alt="..."></a>
+						`	<div class="card-body ">
+							<div style="display: flex; justify-content: space-between;">
+								<a id="quiz-title" href="{% url 'quiz_detail' pk=quiz.pk %}"><h4>{{ quiz.title }}</h4></a>
+								<div style="display: flex;">
+									<p style="opacity: 70%;">{{ quiz.created|timesince }} ago &nbsp; </p>
+									<p class="" style="display: inline; text-align: end; color: #FF9529;"> {{ quiz.average_rating|floatformat:"2"  }} {% if quiz.average_rating > 1.0 %} <i class="fa-solid fa-star-half-stroke"></i>
+										{% elif quiz.average_rating > 4.5 %} <i class="fa-solid fa-star"></i>
+										{% else %} <i class="fa-regular fa-star"></i>
+										{% endif %}</p>
+								</div>
+								
+							</div>
+							<p class="card-text">{{ quiz.description }}</p>
+							
+						</div>
 
-		<div class="row">
-			<div class="col-sm-12 col-md-8" >
-				{% for subject in subjects %}
+						</div>
+					
+						<div class="p-inline-container" >
+							<div>
+								<p class="p-inline"><a class="details-block-subject" href="{% url 'quiz_list_level' school_level=quiz.school_level.slug order=order %}">{% if quiz.school_level %}{{ quiz.school_level }}{% endif %}</a></p>&nbsp;
+								<p class="p-inline"><a class="details-block-subject" href="{% url 'quiz_list_subject' subject=quiz.subject.slug order=order %}">{% if quiz.school_level %}{{ quiz.subject }}{% endif %}</a></p>
+							</div>
+							&nbsp;<p class="p-inline uploader"> Uploded by: {% if quiz.owner != None or quiz.owner != "" %}{{	quiz.owner.profile.profile_name	}} 
+								{% else %}Uknown {% endif %}</p>
+						</div>
+						
+					</div>
+					
+				</div>
+				
+				{% empty %}
+				<h3>No quizzes for {% if school_level %} {{ school_level }} {% endif %}{% if subject %} {{ subject }} {% endif %} yet. Please try another subject!</h3>
+				{%	endfor	%}
+
+				
+				<div class="sub-content">
+					<hr>
 					<div class="card">
 						<div class="card-body" style="display: flex;">
-							<div style="margin-right: 5px;">{{ subject.title }} </div>
+							<div style="margin-right: 5px;">Latest Uploads </div>
 						</div>
 					</div>
 					<div class="row">
-						{% for quiz in quizzes %}
-							{% if quiz.subject == subject %}
-							<div class="col-xl-6">
-								<div class="card">
-									<div class="row">
-										<a class="col-sm-4" href="{% url 'quiz_detail' pk=quiz.pk %}"><img src="{{ quiz.cover_img.url }}" class="img_note" alt="..."></a>
-										<div class="card-body col-sm-8">
-											<div style="display: flex; justify-content: space-between;">
-												<a href="{% url 'quiz_detail' pk=quiz.pk %}"><h4>{{ quiz.title }}</h4></a>
-												<p style="opacity: 70%;">{{ quiz.created|timesince }} ago</p>
-											</div>
-											<p class="card-text">{{ quiz.description }}</p>
-											<div class="row">
-												<p class="col-4" style="opacity: 70%;">{{ quiz.school_level }}</p>
-												<p class="col-5"style="opacity: 70%;">{{ quiz.subject }}</p>
-												<p class="col-3" style="text-align: end; color: #FF9529;">
-													{{ quiz.average_rating|floatformat:"2" }}
-													<i class="fa-solid fa-star-half-stroke"></i></p>
-											</div>
-											
-										</div>
-									</div>
-									
-								</div>
-							</div>
-							{% endif %}
-						{% endfor %}
-
-					</div>
-				{% endfor %}
-			</div>
-			<div class="col-sm-12 col-md-4" >
-				<div>
-
-				</div>
-				<div class="card">
-					<div class="card-body" style="display: flex;">
-						<div style="margin-right: 5px;">Latest </div>
-					</div>
-				</div>
-				<div>
-					{% for item in latest %}
+						{% for item in latest %}
 						<h6>
-							{{ forloop.counter }}. {{ item.title }}
+							 <a href="{% url 'quiz_detail' pk=item.pk %}">{{ forloop.counter }}. {{ item.title }}</a>
 						</h6>
 					{% endfor %}
-				</div>
-
-				<div class="card">
-					<div class="card-body" style="display: flex;">
-						<div style="margin-right: 5px;">Your Recent Searches </div>
+						
 					</div>
-				</div>
-				<div>
-					<h6>
-						1. You wish lorem ipsum dolor sit amet consectetur
-					</h6>
-	
-					<h6>
-						2. You wish lorem ipsum dolor sit amet consectetur
-					</h6>
-	
-					<h6>
-						3. You wish lorem ipsum dolor sit amet consectetur
-					</h6>
-	
-					<h6>
-						4. You wish lorem ipsum dolor sit amet consectetur
-					</h6>
-	
-					<h6>
-						5. You wish lorem ipsum dolor sit amet consectetur
-					</h6>
-				</div>
-
-				<div class="card">
-					<div class="card-body" style="display: flex;">
-						<div style="margin-right: 5px;">Most Popular </div>
-					</div>
-				</div>
-				<div>
-					<h6>
-						1. You wish lorem ipsum dolor sit amet consectetur
-					</h6>
-	
-					<h6>
-						2. You wish lorem ipsum dolor sit amet consectetur
-					</h6>
-	
-					<h6>
-						3. You wish lorem ipsum dolor sit amet consectetur
-					</h6>
-	
-					<h6>
-						4. You wish lorem ipsum dolor sit amet consectetur
-					</h6>
-	
-					<h6>
-						5. You wish lorem ipsum dolor sit amet consectetur
-					</h6>
-				</div>
-				
-			</div>
-
-		</div>
-
-		<div class="banner">
-
-		</div>
-
-		<div class="row">
-			<div class="col-sm-12 col-md-8" >
-				<div class="card">
-					<div class="card-body" style="display: flex;">
-						<div style="margin-right: 5px;">Latest Uploads </div>
-					</div>
-				</div>
-				<div class="row">
-					{% for item in latest %}
-					<div class="col-xl-6">
-						<div class="card">
-							<div class="row">
-								<a class="col-sm-4" href="{% url 'quiz_detail' pk=item.pk %}"><img src="{{ item.cover_img.url }}" class="img_note" alt="..."></a>
-								<div class="card-body col-sm-8">
-									<div style="display: flex; justify-content: space-between;">
-										<a href="{% url 'quiz_detail' pk=item.pk %}"><h4>{{ quiz.title }}</h4></a>
-										<p style="opacity: 70%;">{{ item.date|timesince }} ago</p>
-									</div>
-									<p class="card-text">{{ item.description }}</p>
-									<div class="row">
-										<p class="col-3" style="opacity: 70%;">{{ item.level }}</p>
-										<p class="col-6"style="opacity: 70%;">{{ item.subject }}</p>
-										<p class="col-3" style="text-align: end; color: #FF9529;">{{ item.avg_rating }} <i class="fa-solid fa-star-half-stroke"></i></p>
-									</div>
-									
-								</div>
-							</div>
-							
+					<div class="card">
+						<div class="card-body" style="display: flex;">
+							<div style="margin-right: 5px;">Get Notified </div>
 						</div>
 					</div>
-					{% endfor %}
-					
-				</div>
-	
-			</div>
-
-			<div class="col-sm-12 col-md-4" >
-				<div class="card">
-					<div class="card-body" style="display: flex;">
-						<div style="margin-right: 5px;">Get Notified </div>
+					<div class="subscribe">
+						<h3 class="subscribe_txt" >Subscribe</h3>
+						<form class="subscribe_form" >
+							<input class="subscribe_input" type="email" id="email" name="email" placeholder="Email">
+							<button class="subscribe_button" type="submit"><i class="fa fa-arrow-right"></i></button>
+						</form>
 					</div>
-				</div>
-				<div class="subscribe">
-					<h3 class="subscribe_txt" >Subscribe</h3>
-					<form class="subscribe_form" >
-						<input class="subscribe_input" type="email" id="email" name="email" placeholder="Email">
-						<button class="subscribe_button" type="submit"><i class="fa fa-arrow-right"></i></button>
-					</form>
-				</div>
-	
-				<div class="card">
-					<div class="card-body" style="display: flex;">
-						<div style="margin-right: 5px;">Tags </div>
+			
+					<div class="card">
+						<div class="card-body" style="display: flex;">
+							<div style="margin-right: 5px;">Tags </div>
+						</div>
 					</div>
+			
+					<div class="tags">
+						<p class="tag">Zimsec</p>
+						<p class="tag">Exam Paper</p>
+						<p class="tag">Revision</p>
+						<p class="tag">2022</p>
+						<p class="tag">Maths</p>
+					</div>
+			
+		
 				</div>
-	
-				<div class="tags">
-					<p class="tag">Zimsec</p>
-					<p class="tag">Exam Paper</p>
-					<p class="tag">Revision</p>
-					<p class="tag">2022</p>
-					<p class="tag">Maths</p>
-				</div>
+		
 			</div>
-
-	
+			
 		</div>
 
+		
+		
 	</div>
 
 {% endblock%}
