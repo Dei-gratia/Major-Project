@@ -33,7 +33,7 @@ class NoteListView(TemplateResponseMixin,	View):
 
         if subject:
             subject = get_object_or_404(Subject, slug=subject)
-            notes = notes.filter(subject=subject)
+            notes = notes.filter(subject=subject).order_by(order)
 
         return self.render_to_response({
             'order': order,

@@ -5,7 +5,7 @@ from django.shortcuts import redirect, get_object_or_404
 from django.db.models import Count
 from .forms import PostFormSet
 from .models import DiscussionTopic, Post, Replie
-from users.models import Profile
+from users.models import Profile, Review
 from main.models import Subject, SchoolLevel, Home, About
 from django.views.generic.detail import DetailView
 from main.mixins import OwnerEditMixin, OwnerMixin
@@ -22,11 +22,11 @@ class DiscussionTopicListView(TemplateResponseMixin,	View):
     model = DiscussionTopic
     template_name = 'front/discussions/topic/list.html'
 
-    def get(self,	request, school_level=None,	subject=None):
+    def get(self,	request, order='-date', school_level=None,	subject=None):
         subjects = Subject.objects.annotate(
-            total_topics=Count('discussion_topics'))
+            total_discussion_topics=Count('discussion_topics'))
         school_levels = SchoolLevel.objects.annotate(
-            total_topics=Count('discussion_topics'))
+            total_discussion_topics=Count('discussion_topics'))
         discussion_topics = DiscussionTopic.objects.annotate(
             total_posts=Count('posts'))
         latest = Post.objects.all().order_by('-date')[:5]
@@ -34,19 +34,23 @@ class DiscussionTopicListView(TemplateResponseMixin,	View):
         if school_level:
             school_level = get_object_or_404(Subject, slug=subject)
             discussion_topics = discussion_topics.filter(
-                school_level=school_level)
+                school_level=school_level).order_by(order)
 
         if subject:
             subject = get_object_or_404(Subject, slug=subject)
-            discussion_topics = discussion_topics.filter(subject=subject)
+            discussion_topics = discussion_topics.filter(
+                subject=subject).order_by(order)
 
-        return self.render_to_response({'subjects':	subjects,
-                                        'school_level': school_level,
-                                        'subject':	subject,
-                                        'discussion_topics':	discussion_topics,
-                                        'site': Home.objects.latest('updated'),
-                                        'about': About.objects.latest('updated'),
-                                        'latest': latest})
+        return self.render_to_response({
+            'order': order,
+            'school_levels': school_levels,
+            'school_level': school_level,
+            'subjects':	subjects,
+            'subject':	subject,
+            'discussion_topics':	discussion_topics,
+            'site': Home.objects.latest('updated'),
+            'about': About.objects.latest('updated'),
+            'latest': latest})
 
 
 class DiscussionTopicDetailView(DetailView):

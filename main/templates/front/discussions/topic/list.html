@@ -1,5 +1,6 @@
 {% extends 'front/master.html' %}
 {% load static %}
+{% load index %}
 
 {% block head %}
 <title>
@@ -11,46 +12,167 @@
     {%	endif	%}
 {%	endblock	%}
 </title>
+<link rel="stylesheet" href="{% static 'css/notes/note_list.css' %}">
+<link rel="stylesheet" href="{% static 'css/common.css' %}">
 <link rel="stylesheet" href="">
 {% endblock %}
 
 {% block main %}
+<div class="content">
+	<nav aria-label="breadcrumb" style="--bs-breadcrumb-divider: '/';">
+		<ol class="breadcrumb">
+			<li class="breadcrumb-item"><a href="{% url 'home' %}">home</a></li>
+			<li class="breadcrumb-item active" aria-current="page">discussion</li>
+			<li class="breadcrumb-item active" aria-current="page">topics</li>
+		</ol>
+	</nav>
+	<div class="page-heading-container">
+		<h1 class="page-heading">
+			{%	if	subject	%}
+			{{	subject.title	}} Discussion Topics
+			{%	else	%}
+				All	Discussion Topics
+			{%	endif	%} 
+		</h1>
+		<div class='filter'>
+			<div class="btn-group">
+				<button type="button" class="btn dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+				  Filter
+				</button>
+				<ul class="dropdown-menu dropdown-menu-end">
+					<li><a class="dropdown-item {%	if not school_level %}selected{%	endif	%}" href="
+						{% if subject %}
+						{% url 'quiz_list_subject' subject=subject.slug order=order %}
+						{% else %}
+						{% url 'discussion_topic_list' order=order %}
+						{% endif%}">All</a></li>
+					<li><hr class="dropdown-divider"></li>
+					{% for l in school_levels %}
+					<li><a class="dropdown-item {% if	school_level ==	l %}selected{%	endif	%}" href="
+						{% if subject %}
+						{% url 'discussion_topic_list_level_subject' school_level=l.slug subject=subject.slug order=order %}
+						{% else %}
+						{% url 'discussion_topic_list_level' school_level=l.slug order=order %}
+						{% endif%}
+						">{{ l.title }}
+						<br><span class="total-item">{{	l.total_quizzes	}} quizzes</span>
+					</a></li>
+					{% endfor %}
+				</ul>
+			</div>
+			<div class="btn-group">
+				<button type="button" class="btn dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+				  Sort 
+				</button>
+				<ul class="dropdown-menu dropdown-menu-end">
+					&nbsp;Date
+				  <li><a class="dropdown-item" href="{{ request.path|sort_url:'created' }}">Ascending</a></li>
+				  <li><a class="dropdown-item" href="{{ request.path|sort_url:'-created' }}">Descending</a></li>
+				  <li><hr class="dropdown-divider"></li>
+				  &nbsp;Rating
+				  <li><a class="dropdown-item" href="{{ request.path|sort_url:'average_rating' }}">Ascending</a></li>
+				  <li><a class="dropdown-item" href="{{ request.path|sort_url:'-average_rating' }}">Descending</a></li>
+				</ul>
+			</div>
+		</div>	
+	</div>
 
-    <h1>
-	{%	if	subject	%}
-			{{	subject.title	}}	discussion topics
-	{%	else	%}
-	    All	discussion topics
-    {%	endif	%}
-    </h1>
-    <div	class="contents">
-        <h3>Subjects</h3>
-        <ul	id="modules">
-        <li	{%	if	not	subject	%}class="selected"{%	endif	%}>
-        <a	href="{%	url	'discussion_topic_list'	%}">All</a>
-        </li>
-        {%	for	s	in	subjects	%}
-        <li	{%	if	subject	==	s	%}class="selected"{%	endif	%}>
-        <a	href="{% url 'discussion_topic_list_subject' s.slug %}">
-        {{	s.title	}}
-        <br><span>{{	s.total_discussion_topics	}}	discussion topics</span>
-        </a>
-        </li>
-        {%	endfor	%}
-                </ul>
+    <div class="contents-container">
+        <div class="side-bar">
+			<h3 class="side-bar-heading">Subjects</h3>
+			<ul	id="side-bar-list" class="side-bar-list">
+				<li	class="side-bar-list-item {%	if	not	subject	%}selected{%	endif	%}">
+					<a	href="{% if school_level %}
+						{% url 'discussion_topic_list_level' school_level=school_level.slug order=order %}
+						{% else %}
+						{% url 'discussion_topic_list' order=order %}
+						{% endif %}">All
+					</a>
+				</li>
+				{%	for	s	in	subjects	%}
+				<li	class="side-bar-list-item {% if subject == s %}selected{% endif %}">
+					<a	href="
+						{% if school_level %}
+						{% url 'discussion_topic_list_level_subject' school_level=school_level.slug subject=s.slug order=order %}
+						{% else %}
+						{% url 'discussion_topic_list_subject' subject=s.slug order=order %}
+						{% endif %}">
+						{{	s.title	}}
+						<br><span class="total-item">{{	s.total_discussion_topics	}}	discussion topics</span>
+					</a>
+				</li>
+				{%	endfor	%}
+			</ul>
+		</div>
+
+		<div class="details-block" id="details-block">
+			{%	for	discussion_topic	in	discussion_topics	%}
+			{%	with	subject=discussion_topic.subject	%}
+			<div class="card">
+				<div class="row">
+					<h3><a	href="{% url 'discussion_topic_detail' discussion_topic.pk %}">
+					{{	discussion_topic.title	}}</a></h3>
+					<p>
+					<a	href="{% url 'discussion_topic_list_subject' subject.slug %}">
+					{{	subject	}}</a>.
+					{{	discussion_topic.total_posts	}}	posts.
+					Instructor:	{% if discussion_topic.owner != None or discussion_topic.owner != "" %}{{	discussion_topic.owner.profile.profile_name	}} 
+					{% else %}Uknown {% endif %}
+					</p>
+				</div>
+			</div>
+			{%	endwith	%}
+			{% empty %}
+					<h3>No discussion topics for {% if school_level %} {{ school_level }} {% endif %}{% if subject %} {{ subject }} {% endif %} yet. Please try another subject!</h3>
+			{%	endfor	%}
+			<a href="{% url 'discussion_topic_create' %}" style="color: black; text-align:right;"><h5>Upload Quiz</h5></a>
+	
+			<div class="sub-content">
+				<hr>
+				<div class="card">
+					<div class="card-body" style="display: flex;">
+						<div style="margin-right: 5px;">Latest Uploads </div>
+					</div>
+				</div>
+				<div class="row">
+					{% for item in latest %}
+					<h6>
+						 <a href="{% url 'quiz_detail' pk=item.pk %}">{{ forloop.counter }}. {{ item.title }}</a>
+					</h6>
+				{% endfor %}
+					
+				</div>
+				<div class="card">
+					<div class="card-body" style="display: flex;">
+						<div style="margin-right: 5px;">Get Notified </div>
+					</div>
+				</div>
+				<div class="subscribe">
+					<h3 class="subscribe_txt" >Subscribe</h3>
+					<form class="subscribe_form" >
+						<input class="subscribe_input" type="email" id="email" name="email" placeholder="Email">
+						<button class="subscribe_button" type="submit"><i class="fa fa-arrow-right"></i></button>
+					</form>
+				</div>
+		
+				<div class="card">
+					<div class="card-body" style="display: flex;">
+						<div style="margin-right: 5px;">Tags </div>
+					</div>
+				</div>
+		
+				<div class="tags">
+					<p class="tag">Zimsec</p>
+					<p class="tag">Exam Paper</p>
+					<p class="tag">Revision</p>
+					<p class="tag">2022</p>
+					<p class="tag">Maths</p>
+				</div>
+		
+	
+			</div>
+		</div>
     </div>
-    <div	class="module">
-        {%	for	discussion_topic	in	discussion_topics	%}
-        {%	with	subject=discussion_topic.subject	%}
-        <h3><a	href="{% url 'discussion_topic_detail' discussion_topic.pk %}">
-        {{	discussion_topic.title	}}</a></h3>
-        <p>
-        <a	href="{% url 'discussion_topic_list_subject' subject.slug %}">
-        {{	subject	}}</a>.
-        {{	discussion_topic.total_posts	}}	posts.
-        Instructor:	{{	discussion_topic.owner	}}
-        </p>
-        {%	endwith	%}
-                {%	endfor	%}
-    </div>
+    
+</div>
 {%	endblock	%}

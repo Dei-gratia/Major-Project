@@ -30,7 +30,7 @@ urlpatterns = [
          views.DiscussionDeleteView.as_view(),
          name='discussion_topic_delete'),
 
-    path('<pk>/posts/',
+    path('<pk>/post/',
          views.DiscussionPostUpdateView.as_view(),
          name='discussion_topic_post_update'),
 
@@ -38,4 +38,23 @@ urlpatterns = [
          views.DiscussionTopicListView.as_view(),
          name='discussion_topic_list_subject'),
 
+    path('subject/<slug:subject>)/<order>/',
+         views.DiscussionTopicListView.as_view(),
+         name='discussion_topic_list_subject'),
+
+    path('school_level/<slug:school_level>/<order>/',
+         views.DiscussionTopicListView.as_view(),
+         name='discussion_topic_list_level'),
+
+    path('school_level/<slug:school_level>/subject/<slug:subject>)/<order>/',
+         views.DiscussionTopicListView.as_view(),
+         name='discussion_topic_list_level_subject'),
+
+    path('discussion_topic/<int:pk>/',
+         views.DiscussionTopicDetailView.as_view(),
+         name='discussion_topic_detail'),
+
+    path('<order>',
+         views.DiscussionTopicListView.as_view(),
+         name='discussion_topic_list'),
 ]

@@ -161,3 +161,19 @@
 	-webkit-box-orient: vertical;
 	overflow: hidden;
 }
+
+.posts {
+	padding: 20px;
+}
+
+.topic {
+	padding: 0;
+}
+
+.post-heading {
+	padding: 0px 20px;
+}
+
+.posts-container {
+	padding: 20px 20px;
+}

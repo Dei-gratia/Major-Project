@@ -5,34 +5,136 @@
 <title>
 	{{	object.title	}}
 </title>
+<link rel="stylesheet" href="{% static 'css/common.css' %}">
+<link rel="stylesheet" href="{% static 'css/notes/note_detail.css' %}">
+<link rel="stylesheet" href="{% static 'css/discussions/topic_detail.css' %}">
 <link rel="stylesheet" href="">
 {% endblock %}
 
 {% block main %}
-	{%	with subject=discussion_topic.subject %}
-	<h1>
-			{{	object.title	}}
-	</h1>
-	<div	class="module">
-		<h2>Overview</h2>
-		<p>
-		<a	href="{% url 'discussion_topic_list_subject' subject=subject.slug %}">
-		{{	subject.title	}}</a>.
-		{{	discussion_topic.posts.count	}}	posts.
-		Instructor:	{{	discussion_topic.owner.get_full_name	}}
-		</p>
-		{{	object.overview|linebreaks	}}
-		{%	if	request.user.is_authenticated	%}
-		<form	action="{%	url	'student_enroll_course'	%}"	method="post">
-			{{	enroll_form	}}
-			{%	csrf_token	%}
-			<input	type="submit"	class="button"	value="Enroll	now">
-		</form>
-		{%	else	%}
-		<a	href="{%	url	'student_registration'	%}"	class="button">
-		Register	to	enroll
-		</a>
-		{%	endif	%}
+<div class="content">
+	<div>
+		<div id="post_success" class="alert alert-success d-flex align-items-center alert-dismissible fade show" style="margin-top: 10px;" role="alert">
+			<i style="margin-right: 10px; font-size: 60px;" class="fa-regular fa-circle-check"></i>
+			<div>
+				<h4 class="alert-heading">Post submitted!</h4>
+				<p>You will be notified whenever someone replies to your post</p>
+			</div>
+			<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+		</div>
 	</div>
-	{%	endwith	%}
+	<nav id="breadcrumb" aria-label="breadcrumb" >
+		<ol class="breadcrumb">
+		  <li class="breadcrumb-item"><a href="{% url 'home' %}">home</a></li>
+		  <li class="breadcrumb-item"><a href="{% url 'discussion_topic_list' %}">discussions</a></li>
+		  <li class="breadcrumb-item"><a href="{% url 'discussion_topic_list' %}">topics</a></li>
+		  <li class="breadcrumb-item active" aria-current="page">{{ discussion_topic.title|lower }}</li>
+		</ol>
+	</nav>
+	<div class="row" >
+		<div class="col-md-5 topic">
+			{%	with subject=discussion_topic.subject %}
+			<div class="page-heading-container">
+				<h1 class="page-heading">
+					{{	object.title.title	}}
+				</h1>
+				<div class="jumbotron">
+					<h1 class="display-4">ProjectMajor Disscussion Forum</h1>
+					<p class="lead">Welcome to our discussion forum. You can post your question or any related queries by simply clicking on the add post button. <br> Thankyou and Have a nice day!!</p>
+					<hr class="my-4">
+					<p>You can also reply to others post by clicking on their post and replying them.</p>
+					{%	if	request.user.is_authenticated	%}
+					<button class="btn btn-primary btn-lg" data-bs-target="#new_post" data-bs-toggle="modal" role="button">Add Post</button>
+					{%	else	%}
+					<button class="btn btn-primary btn-lg" data-bs-target="#new_post" data-bs-toggle="modal" role="button">Register	to Post</button>
+					{%	endif	%}
+				</div>
+			</div>
+			<div class="jumbotron">
+				<div class="details-block">
+					<h2 class="details-block-heading">Overview</h2>
+					{{ discussion_topic.posts.count }}	posts.
+					<div class="p-inline-container" >
+						<div>
+							<p style="opacity: 75%; font-style: italic;" class="p-inline" title="note school level "><a class="details-block-subject" href="{% url 'discussion_topic_list_level' school_level=discussion_topic.school_level.slug order='-created' %}">{% if discussion_topic.school_level %}{{ discussion_topic.school_level }}{% endif %}</a></p>&nbsp;
+							<strong>&nbsp;&nbsp;<p class="p-inline" title="note subject"><a class="details-block-subject" href="{% url 'discussion_topic_list_subject' subject=discussion_topic.subject.slug order='-created' %}">{% if discussion_topic.subject %}{{ discussion_topic.subject }}{% endif %}</a></p></strong>
+						</div>
+						&nbsp;<p class="p-inline uploader"> <span style="opacity: 75%; font-style: italic;">Uploded by: </span>{% if discussion_topic.owner != None or discussion_topic.owner != "" %}{{	discussion_topic.owner.profile.profile_name	}} 
+							{% else %}Uknown {% endif %}</p>
+					</div>
+					
+					{{	object.overview|linebreaks	}}
+					
+				</div>
+			</div>
+			{%	endwith	%}
+		</div>
+
+		
+		
+		<div class="col-md-7 posts">
+			<h3 class="post-heading">Posts</h3>
+				<div class="posts-container">
+					{% for post in discussion_topic.posts.all %}
+							<div class="card topic_card" >
+								<div class="div_top">
+									<a href="{% url 'post_detail' topic_id=discussion_topic.pk post_id=post.pk %}"><img src="{{ post.image.url }}" class="topic_img"></a>
+									<a href="{% url 'post_detail' topic_id=discussion_topic.pk post_id=post.pk %}" class="topic_title">{{ post.user1.profile.nickname }}</a>
+									<p class="date small">{{ post.date }} </p>
+								</div>
+								<hr style="margin: 5px;">
+								<h6 class="qns">{{ post.title }}</h6>
+								<p class="qns">{{ post.post_content }}?</p>
+								<hr style="margin-left: 5px; margin-right: 5px;">
+								{% if post.replies.count == 0 %}
+								<p>&nbsp; &nbsp; no replies</p>
+								{% else %}
+								{% with count=post.replies.count %}
+								<a href="{% url 'post_detail' topic_id=discussion_topic.pk post_id=post.pk  %}" ><p class="qns">{% if count > 1 %}{{ count }} replies{% else %}{{ count }}  reply{% endif %}</p></a>
+								{% endwith %}
+								{% endif %}
+								
+							</div>
+					{% empty %}
+							<h3>No post yet for this Topic.</h3> 
+					{% endfor %}
+					{%	if	request.user.is_authenticated	%}
+					<button class="btn btn-primary btn-lg" data-bs-target="#new_post" data-bs-toggle="modal" role="button">Add Post</button>
+					{%	else	%}
+					<button class="btn btn-primary btn-lg" data-bs-target="#new_post" data-bs-toggle="modal" role="button">Register	to Post</button>
+					{%	endif	%}
+			</div>
+		</div>
+		<br>
+
+		<div class="modal fade" id="new_post" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+			<div class="modal-dialog" role="document">
+			<div class="modal-content">
+				<div class="modal-header">
+				<h5 class="modal-title" id="exampleModalLabel">Add New Post</h5>
+				<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+				</div>
+				<div class="modal-body">
+				<form id="form_new_post" action="" method="POST"> 
+					<div class="form-group">
+						<label for="post_title">Post Your Question Here</label>
+						<input type="text" class="form-control" id="post_title" name="post_title" placeholder="Post Title"></textarea>
+					</div>
+					<br/>
+					<div class="form-group">
+						<label for="exampleFormControlTextarea1">Question Full Explanation</label>
+						<textarea class="form-control" id="post_content" name="post_content" rows="3" placeholder="Post Content"></textarea>
+					</div>
+				</div>
+			
+				<div class="modal-footer">
+				<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+				<button type="submit" class="btn btn-primary">Post</button>
+				</div>
+			</div>
+			</div>
+		</div>
+	</div>
+
+</div>
 {%	endblock	%}

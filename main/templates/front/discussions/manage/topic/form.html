@@ -1,5 +1,6 @@
 {% extends 'front/master.html' %}
 {% load static %}
+{% load crispy_forms_tags %}
 
 {% block head %}
 <title>
@@ -9,23 +10,28 @@
 		Create a new discussion topic
 	{% endif %}
 </title>
+<link rel="stylesheet" href="{% static 'css/courses/manage/form.css' %}">
+<link rel="stylesheet" href="{% static 'css/common.css' %}">
 <link rel="stylesheet" href="">
 {% endblock %}
 
 {% block main %}
-	<h1>
-	{% if object %}
-	Edit discussion topic	"{{	object.title }}"
-	{% else %}
-	Create a new discussion topic
-	{% endif %}
-	</h1>
-	<div class="module">
-        <h2>Discussion topic info</h2>
-        <form	action="."	method="post">
-            {{ form.as_p }}
+<div class="content">
+	<div class="page-heading-container">
+		<h1>
+		{% if object %}
+		Edit discussion topic	"{{	object.title }}"
+		{% else %}
+		Create a new discussion topic
+		{% endif %}
+		</h1>
+	</div>
+	<div class="contents-container">
+        <h2 class="page-sub-heading">Discussion topic info</h2>
+        <form class="form-horizontal" action="."	method="post">
+            {{form|crispy }}
             {% csrf_token %}
-            <p><input type="submit" value="Save discussion topic"></p>
+            <p><input type="submit" class="button btn" value="Save discussion topic"></p>
         </form>
 	</div>
 {%	endblock %}
