@@ -2,7 +2,16 @@ from django.urls import path
 from . import views
 
 urlpatterns = [
-    path('user_profile', views.user_profile, name='user_profile'),
+
+    path('login/', views.login_view, name='login'),
+
+    path('logout', views.logout_view, name='logout'),
+
+    path('password_reset', views.password_reset, name='password_reset'),
+
+    path('email_reset', views.email_reset, name='email_reset'),
+
+    path('<pk>/user_profile', views.UserProfile.as_view(), name='user_profile'),
     #path('dashboard', views.dashboard, name='dashboard'),
 
     path('enroll-course/',

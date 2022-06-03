@@ -1,4 +1,4 @@
-$(document).ready(function() {
+/**$(document).ready(function() {
     var table = $('#example').DataTable( {
 		responsive: true,
         buttons: [ 'copy', 'excel', 'pdf', 'colvis' ],
@@ -13,4 +13,4 @@ $(document).ready(function() {
         .appendTo( '#example_wrapper .col-md-6:eq(0)' );
 } );
 
-//$('#myModal').modal('show');
+//$('#myModal').modal('show'); **/

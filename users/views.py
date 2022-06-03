@@ -1,39 +1,121 @@
-from django.shortcuts import render
-from main.models import Home, About, SchoolLevel, Specialisation
-from django.urls import reverse_lazy
+import email
+from django.http import Http404
+from django.shortcuts import render, get_object_or_404
+from requests import request
+from main.models import Home, About, SchoolLevel, Specialisation, Subject
+from django.urls import reverse_lazy, reverse
 from django.views.generic.edit import CreateView
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth import authenticate,	login
 from django.views.generic.edit import FormView
 from django.contrib.auth.mixins import LoginRequiredMixin
-from .forms import CourseEnrollForm
+from main.models import SchoolLevel, Subject, Specialisation
+from users.models import User, Profile
+from .forms import CourseEnrollForm, UserProfileForm
 from django.views.generic.list import ListView
 from courses.models import Course
 from django.views.generic.detail import DetailView
+from django.views.generic.edit import UpdateView
+from django.shortcuts import redirect, render
+from django.contrib.auth import authenticate, login, logout
+from django.http import HttpResponseRedirect, JsonResponse
+from django.urls import reverse
+from main.models import Home, About
+from users.models import User
+from users.forms import CustomUserCreationForm, CustomAuthenticationForm
+import time
 
 
 # Create your views here.
-genders = ["Male", 'Female']
+genders = ["M", 'F']
 
 
-def user_profile(request):
-    site = Home.objects.latest('updated')
-    about = About.objects.latest('updated')
-    school_levels = SchoolLevel.objects.all()
-    specializations = Specialisation.objects.all()
+def login_view(request):
+    login_form, registration_form = False, False
+    if request.method == "POST":
+        if "first_name" not in request.POST:  # some condition to distinguish between login and registration form
+            email = request.POST['email']
+            password = request.POST['password']
+            print(email, password)
+            user = authenticate(request, email=email, password=password)
+            if user is not None:
+                login(request, user)
+                print("logged in", user.profile)
+                return JsonResponse({"success": True, "message": "Successfully loggedin"})
+            else:
+                print("not logged in", user)
+                return JsonResponse({"success": False, "message": True, "message": "Invalid Login details"})
+        else:
+            registration_form = CustomUserCreationForm(request.POST)
+            print(registration_form)
 
-    current_user = request.user
+            if registration_form.is_valid():
+                # register
+                print(registration_form)
+                print("is valid")
+                user = registration_form.save()
+                login(request, user)
+                print("logged in", user)
+                return JsonResponse({"success": True, "message": "Successfully loggedin"})
+            else:
+                print("is not valid")
 
-    context = {
-        'site': site,
-        'about': about,
-        'user': current_user,
-        'school_levels': school_levels,
-        'specializations': specializations,
-        'genders': genders,
-
+    obj = {
+        'login_form': login_form if login_form else CustomAuthenticationForm(),
+        'registration_form': registration_form if registration_form else CustomUserCreationForm(),
     }
-    return render(request, 'front/users/user_profile.html', context)
+    return render(request, 'front/users/authentication.html', obj)
+
+
+def logout_view(request):
+    logout(request)
+    return redirect("login")
+
+
+def password_reset(request):
+
+    if request.method == "POST":
+        user_email = request.POST['user_email']
+        print(user_email)
+        return JsonResponse({"success": True, "message": True, "message": "Password reset link sent, please check you email"})
+
+
+def email_reset(request):
+    if request.method == "POST":
+        user_email = request.POST['email']
+        print(user_email)
+        return JsonResponse({"success": False, "message": True, "message": "Email"})
+
+
+class UserProfile(UpdateView):
+    model = Profile
+    context_object_name = 'user'
+    queryset = Profile.objects.all()
+    form_class = UserProfileForm
+    template_name = 'front/users/user_profile.html'
+
+    def get_success_url(self):
+        return reverse('user_profile', kwargs={'pk': self.get_object().user.id})
+
+    def get_object(self, **kwargs):
+        pk = self.kwargs.get("pk")
+        if pk is None:
+            raise Http404
+        return get_object_or_404(Profile, user__pk__iexact=pk)
+
+    def get_context_data(self,	**kwargs):
+        context = super(UserProfile,
+                        self).get_context_data(**kwargs)
+        context['user'] = self.request.user
+        context['user_form'] = UserProfileForm(
+            instance=self.request.user.profile)
+        context['site'] = Home.objects.latest('updated')
+        context['about'] = About.objects.latest('updated')
+        context['school_levels'] = SchoolLevel.objects.all()
+        context['specializations'] = SchoolLevel.objects.all()
+        context['genders'] = genders
+
+        return context
 
 
 class StudentEnrollCourseView(LoginRequiredMixin,	FormView):

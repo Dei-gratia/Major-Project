@@ -1,0 +1,48 @@
+.contents-container {
+	background-color: rgba(0, 0, 0, 0.416);
+}
+
+
+
+.user_form {
+	margin: auto;
+	width: 100%;
+	background-color: white;
+	padding: 20px;
+	border-radius: 2px;
+}
+
+.page-sub-heading {
+	text-align: center;
+}
+
+.profile_img {
+	width: 120px;
+	height: 140px;
+	padding: 5px;
+	border-radius: 8px;
+  }
+
+
+.section_1 {
+	display: flex;
+	flex-wrap: wrap;
+}
+
+.section_1 p {
+	padding: 5px 30px;
+}
+
+@media screen and (min-width: 769px) {
+	.user_form {
+		margin: auto;
+		width: 800px;
+	}
+
+	.profile_img {
+		width: 180px;
+		height: 200px;
+		padding: 5px;
+		border-radius: 8px;
+	  }
+}

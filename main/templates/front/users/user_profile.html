@@ -1,170 +1,43 @@
 {% extends 'front/master.html' %}
 {% load static %}
+{% load crispy_forms_tags %}
 
 {% block head %}
 <title>Profile</title>
-<link rel="stylesheet" href="{% static 'css/profile.css' %}">
+<link rel="stylesheet" href="{% static 'css/common.css' %}">
+<link rel="stylesheet" href="{% static 'css/courses/manage/form.css' %}">
+<link rel="stylesheet" href="{% static 'css/users/user_profile.css' %}">
 {% endblock %}
 
 {% block main %}
+<div class="content">
 	<nav aria-label="breadcrumb" style="--bs-breadcrumb-divider: '/';">
 		<ol class="breadcrumb">
 		  <li class="breadcrumb-item"><a href="/">Home</a></li>
 		  <li class="breadcrumb-item active" aria-current="page">Profile</li>
 		</ol>
-	  </nav>
-
-	<div class="content">
-		<h2 class="page_hearding"> Profile</h2>
-		<div class="row profile_container">
-			<div class="col-sm-5 col-lg-4" >
-				<a data-bs-toggle="modal" data-bs-target="#profileImageModal"><img class=" mx-auto d-block profile_img" alt="profile image" src="{{ user.profile.image.url }}" ></a>
+	</nav>
+	<div class="page-heading-container">
+		<h1 class="page_hearding"> Profile</h1>
+	</div>
+	<div class="contents-container" >
+			
+			<form class="form-horizontal user_form" action="{% url 'user_profile' object.user.pk %}" method="post" enctype="multipart/form-data" >
+				<h2 class="page-sub-heading" >User Profile Details</h2>
 				<div class="section_1" >
-					<p class="username_txt">{{ user.profile.nickname }} <i title="Edit Username" class="fa-solid fa-pencil" id="edit_username" data-bs-toggle="modal" data-bs-target="#usernameModal"></i></p>
-					<p class="email_txt"> {{ user.email }} <i title="Change your email" class="fa-solid fa-pencil" id="edit_email" data-bs-toggle="modal" data-bs-target="#emailModal"></i></p>
+					<p class="email_txt"> {{ object.user.email }} <i title="Change your email" class="fa-solid fa-pencil" id="edit_email" data-bs-toggle="modal" data-bs-target="#emailModal"></i></p>
 					<p class="password_txt"> Password ********  <i title="Change Password" class="fa-solid fa-pencil" id="edit_password" data-bs-toggle="modal" data-bs-target="#passwordModal"></i></p>
 				</div>
-				
-			</div>
-			<div class="col-sm-7 col-lg-8 justify-content-center" >
-				<div class="user_form">
-					<form class="form-horizontal contact_form" action="" method="post">
-						<div class="form-group">
-							<div class="row" >
-								<label class="control-label col-md-3">Name: </label>
-								<div class="col-md-9">
-									<input class="form-control contact_input" type="text" name="first_name" placeholder="First Name*" 
-									oninvalid="this.setCustomValidity('Please enter your name')" onkeyup="setCustomValidity('')"
-									value="{% if user.first_name == None %} {% else %}{{ user.first_name }}{% endif %}" required>
-								</div>
-							</div>						
-						</div>
-						<div class="form-group">
-							<div class="row" >
-								<label class="control-label col-md-3">Surname: </label>
-								<div class="col-md-9">
-									<input class="form-control contact_input" type="text" name="last_name" placeholder="Last Name*" 
-									oninvalid="this.setCustomValidity('Please enter your name')" onkeyup="setCustomValidity('')"
-									value="{% if user.last_name == None %} {% else %}{{ user.last_name }}{% endif %}" required>
-								</div>
-							</div>
-							
-						</div>
-	
-						<div class="form-group">
-							<div class="row">
-								<label class="control-label col-md-3">Mobile Number: </label>
-								<div class="col-md-9">
-									<input class="form-control contact_input" type="text" name="mobile" placeholder="Mobile number*" 
-								oninvalid="this.setCustomValidity('Please enter valid Mobile number')" onkeyup="setCustomValidity('')" 
-								value="{% if user.profile.phone == None %} {% else %}{{ user.profile.phone }}{% endif %}" required>
-								</div>
-								
-							</div>
-						</div>
-	
-						<div class="form-group">
-							<div class="row">
-								<label class="control-label col-md-3">College Name: </label>
-								<div class="col-md-9">
-									<input class="form-control contact_input" type="text" name="school" placeholder="College/Institute" 
-								oninvalid="this.setCustomValidity('Please enter your college name')" onkeyup="setCustomValidity('')"
-								value="{% if user.profile.school == None %} {% else %}{{ user.profile.school }}{% endif %}" required>
-								</div>
-								
-							</div>
-							
-						</div>
-	
-						<div class="form-group">
-							<div class="row">
-								<label class="control-label col-md-3">Level: </label>
-								<div class="col-md-9">
-									<select name="levels" id="levels">
-										<option value="">Select Level</option>
-										{% for level in school_levels %}
-											<option value="{{ level.title }}"
-											{% if level == user.profile.school_level %}
-												selected="selected"
-											{% endif %}>{{ level }}</option>
-										{% endfor %}
-									  </select>
-								</div>
-								
-							</div>
-						</div>
-						
-	
-						<div class="form-group" id="specialization">
-							<div class="row">
-								<div class="col-md-3">
-									<label class="control-label ">Specialization: </label>
-								</div>
-								
-								<div class="col-md-9">
-									<select name="levels" id="levels">
-										<option value="">Select specialization</option>
-										{% for specialization in specializations %}
-											<option value="{{ specialization }}" 
-											{% if specialization == user.profile.program %}
-												selected="selected"
-											{% endif %}>
-											{{ specialization }}</option>
-										{% endfor %}
-									  </select>
-								</div>
-								
-							</div>
-						</div>
-	
-						<div class="form-group" id="program">
-							<div class="row">
-								<label class="control-label col-md-3">Program: </label>
-								<div class="col-md-9">
-									<input class="form-control contact_input" type="text" name="program" placeholder="Program" 
-								oninvalid="this.setCustomValidity('Please enter your program')" onkeyup="setCustomValidity('')"
-								value="{{ user.profile.program }}" required>
-								</div>
-								
-							</div>
-							
-						</div>
-	
-						
-						<div class="form-group">
-							<div class="row">
-								<label class="control-label col-md-3">Gender: </label>
-								<div class="col-md-9">
-									{% for gender in genders %}
-									<span 
-									{% if gender == Female %} class="spf" {% endif %}>
-										<input type="radio" name="gender" value="{{ gender }}"
-										{% if gender == user.profile.gender %} checked {% endif %}>
-										<label>{{ gender }}</label>
-									</span>
-									{% endfor %}
-									
-									
-								</div>
-								
-							</div>
-							
-						</div>
-						<br/>
-					
-						<div class="form-group">
-							<input class="button contact_btn" type="submit" value="Save Profile" >
-						</div>
-						
-					</form>
-				</div>
-				
-
-			</div>
-		</div>
+				<img class=" mx-auto d-block profile_img" alt="profile image" src="{{ object.image.url }}" id="profile_img"  >	
+				{{form|crispy }}
+				{% csrf_token %}
+				<p><input type="submit" class="button btn" value="Save profile"></p>	
+			</form>
 		
-
 	</div>
+</div>
+
+	
 
 
 	<!--================ MODALS ===================-->
@@ -363,4 +236,36 @@
 {% block script %}
 <script src="{% static 'js/index.js' %}"></script>
 <script src="{% static 'js/profile.js' %}"></script>
+<script>
+	$("input[type=text]").change(function(){
+		$('#profile_img').attr('src', window.URL.createObjectURL(this.files[0]))
+		console.log('before')
+		console.log(window.URL.createObjectURL(this.files[0]))
+		console.log('done')
+		alert("The text has been changed.");
+	});
+</script>
+<script>
+	$(function(){
+  $('input[type=file]').change(function(){
+    var input = this;
+    var url = $(this).val();
+    var ext = url.substring(url.lastIndexOf('.') + 1).toLowerCase();
+    if (input.files && input.files[0]&& (ext == "gif" || ext == "png" || ext == "jpeg" || ext == "jpg")) 
+     {
+        var reader = new FileReader();
+
+        reader.onload = function (e) {
+           $('#profile_img').attr('src', e.target.result);
+        }
+       reader.readAsDataURL(input.files[0]);
+    }
+    else
+    {
+      $('#profile_img').attr('src', '{% static "images/c1.jpg" %}');
+    }
+  });
+
+});
+</script>
 {% endblock %}

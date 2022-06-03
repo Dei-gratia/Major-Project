@@ -1,0 +1,106 @@
+.nav-tabs {
+    margin-bottom: 15px;
+}
+.sign-with {
+    margin-top: 25px;
+    padding: 20px;
+}
+div#OR {
+    height: 30px;
+    width: 30px;
+    border: 1px solid #C2C2C2;
+    border-radius: 50%;
+    font-weight: bold;
+    line-height: 28px;
+    text-align: center;
+    font-size: 12px;
+    float: right;
+    position: absolute;
+	right: 32.2%;
+    top: 40%;
+    z-index: 1;
+    background: #DFDFDF;
+}
+
+label {
+	white-space: nowrap;
+}
+
+button {
+	font-size: calc(12px + (13 - 12) * ((100vw - 360px) / (1600 - 320))) !important;
+	;
+	padding: calc(6px + 5 * ((100vw - 320px) / 780)) !important;
+	color: #fff ;
+	border-radius: 5px !important;
+}
+
+button:focus {
+	-moz-box-shadow: none !important;
+	-webkit-box-shadow: none !important;
+	box-shadow: none !important;
+	outline-width: 0
+}
+
+.btn-icon {
+	border: 1px solid #ccc;
+	background-color: transparent;
+	border-radius: 0;
+	letter-spacing: 1px
+}
+
+.btn-icon:hover {
+	background-color: #4285F4;
+	color: #fff !important;
+	border: 1px solid #ccc
+}
+
+#cancel:hover {
+	border: 1px solid rgb(228, 105, 105);
+	box-shadow: 0px 10px 36px rgba(197, 131, 131, 0.486);
+	
+}
+
+#forgot_password:hover {
+	text-decoration: underline;
+}
+
+#login_page:hover {
+	text-decoration: underline;
+}
+
+
+@media screen and (min-width: 992px) {
+	#modal_section1 {
+		border-right: 1px dotted #C2C2C2; 
+		padding-right: -30px;
+	}
+
+	#btn_google {
+		margin-top: 20%;
+	}
+
+	#logo_md {
+		display: none !important;
+	}
+
+	#banner {
+		clip-path: polygon(0 0, 100% 0%, 100% 100%, 5% 100%);
+	}
+}
+
+
+
+#terms:hover {
+	color: blue;
+}
+
+#terms:hover {
+	text-decoration: underline;
+}
+
+.login {
+	padding: 5px;
+	color: white;
+	
+}
+

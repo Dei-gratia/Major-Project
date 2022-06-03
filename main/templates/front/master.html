@@ -10,6 +10,7 @@
 	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-0evHe/X+R7YkIZDRvuzKMRqM+OrBnVFBL6DOitfPri4tjfHxaWutUpFmBp4vmVor" crossorigin="anonymous">
   </head>
 	<link rel="stylesheet" href="{% static 'css/styles.css' %}">
+	<link rel="stylesheet" href="{% static 'css/login.css' %}">
 	
 
 	<!-- Fontawesome -->
@@ -21,6 +22,10 @@
 	
 </head>
 <body>
+	<div id="ajax-loader">
+		<p id="loading-text">Loading content...</p>
+		<div class="lds-ripple"><div></div><div></div></div>
+	</div>
 	<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
 		<div class="container-fluid">
 			<a class="navbar-brand d-lg-none" href="#">
@@ -29,7 +34,7 @@
 			</a>
 
 			{% if not user.is_authenticated %}
-			<a class="d-flex ms-auto login d-none d-lg-block" style="color: white;"  href="">Login | SignUp</a>
+			<a class="d-flex ms-auto login d-none d-lg-block" style="color: white;" type="button"   data-bs-toggle="modal" data-bs-target="#myModal">Login | SignUp</a>
 			{% endif %}
 		  <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
 			<span class="navbar-toggler-icon"></span>
@@ -39,7 +44,7 @@
 			<ul class="navbar-nav ms-auto mb-2 mb-lg-0">
 			  {% if not user.is_authenticated %}
 			  <li class="nav-item d-lg-none">
-				<a class="nav-link" href="">Login | SignUp</a>
+				<a class="nav-link" href="" data-bs-toggle="modal" data-bs-target="#myModal">Login | SignUp</a>
 			  </li>
 			  {% endif %}
 			  <li class="nav-item">
@@ -74,7 +79,7 @@
 				</ul>
 			  </li>
 			  <li class="nav-item">
-				<a class="nav-link" href="{% url 'user_profile' %}">Profile</a>
+				<a class="nav-link" href="{% url 'user_profile' pk=request.user.pk %}">Profile</a>
 			  </li>
 			  <li class="nav-item">
 				<a class="nav-link" href="/about">About Us</a>
@@ -84,7 +89,7 @@
 			  </li>
 			  <li class="nav-item">
 				{% if user.is_authenticated %}
-				<a class="nav-link" href="">Logout</a>
+				<a class="nav-link" href="{% url 'logout' %}">Logout</a>
 				{% endif %}
 			  </li>
 			</ul>
@@ -131,7 +136,6 @@
 	</div>
 
 	
-
 	{% block main %}
 
 	{% endblock %}
@@ -217,7 +221,7 @@
 
 	<!-- ========= MODALS =========== -->
 
-	<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel"
+	<div class="modal fade"  id="myModal" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel"
 			aria-hidden="true">
 			<div class="modal-dialog modal-lg modal-dialog-centered">
 				<div class="modal-content" >
@@ -236,7 +240,7 @@
 								<!-- Tab panes -->
 								<div class="tab-content" >
 									<div class="tab-pane active"  id="Login">
-										<form role="form"  class="form-horizontal" action="" method="post">
+										<form role="form"  class="form-horizontal auth-form" action="" method="post">
 											{% csrf_token  %}
 											<div class="form-group">
 												<label for="email" class="col-sm-2 control-label">
@@ -256,6 +260,7 @@
 													<input type="password" class="form-control" id="password" name="password" placeholder="Password"
 													oninvalid="setCustomValidity('Please enter your password')" onkeyup="setCustomValidity('')" required />
 												</div>
+												<input type="checkbox" onclick="myFunction()"> Show Password
 											</div>
 											<br/>
 											<div class="row">
@@ -264,19 +269,19 @@
 												<div class="col-sm-10">
 													<button type="submit" class="btn btn-primary btn-sm">
 														Submit</button>
-													<a  href="#password_reset" id="forgot_password">Forgot your password?</a>
+													<a   id="forgot_password">Forgot your password?</a>
 												</div>
 											</div>
 										</form>
 									</div>
 									<div class="tab-pane" id="Registration" >
-										<form role="form"  class="form-horizontal" action="" method="post">
+										<form role="form"  class="form-horizontal auth-form" action="" method="post">
 											{% csrf_token  %}
 											<div class="form-group">
 												<label for="first_name" class="col-sm-2 control-label">
 													First Name*</label>
 												<div class="col-sm-10">
-													<input type="text" id="first_name" name="first_name" class="form-control" placeholder="First Name" 
+													<input type="text" id="id_first_name" name="first_name" class="form-control" placeholder="First Name" 
 													minlength="3" oninvalid="this.setCustomValidity('Name too short, should be at least 3 characters')" onkeyup="setCustomValidity('')" required />
 												</div>
 											</div>
@@ -284,7 +289,7 @@
 												<label for="last_name" class="col-sm-2 control-label">
 													Last Name*</label>
 												<div class="col-sm-10">
-													<input type="text" id="last_name" name="last_name" class="form-control" placeholder="Last Name" 
+													<input type="text" id="id_last_name" name="last_name" class="form-control" placeholder="Last Name" 
 													minlength="3" oninvalid="this.setCustomValidity('Name too short, should be at least 3 characters')" onkeyup="setCustomValidity('')" required />
 												</div>
 											</div>
@@ -292,7 +297,7 @@
 												<label for="email" class="col-sm-2 control-label">
 													Email*</label>
 												<div class="col-sm-10">
-													<input type="email" class="form-control" id="email1" name="email1" placeholder="Email"
+													<input type="email" class="form-control" id="id_email" name="email" placeholder="Email"
 													pattern="[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{1,63}$" 
 													title="Please enter a valid address which includes an @ symbol" 
 													oninvalid="setCustomValidity('Please enter a valid email address')" 
@@ -303,7 +308,7 @@
 												<label for="password" class="col-sm-2 control-label">
 													Password*</label>
 												<div class="col-sm-10">
-													<input type="password" class="form-control" id="password1" name="password1" placeholder="Password"
+													<input type="password" class="form-control" id="id_password1" name="password1" placeholder="Password"
 													oninvalid="setCustomValidity('Set a valid password')" title="Set password"
 													onkeyup='check();' required/>
 												</div>
@@ -312,7 +317,7 @@
 												<label for="password2" class="col-sm-2 control-label">
 													Confirm Password*</label>
 												<div class="col-sm-10">
-													<input type="password" id="password2" name="password2" class="form-control" placeholder="Confirm Password" onkeyup='check();'
+													<input type="password" id="id_password2" name="password2" class="form-control" placeholder="Confirm Password" onkeyup='check();'
 													oninvalid="setCustomValidity('Please confirm your password')" title="confirm password" required />
 												</div>
 											</div>
@@ -339,31 +344,35 @@
 								<div id="OR" class="d-none d-lg-block">
 									OR</div>
 							</div>
+							<div class="col-lg-8 d-none"  id="password_reset">
+								<form role="form"  class="form-horizontal" id="form-password-reset">
+									{% csrf_token  %}
+									<div class="form-group">
+										<label for="email" class="col-sm-2 control-label">
+											Email*</label>
+										<div class="col-sm-10">
+											<input type="email" class="form-control" id="user_email" name="user_email" placeholder="Email" />
+										</div>
+									</div>
+									<br/>
+									<div class="row">
+										<div class="col-sm-2">
+										</div>
+										<div class="col-sm-10">
+											<button type="submit" id="btn-reset-password" class="btn btn-primary btn-sm">
+												Reset Password</button>
+											<a href="javascript:;" id="login_page">Remember your password?</a>
+										</div>
+										
+									</div>
+								</form>
+							</div>
 							<div class="col-lg-4 text-center sign-with justify-content-center" >
+								
 								<button type="button" class="btn btn-icon btn-block text-left " id="btn_google"><span><img src="https://img.icons8.com/color/48/000000/google-logo.png" class="img-fluid mr-1" width="25"></span> Sign up with Google</button>
 							</div>
 						</div>
-						<div class="hide"  id="password_reset">
-							<form role="form"  class="form-horizontal">
-							<div class="form-group">
-								<label for="email" class="col-sm-2 control-label">
-									Email*</label>
-								<div class="col-sm-10">
-									<input type="email" class="form-control" id="email2" placeholder="Email" />
-								</div>
-							</div>
-							<br/>
-							<div class="row">
-								<div class="col-sm-2">
-								</div>
-								<div class="col-sm-10">
-									<button type="submit" class="btn btn-primary btn-sm">
-										Reset Password</button>
-									<a href="javascript:;" id="login_page">Remember your password?</a>
-								</div>
-							</div>
-							</form>
-						</div>
+						
 					</div>
 				</div>
 			</div>
@@ -380,9 +389,109 @@
 	<script>
 		$(document).ready(function () {
 			$( "#search-addon" ).click(function() {
-				$( "#search_form_lg" ).submit();
+				$( "#search_form_lg" ).submit()
+				
 			});
+			
 		});
+
+		$('#forgot_password').click(function(){
+			$('#myModal').find('.modal-title').text('Password Reset')
+			$('#modal_section1').hide()
+			$('#password_reset').toggleClass('d-none')
+		})
+
+		$('#login_page').click(function() {
+			$('#modal_section1').show()
+			$('#password_reset').toggleClass('d-none')
+			
+		})
+
+		$('#btn-reset-password').click(function() {
+			$('#myModal').modal('hide')
+			var form = $('#form-password-reset')
+			
+			$('#ajax-loader').show()
+			
+			$.ajax({
+            url: '{% url "password_reset" %}',
+            type: 'post',
+            data: form.serialize(),
+            error: function(xhr, ajaxOptions, thrownError){ 
+				$('#myModal').modal('show')
+				$('#ajax-loader').hide();
+				alert(thrownError); 
+			},
+            success: function(data){
+				if (data.success === true) {
+					$('#loading-text').text("Resetting password")
+					alert(`${data.message}`)
+					$('#ajax-loader').delay(2000).fadeOut()
+					window.location = '{% url "login" %}';
+					window.setTimeout(function(){
+						$('#ajax-loader').hide();
+						
+					},2000); 
+				} 
+				else {
+					
+					alert(`${data.message}`)
+					$('#myModal').modal('show')
+					$('#ajax-loader').hide();
+					
+				}
+			}
+        })
+
+		})
+
+		$('.auth-form').submit(function(e){
+        e.preventDefault();
+		$('#myModal').modal('hide')
+        var form = $(e.target);
+		$('#ajax-loader').show()
+		
+		
+        $.ajax({
+            url: '{% url "login" %}',
+            type: 'post',
+            data: form.serialize(),
+            error: function(xhr, ajaxOptions, thrownError){ 
+				alert(thrownError); 
+				$('#ajax-loader').hide();
+				$('#myModal').modal('show')
+			},
+            success: function(data){
+				if (data.success === true) {
+					current_location = window.location.pathname
+					txt = current_location.split('/')
+					$('#loading-text').text("Your have been logged in successfully")
+					$('#ajax-loader').delay(2000).fadeOut()
+
+					setTimeout(function(){
+						$('#ajax-loader').hide();
+					},2000); 
+					if (jQuery.inArray('login', txt) !== -1) {
+						window.location = '{% url "home" %}';
+					}
+					else {
+						location.reload();
+					}
+					
+					
+					
+					
+				} 
+				else {
+					alert(`${data.message}`)
+					$('#myModal').modal('show')
+					$('#ajax-loader').hide()
+				}
+				
+			}
+        })
+ 	})
+		
 
 	</script>
 

@@ -1,0 +1,36 @@
+{% extends 'front/master.html' %}
+{% load static %}
+{% load i18n %}
+
+{% block head %}
+	<title>Login | Signup</title>
+	<link rel="stylesheet" href="{% static 'css/common.css' %}">
+	
+	<link rel="stylesheet" href="{% static 'css/auth.css' %}">
+{% endblock %}
+{% block main %}
+
+<div class="content">
+	
+	<div class="page-heading-container">
+		<h1 class="page_hearding"> LOGIN | SIGNUP </h1>
+	</div>
+	<div style="display: flex; justify-content:center; align-items: center; flex-direction: column; margin-top: 20%">
+		<p>Your are currently logged out</p>
+		<a class="" style="" type="button"   data-bs-toggle="modal" data-bs-target="#myModal">Login | SignUp</a>
+		<p>Proceed without logging in <a href="{% url 'home' %}"> Home</a></p>
+		
+	</div>
+
+</div>
+{% endblock %}
+
+{% block script%}
+	
+	<script>
+		$(function(){
+			$('#myModal').modal('show')
+		})
+	</script>
+	
+{% endblock %}
