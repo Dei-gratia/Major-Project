@@ -23,6 +23,8 @@ class Course(models.Model):
                                 related_name='courses',
                                 on_delete=models.SET_NULL, blank=True, null=True)
     title = models.CharField(max_length=200)
+    cover_image = models.ImageField(
+        default='courses/images/default.png', upload_to='courses/images/')
     slug = models.SlugField(max_length=200,	unique=True)
     overview = models.TextField()
     total_ratings = models.FloatField(default=0.0)

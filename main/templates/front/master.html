@@ -8,7 +8,11 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<!-- Bootstrap CSS -->
 	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-0evHe/X+R7YkIZDRvuzKMRqM+OrBnVFBL6DOitfPri4tjfHxaWutUpFmBp4vmVor" crossorigin="anonymous">
-  </head>
+
+	<link rel="apple-touch-icon" sizes="180x180" href="{% static 'images/favicon/apple-touch-icon.png' %}">
+	<link rel="icon" type="image/png" sizes="32x32" href="{% static 'images/favicon/favicon-32x32.png' %}">
+	<link rel="icon" type="image/png" sizes="16x16" href="{% static 'images/favicon/favicon-16x16.png' %}">
+	<link rel="manifest" href="{% static 'images/favicon/site.webmanifest' %}">
 	<link rel="stylesheet" href="{% static 'css/styles.css' %}">
 	<link rel="stylesheet" href="{% static 'css/login.css' %}">
 	
@@ -23,14 +27,40 @@
 </head>
 <body>
 	<div id="ajax-loader">
-		<p id="loading-text">Loading content...</p>
+		<p id="loading-text">Please wait ...</p>
 		<div class="lds-ripple"><div></div><div></div></div>
 	</div>
-	<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+	<div class="lg-nav-background">
+		<div class="lg-nav">
+			<div class="lg-nav-items-container">
+				<a class="lg-nav-item" href="{% url 'about' %}" href="{{ social.link }}">About</a>
+				<a class="lg-nav-item" href="{% url 'contact' %}">Contact</a>
+				{% if user.is_authenticated %}
+				<a class="lg-nav-item" href="{% url 'user_profile' pk=user.pk %}">Profile</a>
+				<a class="lg-nav-item" href="{% url 'logout' %}">Logout</a>
+				{% else %}
+				<a class="lg-nav-item" href="{% url 'login' %}">Log in | Sign up</a>
+				{% endif %}
+			</div>
+			<div>
+				<div class="lg-nav-social-icons">
+					{% for social in about.socials.all %}
+					<a id="{% if social.social_name == 'facebook' %}cfb{% elif social.social_name == 'twitter' %}ctw{% elif social.social_name == 'instagram' %}cig{% elif social.social_name == 'linkedin' %}cin{% elif social.social_name == 'youtube' %}cyt{% endif %}"
+					 title="{{ social.display_title }}">
+					 <i class="{{ social.social_font_owesome_icon }}"></i></a>
+					{% endfor %}
+				</div>
+			</div>
+			
+		</div>
+	</div>
+	
+	
+	<nav class="navbar sm-nav navbar-expand-lg navbar-dark bg-dark">
 		<div class="container-fluid">
 			<a class="navbar-brand d-lg-none" href="#">
 				<img src="{% static 'images/edu.jpg' %}" alt="" width="25" height="20" class="d-inline-block align-text-center">
-				Major
+				<strong style="color: #3f6ad8;">E-</strong>LEARN
 			</a>
 
 			{% if not user.is_authenticated %}
@@ -82,10 +112,10 @@
 				<a class="nav-link" href="{% url 'user_profile' pk=request.user.pk %}">Profile</a>
 			  </li>
 			  <li class="nav-item">
-				<a class="nav-link" href="/about">About Us</a>
+				<a class="nav-link" href="{% url 'about' %}">About Us</a>
 			  </li>
 			  <li class="nav-item">
-				<a class="nav-link" href="/contact">Contact</a>
+				<a class="nav-link" href="{% url 'contact' %}">Contact</a>
 			  </li>
 			  <li class="nav-item">
 				{% if user.is_authenticated %}
@@ -97,54 +127,124 @@
 
 		</div>
 	</nav>
-	<div class="card " id="logo_lg" style="margin-top: 0px; margin-bottom: 0px; border-radius: 0px;">
-		<div class="card-body" style="display: flex;">
-			<div style="margin: auto;" class="d-none d-lg-block">
-				<a class="navbar-brand" href="#" style="color: black;">
-					<img src="{% static 'images/edu.jpg' %}" alt="" width="25" height="20" class="d-inline-block align-text-center">
-					<strong>Major </strong> | Project
-				</a>
-				
-			</div>
-			<div id="banner">
-				<p id="banner_txt">{{ site.banner_txt }}</p>
-			</div>
-		</div>
-	</div>
-	<div class="row" id="slider_search_container" style="padding-top: 5px; padding-bottom: 2px; background-color: white;">
-		<div class="col-md-7">
-			<div id="popular_top" >
-				<span >{{ site.slider1_txt }}:&nbsp; &nbsp;</span>
-				<ul id="popular_slider" >
-					<li>Popular item 1</li>
-					<li>Items searched</li>
-					<li>Being Searched item 3</li>
-					<li>Searched item 4</li>
-				</ul>
-			</div>
-		</div>
-		<div class="col-md-5">
-			<form class="d-flex mr-auto search_form_lg" method="get" action="" id="search_form_lg">
-				<div class="input-group rounded d-flex">
-					<input type="search" name="search" class="form-control rounded" placeholder="Search" aria-label="Search" aria-describedby="search-addon" />
-					<span class="input-group-text border-0" type="submit" id="search-addon">
-					  <i class="fas fa-search"></i>
-					</span>
+
+	<div class="master-container" >
+	
+		<div class="card " id="logo_lg" >
+			<div class="card-body card-logo-lg" style="display: flex;">
+				<div style="margin: auto;" class="d-none d-lg-block">
+					<a class="navbar-brand" href="#" style="color: black; font-size: 25px; font-weight: 900;">
+						<img src="{% static 'images/edu.jpg' %}" alt="" width="25" height="20" class="d-inline-block align-text-center">
+						<strong style="color: #3f6ad8; font-size: 25px;">E-</strong>LEARN
+					</a>
+					
 				</div>
-			</form>
+				<div id="banner">
+					<p id="banner_txt">{{ site.banner_txt }}</p>
+				</div>
+			</div>
 		</div>
+
+		<div class="lg-nav2" id="lg-nav2" >
+
+			<div class="lag-nav2-item-container dropdown show">
+				<a class="lag-nav2-item dropdown-toggle" href="{% url 'home' %}" role="button" id="dropdownMenuLink" data-bs-hover="dropdown" aria-haspopup="true" aria-expanded="false">Home</a>
+				<div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
+					<a class="dropdown-item" href="#latest">Latest</a>
+					<a class="dropdown-item" href="#most-popular">Most Popular</a>
+					<a class="dropdown-item" href="#subscibe">Subscribe</a>
+				</div>
+			</div> 
+			
+			
+			<div class="lag-nav2-item-container dropdown show">
+				<a class="lag-nav2-item dropdown dropdown-toggle" href="{% url 'course_list' %}" role="button" id="dropdownMenuLink" data-bs-hover="dropdown" aria-haspopup="true" aria-expanded="false">Courses</a>
+				<div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
+					<a class="dropdown-item" href="{% url 'course_list' %}">All Couses</a>
+					<a class="dropdown-item" href="{% url 'course_create' %}">Upload Course</a>
+					<a class="dropdown-item" href="{% url 'manage_course_list' %}">My Courses</a>
+				</div>
+			</div>
+	
+			<div class="lag-nav2-item-container dropdown show">
+				<a class="lag-nav2-item dropdown dropdown-toggle" href="{% url 'note_list' %}" role="button" id="dropdownMenuLink" data-bs-hover="dropdown" aria-haspopup="true" aria-expanded="false">Notes</a>
+				<div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
+					<a class="dropdown-item" href="{% url 'note_list' %}">All Notes</a>
+					<a class="dropdown-item" href="{% url 'note_create' %}">Upload Note</a>
+					<a class="dropdown-item" href="{% url 'manage_note_list' %}">My Notes</a>
+				</div>
+			</div>
+	
+			<div class="lag-nav2-item-container dropdown show">
+				<a class="lag-nav2-item dropdown dropdown-toggle" href="{% url 'quiz_list' %}" role="button" id="dropdownMenuLink" data-bs-hover="dropdown" aria-haspopup="true" aria-expanded="false">Quizzes</a>
+				<div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
+					<a class="dropdown-item" href="{% url 'quiz_list' %}">All Quizzes</a>
+					<a class="dropdown-item" href="{% url 'quiz_create' %}">Upload Quiz</a>
+					<a class="dropdown-item" href="{% url 'manage_quiz_list' %}">My Quizzes</a>
+				</div>
+			</div>
+	
+			<div class="lag-nav2-item-container dropdown show">
+				<a class="lag-nav2-item dropdown dropdown-toggle" href="{% url 'discussion_topic_list' %}" role="button" id="dropdownMenuLink" data-bs-hover="dropdown" aria-haspopup="true" aria-expanded="false">Discussion Forum</a>
+				<div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
+					<a class="dropdown-item" href="{% url 'discussion_topic_list' %}">Discussion Topics</a>
+					<a class="dropdown-item" href="{% url 'about' %}">All Posts</a>
+					<a class="dropdown-item" href="{% url 'manage_discussion_topic_list' %}">My Posts</a>
+				</div>
+			</div>
+	
+			<div class="lag-nav2-item-container dropdown show">
+				<a class="lag-nav2-item dropdown dropdown-toggle" href="{% url 'about' %}" role="button" id="dropdownMenuLink" data-bs-hover="dropdown" aria-haspopup="true" aria-expanded="false">Features</a>
+				<div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
+					<a class="dropdown-item" href="{% url 'about' %}">About</a>
+					<a class="dropdown-item" href="{% url 'contact' %}">Contact Us</a>
+				</div>
+			</div>
+		</div>
+		<hr>
+	
+		<div class="row" id="slider_search_container" style="padding-top: 5px; padding-bottom: 2px; background-color: white;">
+			<div class="col-md-7">
+				<div id="popular_top" >
+					<span >{{ site.slider1_txt }}:&nbsp; &nbsp;</span>
+					<ul id="popular_slider" >
+						<li>Popular item 1</li>
+						<li>Items searched</li>
+						<li>Being Searched item 3</li>
+						<li>Searched item 4</li>
+					</ul>
+				</div>
+			</div>
+			<div class="col-md-5">
+				<form class="d-flex mr-auto search_form_lg" method="get" action="" id="search_form_lg">
+					<div class="input-group rounded d-flex">
+						<input type="search" name="search" class="form-control rounded" placeholder="Search" aria-label="Search" aria-describedby="search-addon" />
+						<span class="input-group-text border-0" type="submit" id="search-addon">
+						  <i class="fas fa-search"></i>
+						</span>
+					</div>
+				</form>
+			</div>
+		</div>
+	
+		
+		{% block main %}
+	
+		{% endblock %}
+	
+
+		
+		
 	</div>
 
 	
-	{% block main %}
 
-	{% endblock %}
-
+	
 
 	<!-- ========= FOOTER =========== -->
 
 	<footer class="footer">
-		<h2>Major</h2>
+		<h2 style="font-weight: 900;"><span style="color: #3f6ad8;">E-</span>LEARN</h2>
 		<p>{{ site.footer_abt_txt }}</p>
 
 		<div class="social_icons">
@@ -189,21 +289,13 @@
 			<div class="col-md-5 col-sm-12">
 				<h6 class="footer_header">Latest</h6>
 				<div class="footer_section">
+					{% for n in latest_notes %}
 					<div class="footer_latest">
-						<a><img class="footer_latest_img" alt="latest" src="{% static 'images/c4.jpg' %}"></a>
-						<a href=""><h6>Heading</h6></a>
-						<p>Some latest upload content. Some latest upload content</p>
+						<a><img class="footer_latest_img" alt="latest" src="{{ n.cover_img.url }}"></a>
+						<a href=""><h6>{{ n.title }}</h6></a>
+						<p class="clipped-text-one">{{ n.description }}</p>
 					</div>
-					<div class="footer_latest">
-						<a href=""><img class="footer_latest_img" alt="latest" src="{% static 'images/c2.jpg' %}"></a>
-						<a href=""><h6>Heading</h6></a>
-						<p>Other latest upload</p>
-					</div>
-					<div class="footer_latest">
-						<a href=""><img class="footer_latest_img" alt="latest" src="{% static 'images/c3.jpg' %}"></a>
-						<a href=""><h6>Heading</h6></a>
-						<p>Some latest upload. Some latest upload content</p>
-					</div>
+					{% endfor %}
 					
 				</div>
 			</div>
@@ -491,6 +583,9 @@
 			}
         })
  	})
+
+	 	$('.dropdown').hover(function() { $(this).addClass('show'); $(this).find('.dropdown-menu').addClass('show');}, function() {$(this).removeClass('show'); $(this).find('.dropdown-menu').removeClass('show');});
+		
 		
 
 	</script>

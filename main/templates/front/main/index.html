@@ -2,7 +2,8 @@
 {% load static %}
 
 {% block head %}
-<title>Home</title>
+<title>Home | E-Learn</title>
+<link rel="stylesheet" href="{% static 'css/discussions/post_list.css' %}">
 <link rel="stylesheet" href="{% static 'css/index.css' %}">
 {% endblock %}
 
@@ -13,12 +14,12 @@
 		<div class="col-md-6 corousel1">
 			<div id="carouselExampleIndicators" class="carousel slide" data-bs-ride="carousel">
 				<div class="carousel-indicators">
-					{% for image in site.homeimage_set.all %}
-						<button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="{{forloop.counter0}}" class="{% if forloop.first%} active {%endif%}" aria-current="true" aria-label="Slide {{forloop.counter0}}"></button>
+					{% for image in site.images.all %}
+						<button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="{{forloop.counter0}}" class="{% if forloop.first%} active {%endif%}" aria-current="true" aria-label="Slide {{forloop.counter0}}" ></button>
 					{% endfor%}
 				</div>
 				<div class="carousel-inner">
-					{% for image in site.homeimage_set.all %}
+					{% for image in site.images.all %}
 					<div class="carousel-item {% if forloop.counter0 == 0 %}active{% endif %}"">
 						<img src="{{ image.img.url }}" class="d-block w-100" alt="...">
 						<div class="carousel-caption">
@@ -36,35 +37,15 @@
 		<div class="col-md-6 corousel2">
 			<div id="carouselExampleIndicators2"  class="carousel slide carousel-fade" data-bs-ride="carousel">
 				<div class="carousel-inner">
+					{% for c in latest_courses %}
 					<div class="carousel-item active">
-						<img src="{% static 'images/c4.jpg' %}" class="d-block w-100" alt="...">
+						<img src="{{ c.cover_image.url }}" class="d-block w-100" alt="...">
 						<div class="carousel-caption">
-							<h5>First Slide</h5>
-							<p>Some representative placeholder content for the first slide.</p>
+							<h5>{{ c.title }}</h5>
+							<p class="clipped-text">{{ c.overview }}</p>
 					   </div>
 					</div>
-					<div class="carousel-item">
-						<img src="{% static 'images/c1.jpg' %}" class="d-block w-100" alt="...">
-						<div class="carousel-caption">
-							<h5>Second Slide</h5>
-							<p>Some representative placeholder content for the second slide.</p>
-						</div>
-						
-					</div>
-					<div class="carousel-item">
-						<img src="{% static 'images/c2.jpg' %}" class="d-block w-100" alt="...">
-						<div class="carousel-caption">
-							<h5>Third Slide</h5>
-							<p>Some representative placeholder content for the third slide.</p>
-						</div>
-					</div>
-					<div class="carousel-item">
-						<img src="{% static 'images/c3.jpg' %}" class="d-block w-100" alt="...">
-						<div class="carousel-caption">
-							<h5>Fourth Slide</h5>
-							<p>Some representative placeholder content for the fouth slide.</p>
-						</div>
-					</div>
+					{% endfor %}
 				</div>
 			</div>
 
@@ -72,70 +53,31 @@
 				<div class="col-sm-6 corousel3">
 					<div id="carouselExampleIndicators3" class="carousel slide carousel-fade" data-bs-ride="carousel">
 						<div class="carousel-inner">
+							{% for n in latest_notes %}
 							<div class="carousel-item active">
-								<img src="{% static 'images/c4.jpg' %}" class="d-block w-100" alt="...">
+								<img src="{{ n.cover_img.url }}" class="d-block w-100" alt="...">
 								<div class="carousel-caption">
-									<h5>First Slide</h5>
-									<p>Some representative placeholder content for the first slide.</p>
+									<h5>{{ n.title }}</h5>
+									<p class="clipped-text">{{ n.description }}</p>
 							   </div>
 							</div>
-							<div class="carousel-item">
-								<img src="{% static 'images/c1.jpg' %}" class="d-block w-100" alt="...">
-								<div class="carousel-caption">
-									<h5>Second Slide</h5>
-									<p>Some representative placeholder content for the second slide.</p>
-								</div>
-								
-							</div>
-							<div class="carousel-item">
-								<img src="{% static 'images/c2.jpg' %}" class="d-block w-100" alt="...">
-								<div class="carousel-caption">
-									<h5>Third Slide</h5>
-									<p>Some representative placeholder content for the third slide.</p>
-								</div>
-							</div>
-							<div class="carousel-item">
-								<img src="{% static 'images/c3.jpg' %}" class="d-block w-100" alt="...">
-								<div class="carousel-caption">
-									<h5>Fourth Slide</h5>
-									<p>Some representative placeholder content for the fouth slide.</p>
-								</div>
-							</div>
+							{% endfor %}
 						</div>
 					</div>
 				</div>
 				<div class="col-sm-6 corousel4">
 					<div id="carouselExampleIndicators4" class="carousel slide carousel-fade" data-bs-ride="carousel">
 						<div class="carousel-inner">
+							{% for q in latest_quizzes %}
 							<div class="carousel-item active">
-								<img src="{% static 'images/c4.jpg' %}" class="d-block w-100" alt="...">
+								<img src="{{ q.cover_img.url }}" class="d-block w-100" alt="...">
 								<div class="carousel-caption">
-									<h5>First Slide</h5>
-									<p>Some representative placeholder content for the first slide.</p>
+									<h5>{{ q.title }}</h5>
+									<p class="clipped-text">{{ q.description }}</p>
 							   </div>
 							</div>
-							<div class="carousel-item">
-								<img src="{% static 'images/c1.jpg' %}" class="d-block w-100" alt="...">
-								<div class="carousel-caption">
-									<h5>Second Slide</h5>
-									<p>Some representative placeholder content for the second slide.</p>
-								</div>
-								
-							</div>
-							<div class="carousel-item">
-								<img src="{% static 'images/c2.jpg' %}" class="d-block w-100" alt="...">
-								<div class="carousel-caption">
-									<h5>Third Slide</h5>
-									<p>Some representative placeholder content for the third slide.</p>
-								</div>
-							</div>
-							<div class="carousel-item">
-								<img src="{% static 'images/c3.jpg' %}" class="d-block w-100" alt="...">
-								<div class="carousel-caption">
-									<h5>Fourth Slide</h5>
-									<p>Some representative placeholder content for the fouth slide.</p>
-								</div>
-							</div>
+							{% endfor %}
+						
 						</div>
 					</div>
 				</div>
@@ -144,376 +86,326 @@
 		</div>
 	</div>
 	
-
-	<div class="row" >
-		<div class="col-sm-12 col-md-8 no_padding" >
-			<div class="card card_item" >
-				<div class="card-body" style="display: flex;">
-					<div style="margin-right: 5px;">Computer Studies </div>
+	<div class="row">
+	
+		<div class="col-md-12 col-lg-8  card-block-left">
+			<div class="courses">
+				<div class="card card-hearder" >
+					<h5 class="card-hearder-title" ><a href="{% url 'course_list' %}">Courses</a> </h5>
+					<div class="card-hearder-sub-titles">
+						<a href="{% url 'course_list' %}" class="card-hearder-sub-title">All</a>
+						<a href="{% url 'course_create' %}" class="card-hearder-sub-title">Upload</a>
+						<a href="{% url 'manage_course_list' %}" class="card-hearder-sub-title">My Courses</a>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-sm-6 card-home-content-container card-home-left">
+						<div class="card card-home-content">
+							<img src="{{ courses.first.cover_image.url }}" class="card-img-top" alt="...">
+							<div class="card-body">
+								<div style="display: flex; justify-content: space-between;">
+									<h4 class="clipped-text">{{ courses.first.title }}</h4>
+									<p style="color: #FF9529;">{{ courses.first.average_rating|floatformat:2}} <i class="fa-solid fa-star-half-stroke"></i></p>
+									
+								</div>
+								  <p class="card-text clipped-text">{{ courses.first.overview }}</p>
+								  <div class="flex-separate">
+									<p class="card-text clipped-text" >{% if courses.first.school_level %}<a href="#">{{ courses.first.school_level }} </a>{% endif%} | {% if courses.first.subject %}<a href="#"> {{ courses.first.subject }}</a>{% endif %} </p>
+									<p style="text-align: end; opacity: 70%;">{{ courses.first.created|timesince }}</p>
+								  </div>
+								  
+							</div>
+						</div>
+					</div>
+					<div class="col-sm-6 card-home-content-container card-home-right">
+						<div class="card card-home-content card-home-side">
+							{% for course in courses|slice:"1:" %}
+							<div class="card-home-side-content" >
+								<img src="{{ course.cover_image.url }}" class="card-img-side" alt="...">
+								<div class="card-home-side-contents" >
+									<div class="flex-separate" >
+										<h4 class="clipped-text">{{ course.title.title }}</h4>
+										<p style="color: #FF9529; padding: 5px;">{{ course.average_rating|floatformat:2}} <i class="fa-solid fa-star-half-stroke"></i></p>
+									</div>
+									<div class="flex-separate" >
+										<p class="card-text clipped-text" >{% if course.school_level %}<a href="#">{{ course.school_level }} </a>{% endif%} | {% if course.subject %}<a href="#"> {{ course.subject }}</a>{% endif %} </p>
+										<p style="opacity: 70%; text-align: end;">{{ course.created|timesince}}</p>
+									</div>
+									
+								</div>
+							</div>
+							{% endfor %}
+							
+						</div>
+					</div>
+					
 				</div>
 			</div>
-			<div class="row">
-				<div class="col-sm-6 col-lg-4 card_item">
-					<div class="card">
-						<img src="{% static 'images/c1.jpg' %}" class="card-img-top" alt="...">
-						<div class="card-body">
-							<div style="display: flex; justify-content: space-between;">
-								<h4>Title</h4>
-								<p style="opacity: 70%;">01/01/2021</p>
-							</div>
-							  <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
-							<p style="text-align: end; color: #FF9529;">4.5 <i class="fa-solid fa-star-half-stroke"></i></p>
-						</div>
+			
+			<div class="notes"> 
+				<div class="card card-hearder" >
+					<h5 class="card-hearder-title" ><a href="{% url 'course_list' %}">Notes</a></h5>
+					<div class="card-hearder-sub-titles">
+						<a href="{% url 'course_list' %}" class="card-hearder-sub-title">All</a>
+						<a href="{% url 'course_create' %}" class="card-hearder-sub-title">Upload</a>
+						<a href="{% url 'manage_course_list' %}" class="card-hearder-sub-title">My Notes</a>
 					</div>
 				</div>
-				<div class="col-sm-6 col-lg-4 card_item">
-					<div class="card">
-						<img src="{% static 'images/c4.jpg' %}" class="card-img-top" alt="...">
-						<div class="card-body">
-							<div style="display: flex; justify-content: space-between;">
-								<h4>Title</h4>
-								<p style="opacity: 70%;">01/01/2021</p>
+				<div class="row">
+	
+					<div class="col-sm-6 card-home-content-container card-home-left">
+						<div class="card card-home-content">
+							<img src="{{ notes.first.cover_img.url }}" class="card-img-top" alt="...">
+							<div class="card-body">
+								<div style="display: flex; justify-content: space-between;">
+									<h4 class="clipped-text">{{ notes.first.title }}</h4>
+									<p style=" color: #FF9529;">{{ notes.first.average_rating }}<i class="fa-solid fa-star-half-stroke"></i></p>
+									
+								</div>
+								  <p class="card-text clipped-text">{{ notes.first.description }}</p>
+								  <div class="flex-separate">
+									<p class="card-text clipped-text"  >{% if notes.first.school_level %}<a href="#">{{ notes.first.school_level }} </a>{% endif%} | {% if notes.first.subject %}<a href="#"> {{ notes.first.subject }}</a>{% endif %} </p>
+									<p style="text-align: end; opacity: 70%;">{{ notes.first.created|timesince  }}</p>							  </div>
 							</div>
-							  <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
-							  <p style="text-align: end; color: #FF9529;">4.5 <i class="fa-solid fa-star-half-stroke"></i></p>
 						</div>
 					</div>
-				</div>
-				<div class="col-sm-6 col-lg-4 card_item">
-					<div class="card">
-						<img src="{% static 'images/c3.jpg' %}" class="card-img-top" alt="...">
-						<div class="card-body">
-							<div style="display: flex; justify-content: space-between;">
-								<h4>Title</h4>
-								<p style="opacity: 70%;">01/01/2021</p>
+					<div class="col-sm-6 card-home-content-container card-home-right">
+						<div class="card card-home-content card-home-side">
+							{% for note in notes|slice:"1:" %}
+							<div class="card-home-side-content" >
+								<img src="{{ note.cover_img.url }}" class="card-img-side" alt="...">
+								<div class="card-home-side-contents" >
+									<div class="flex-separate" >
+										<h4 class="clipped-text">{{ note.title.title }}</h4>
+										<p style="color: #FF9529; padding: 5px;">{{ note.average_rating|floatformat:2}} <i class="fa-solid fa-star-half-stroke"></i></p>
+									</div>
+									<div class="flex-separate" >
+										<p class="card-text clipped-text" >{% if note.school_level %}<a href="#">{{ note.school_level }} </a>{% endif%} | {% if note.subject %}<a href="#"> {{ note.subject }}</a>{% endif %} </p>
+										<p style="opacity: 70%; text-align: end;">{{ note.created|timesince}}</p>
+									</div>
+									
+								</div>
 							</div>
-							  <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
-							  <p style="text-align: end; color: #FF9529;">4.5 <i class="fa-solid fa-star-half-stroke"></i></p>
-						</div>
-					</div>
-				</div>
-				<div class="col-sm-6 col-lg-4 card_item">
-					<div class="card">
-						<img src="{% static 'images/c2.jpg' %}" class="card-img-top" alt="...">
-						<div class="card-body">
-							<div style="display: flex; justify-content: space-between;">
-								<h4>Title</h4>
-								<p style="opacity: 70%;">01/01/2021</p>
-							</div>
-							  <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
-							  <p style="text-align: end; color: #FF9529;">4.5 <i class="fa-solid fa-star-half-stroke"></i></p>
-						</div>
-					</div>
-				</div>
-			</div>
-
-			<div class="card">
-				<div class="card-body" style="display: flex;">
-					<div style="margin-right: 5px;">History </div>
-				</div>
-			</div>
-			<div class="row">
-				<div class="col-sm-6 col-lg-4 card_item">
-					<div class="card">
-						<img src="{% static 'images/c1.jpg' %}" class="card-img-top" alt="...">
-						<div class="card-body">
-							<div style="display: flex; justify-content: space-between;">
-								<h4>Title</h4>
-								<p style="opacity: 70%;">01/01/2021</p>
-							</div>
-							  <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
-							<p style="text-align: end; color: #FF9529;">4.5 <i class="fa-solid fa-star-half-stroke"></i></p>
-						</div>
-					</div>
-				</div>
-				<div class="col-sm-6 col-lg-4 card_item">
-					<div class="card">
-						<img src="{% static 'images/c4.jpg' %}" class="card-img-top" alt="...">
-						<div class="card-body">
-							<div style="display: flex; justify-content: space-between;">
-								<h4>Title</h4>
-								<p style="opacity: 70%;">01/01/2021</p>
-							</div>
-							  <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
-							  <p style="text-align: end; color: #FF9529;">4.5 <i class="fa-solid fa-star-half-stroke"></i></p>
-						</div>
-					</div>
-				</div>
-				<div class="col-sm-6 col-lg-4 card_item">
-					<div class="card">
-						<img src="{% static 'images/c3.jpg' %}" class="card-img-top" alt="...">
-						<div class="card-body">
-							<div style="display: flex; justify-content: space-between;">
-								<h4>Title</h4>
-								<p style="opacity: 70%;">01/01/2021</p>
-							</div>
-							  <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
-							  <p style="text-align: end; color: #FF9529;">4.5 <i class="fa-solid fa-star-half-stroke"></i></p>
-						</div>
-					</div>
-				</div>
-				<div class="col-sm-6 col-lg-4 card_item">
-					<div class="card">
-						<img src="{% static 'images/c2.jpg' %}" class="card-img-top" alt="...">
-						<div class="card-body">
-							<div style="display: flex; justify-content: space-between;">
-								<h4>Title</h4>
-								<p style="opacity: 70%;">01/01/2021</p>
-							</div>
-							  <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
-							  <p style="text-align: end; color: #FF9529;">4.5 <i class="fa-solid fa-star-half-stroke"></i></p>
+							{% endfor %}
+							
 						</div>
 					</div>
 				</div>
 			</div>
 
-			<div class="card">
-				<div class="card-body" style="display: flex;">
-					<div style="margin-right: 5px;">Mathematics </div>
-				</div>
-			</div>
-			<div class="row">
-				<div class="col-sm-6 col-lg-4 card_item">
-					<div class="card">
-						<img src="{% static 'images/c1.jpg' %}" class="card-img-top" alt="...">
-						<div class="card-body">
-							<div style="display: flex; justify-content: space-between;">
-								<h4>Title</h4>
-								<p style="opacity: 70%;">01/01/2021</p>
-							</div>
-							  <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
-							<p style="text-align: end; color: #FF9529;">4.5 <i class="fa-solid fa-star-half-stroke"></i></p>
-						</div>
+			<div class="quizzes"> 
+				<div class="card card-hearder" >
+					<h5 class="card-hearder-title" ><a href="{% url 'quiz_list' %}">Quizzes </a></h5>
+					<div class="card-hearder-sub-titles">
+						<a href="{% url 'quiz_list' %}" class="card-hearder-sub-title">All</a>
+						<a href="{% url 'quiz_create' %}" class="card-hearder-sub-title">Upload</a>
+						<a href="{% url 'manage_quiz_list' %}" class="card-hearder-sub-title">My Quizzes</a>
 					</div>
 				</div>
-				<div class="col-sm-6 col-lg-4 card_item">
-					<div class="card">
-						<img src="{% static 'images/c4.jpg' %}" class="card-img-top" alt="...">
-						<div class="card-body">
-							<div style="display: flex; justify-content: space-between;">
-								<h4>Title</h4>
-								<p style="opacity: 70%;">01/01/2021</p>
+				<div class="row">
+	
+					<div class="col-sm-6 card-home-content-container card-home-left">
+						<div class="card card-home-content">
+							<img src="{{ quizzes.first.cover_img.url }}" class="card-img-top" alt="...">
+							<div class="card-body">
+								<div style="display: flex; justify-content: space-between;">
+									<h4 class="clipped-text">{{ quizzes.first.title }}</h4>
+									<p style=" color: #FF9529;">{{ quizzes.first.average_rating }}<i class="fa-solid fa-star-half-stroke"></i></p>
+									
+								</div>
+								  <p class="card-text clipped-text">{{ quizzes.first.description }}</p>
+								  <div class="flex-separate">
+									<p class="card-text clipped-text" >{% if quizzes.first.school_level %}<a href="#">{{ quizzes.first.school_level }} </a>{% endif%} | {% if quizzes.first.subject %}<a href="#"> {{ quizzes.first.subject }}</a>{% endif %} </p>
+									<p style="text-align: end; opacity: 70%;">{{ quizzes.first.created|timesince  }}</p>							  </div>
 							</div>
-							  <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
-							  <p style="text-align: end; color: #FF9529;">4.5 <i class="fa-solid fa-star-half-stroke"></i></p>
 						</div>
 					</div>
-				</div>
-				<div class="col-sm-6 col-lg-4 card_item">
-					<div class="card">
-						<img src="{% static 'images/c3.jpg' %}" class="card-img-top" alt="...">
-						<div class="card-body">
-							<div style="display: flex; justify-content: space-between;">
-								<h4>Title</h4>
-								<p style="opacity: 70%;">01/01/2021</p>
+					<div class="col-sm-6 card-home-right" >
+						
+							{% for quiz in quizzes|slice:"1:" %}
+							<div class="card-home-side-content">
+								<img src="{{ quiz.cover_img.url }}" class="card-img-side" alt="...">
+								<div class="card-home-side-contents" >
+									<div class="flex-separate" >
+										<h4 class="clipped-text">{{ quiz.title.title }}</h4>
+										<p style="color: #FF9529; padding: 5px;">{{ quiz.average_rating|floatformat:2}} <i class="fa-solid fa-star-half-stroke"></i></p>
+									</div>
+									<div class="flex-separate" >
+										<p class="card-text clipped-text" >{% if quiz.school_level %}<a href="#">{{ quiz.school_level }} </a>{% endif%} | {% if quiz.subject %}<a href="#"> {{ quiz.subject }}</a>{% endif %} </p>
+										<p style="opacity: 70%; text-align: end;">{{ quiz.created|timesince}}</p>
+									</div>
+									
+								</div>
 							</div>
-							  <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
-							  <p style="text-align: end; color: #FF9529;">4.5 <i class="fa-solid fa-star-half-stroke"></i></p>
-						</div>
-					</div>
-				</div>
-				<div class="col-sm-6 col-lg-4 card_item">
-					<div class="card">
-						<img src="{% static 'images/c2.jpg' %}" class="card-img-top" alt="...">
-						<div class="card-body">
-							<div style="display: flex; justify-content: space-between;">
-								<h4>Title</h4>
-								<p style="opacity: 70%;">01/01/2021</p>
-							</div>
-							  <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
-							  <p style="text-align: end; color: #FF9529;">4.5 <i class="fa-solid fa-star-half-stroke"></i></p>
-						</div>
+							{% endfor %}
+							
+						
 					</div>
 				</div>
 			</div>
+
+			<div class="main-posts"> 
+				<div class="card card-hearder" >
+					<h5 class="card-hearder-title" ><a href="{% url 'discussion_topic_list' %}">Discussion Forum</a> </h5>
+					<div class="card-hearder-sub-titles">
+						<a href="{% url 'discussion_topic_list' %}" class="card-hearder-sub-title">Discussion Topics</a>
+						<a href="#" class="card-hearder-sub-title">Posts</a>
+						
+					</div>
+				</div>
+				<div class="row">
+					
+					<div class="col-12 card-home-content-container card-home-right" style=" padding:0px;">
+						<div class="card card-home-content card-home-side" >
+							{% for post in posts|slice:"1:" %}
+							<div class="card topic_card" >
+								<div class="div_top">
+									<a href="{% url 'post_detail' topic_id=post.discussion_topic.pk post_id=post.pk %}"><img src="{{ post.image.url }}" class="topic_img"></a>
+									<a href="{% url 'post_detail' topic_id=post.discussion_topic.pk post_id=post.pk %}" class="topic_title">{% if post.owner %}{{ post.owner.profile.profile_name }}{% endif %}</a>
+									<p class="date small">{{ post.date|timesince }} </p>
+								</div>
+								<hr style="margin: 5px;">
+								<h6 class="qns clipped-text">{{ post.title }}</h6>
+								<p class="qns clipped-text">{{ post.post_content }}?</p>
+								<hr style="margin-left: 5px; margin-right: 5px;">
+							</div>
+							{% endfor %}
+							
+						</div>
+					</div>
+					
+				</div>
+			</div>
+			
 
 		</div>
-		<div class="col-sm-12 col-md-4 card_item" >
-			<div>
+		<div class="col-md-12 col-lg-4 card_item card-block-right" >
+			
+			<div class="latest">
+				<div class="card card-hearder" >
+					<h5 class="card-hearder-title" >Latest </h5>
+				</div>
+			
+				<div>
+					
+					{% for c in latest_courses %}
+					<h6 class="latest-item" >
+						<a class="latest-number">{{ forloop.counter }} </a> 
+						<a href="#" class="latest-link" >{{ c.title }} (Course) </a>
+					</h6>
+					{% endfor %}
+					{% for n in latest_notes %}
+					<h6 class="latest-item" >
+						<a class="latest-number">{{ latest_courses|length|add:forloop.counter }}</a> 
+						<a href="#" class="latest-link" >{{ n.title }} (Notes)</a>
+					</h6>
+					{% endfor %}
+					{% for q in latest_quizzes %}
+					{% with count=latest_courses|length|add:forloop.counter %}
+					<h6 class="latest-item" >
+						<a  class="latest-number" >{{ latest_notes|length|add:count }}</a> 
+						<a href="#" class="latest-link" >{{ q.title }} (Quiz) </a>
+					</h6>
+					{% endwith %}
+					{% endfor %}
+	
+				</div>
 
 			</div>
-			<div class="card">
-				<div class="card-body" style="display: flex;">
-					<div style="margin-right: 5px;">Latest </div>
+			
+			<div class="most-popular">
+				<div class="card card-hearder" >
+					<h5 class="card-hearder-title" >Most Popular </h5>
+				</div>
+				<div>
+					<h6 class="latest-item" >
+						<a class="latest-number">1 </a> 
+						<a href="#" class="latest-link" >You wish lorem ipsum dolor sit </a>
+					</h6>
+					<h6 class="latest-item" >
+						<a class="latest-number">2 </a> 
+						<a href="#" class="latest-link" >You wish lorem ipsum dolor sit </a>
+					</h6>
+					<h6 class="latest-item" >
+						<a  class="latest-number" >3 </a> 
+						<a href="#" class="latest-link" >You wish lorem ipsum dolor sit </a>
+					</h6>
+					<h6 class="latest-item" >
+						<a class="latest-number">4 </a> 
+						<a href="#" class="latest-link" >You wish lorem ipsum dolor sit </a>
+					</h6>
+				</div>
+	
+			</div>
+			
+			<div class="posts">
+				<div class="card card-hearder" >
+					<h5 class="card-hearder-title" >Posts </h5>
+				</div>
+				<div>
+					{% for post in latest_posts %}
+					<h6 class="latest-item" >
+						<a class="latest-number">{{ forloop.counter }}</a> 
+						<a href="#" class="latest-link" >{{ post.title }}</a>
+					</h6>
+					{% endfor %}
 				</div>
 			</div>
-			<div>
-				<h6>
-					1. You wish lorem ipsum dolor sit amet consectetur
-				</h6>
 
-				<h6>
-					2. You wish lorem ipsum dolor sit amet consectetur
-				</h6>
-
-				<h6>
-					3. You wish lorem ipsum dolor sit amet consectetur
-				</h6>
-
-				<h6>
-					4. You wish lorem ipsum dolor sit amet consectetur
-				</h6>
-
-				<h6>
-					5. You wish lorem ipsum dolor sit amet consectetur
-				</h6>
-			</div>
-
-			<div class="card">
-				<div class="card-body" style="display: flex;">
-					<div style="margin-right: 5px;">Your Recent Searches </div>
+			<div class="socials">
+				<div class="card card-hearder" >
+					<h5 class="card-hearder-title" >Stay connected </h5>
 				</div>
-			</div>
-			<div>
-				<h6>
-					1. You wish lorem ipsum dolor sit amet consectetur
-				</h6>
-
-				<h6>
-					2. You wish lorem ipsum dolor sit amet consectetur
-				</h6>
-
-				<h6>
-					3. You wish lorem ipsum dolor sit amet consectetur
-				</h6>
-
-				<h6>
-					4. You wish lorem ipsum dolor sit amet consectetur
-				</h6>
-
-				<h6>
-					5. You wish lorem ipsum dolor sit amet consectetur
-				</h6>
-			</div>
-
-			<div class="card">
-				<div class="card-body" style="display: flex;">
-					<div style="margin-right: 5px;">Most Popular </div>
+				<div class="socials-container" >
+					{% for social in about.socials.all %}
+					<a style="display:flex; justify-content: space-between;" class="socials-item"
+					 title="{{ social.display_title }}" href="{{ social.link }}">
+					 <i style ="background-color:{% if social.social_name.lower == 'facebook' %}#3b5998{% elif social.social_name.lower == 'twitter' %}#1DA1F2{% elif social.social_name.lower == 'instagram' %}#8a3ab9{% elif social.social_name.lower == 'linkedin' %}#0077b5{% elif social.social_name.lower == 'youtube' %}#FF0000{% endif %}; color: white; width: 30px; height:30px; padding: 8px; border-radius: 2px;" class="{{ social.social_font_owesome_icon }}"></i> <h6>{% if social.social_name.lower == 'facebook' %}Like{% elif social.social_name.lower == 'twitter' %}Follow{% elif social.social_name.lower == 'instagram' %}Follow{% elif social.social_name.lower == 'linkedin' %}Connect{% elif social.social_name.lower == 'youtube' %}Subscribe{% endif %}</h6></a>
+					{% endfor %}
 				</div>
+	
 			</div>
-			<div>
-				<h6>
-					1. You wish lorem ipsum dolor sit amet consectetur
-				</h6>
+			<br>
+			<br>
 
-				<h6>
-					2. You wish lorem ipsum dolor sit amet consectetur
-				</h6>
-
-				<h6>
-					3. You wish lorem ipsum dolor sit amet consectetur
-				</h6>
-
-				<h6>
-					4. You wish lorem ipsum dolor sit amet consectetur
-				</h6>
-
-				<h6>
-					5. You wish lorem ipsum dolor sit amet consectetur
-				</h6>
+		
+			
+			<div class="subscribe">
+				<h3 class="subscribe_txt" >Subscribe</h3>
+				<p >Get all the latest content and stay updated</p>
+				<form class="subscribe_form">
+					<input class="subscribe_input" type="email" id="email" name="email" placeholder="Email">
+					<a class="subscribe_button"  type="submit"><i class="fa fa-arrow-right"></i></a>
+				</form>
 			</div>
+			<br>
+			
+			<div class="all-tags">
+	
+				<div class="card card-hearder" >
+					<h5 class="card-hearder-title" >Tags </h5>
+				</div>
+	
+				<div class="tags">
+					{% for tag in site.tags_list %}
+					<p class="tag">{{ tag }}</p>
+					{% endfor %}
+				</div>  
+
+			</div>
+			
 			
 		</div>
 
 		
 	</div>
-	<div class="banner">
+	<br>
+	<br>
+	<div class="banner" >
 	
 	</div>
-
-	<div class="row">
-		<div class="col-sm-12 col-md-8 no_padding " >
-			<div class="card">
-				<div class="card-body" style="display: flex;">
-					<div style="margin-right: 5px;">Latest Uploads </div>
-				</div>
-			</div>
-			<div class="row">
-				<div class="col-sm-6 col-lg-4 card_item">
-					<div class="card">
-						<img src="{% static 'images/c1.jpg' %}" class="card-img-top" alt="...">
-						<div class="card-body">
-							<div style="display: flex; justify-content: space-between;">
-								<h4>Title</h4>
-								<p style="opacity: 70%;">01/01/2021</p>
-							</div>
-							  <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
-							<p style="text-align: end; color: #FF9529;">4.5 <i class="fa-solid fa-star-half-stroke"></i></p>
-						</div>
-					</div>
-				</div>
-				<div class="col-sm-6 col-lg-4 card_item">
-					<div class="card">
-						<img src="{% static 'images/c4.jpg' %}" class="card-img-top" alt="...">
-						<div class="card-body">
-							<div style="display: flex; justify-content: space-between;">
-								<h4>Title</h4>
-								<p style="opacity: 70%;">01/01/2021</p>
-							</div>
-							  <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
-							  <p style="text-align: end; color: #FF9529;">4.5 <i class="fa-solid fa-star-half-stroke"></i></p>
-						</div>
-					</div>
-				</div>
-				<div class="col-sm-6 col-lg-4 card_item">
-					<div class="card">
-						<img src="{% static 'images/c3.jpg' %}" class="card-img-top" alt="...">
-						<div class="card-body">
-							<div style="display: flex; justify-content: space-between;">
-								<h4>Title</h4>
-								<p style="opacity: 70%;">01/01/2021</p>
-							</div>
-							  <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
-							  <p style="text-align: end; color: #FF9529;">4.5 <i class="fa-solid fa-star-half-stroke"></i></p>
-						</div>
-					</div>
-				</div>
-				<div class="col-sm-6 col-lg-4 card_item">
-					<div class="card">
-						<img src="{% static 'images/c2.jpg' %}" class="card-img-top" alt="...">
-						<div class="card-body">
-							<div style="display: flex; justify-content: space-between;">
-								<h4>Title</h4>
-								<p style="opacity: 70%;">01/01/2021</p>
-							</div>
-							  <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
-							  <p style="text-align: end; color: #FF9529;">4.5 <i class="fa-solid fa-star-half-stroke"></i></p>
-						</div>
-					</div>
-				</div>
-			</div>
-
-		</div>
-
-		<div class="col-sm-12 col-md-4 no_padding" >
-			<div class="card">
-				<div class="card-body" style="display: flex;">
-					<div style="margin-right: 5px;">Get Notified </div>
-				</div>
-			</div>
-			<div class="subscribe">
-				<h3 class="subscribe_txt" >Subscribe To Get The Latest Updates</h3>
-				<form class="subscribe_form" >
-					<input class="subscribe_input" type="email" id="email" name="email" placeholder="Email">
-					<button class="subscribe_button" type="submit"><i class="fa fa-arrow-right"></i></button>
-				</form>
-			</div>
-
-			<div class="card">
-				<div class="card-body" style="display: flex;">
-					<div style="margin-right: 5px;">Tags </div>
-				</div>
-			</div>
-
-			<div class="tags">
-				{% for tag in site.tags_list %}
-				<p class="tag">{{ tag }}</p>
-				{% endfor %}
-			</div>
-		</div>
-
-
-	</div>
+	<br>
+	<br>
 
 	
 	

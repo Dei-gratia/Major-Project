@@ -10,15 +10,15 @@
 
 <nav aria-label="breadcrumb" style="--bs-breadcrumb-divider: '/';">
 	<ol class="breadcrumb">
-	  <li class="breadcrumb-item"><a href="/">Home</a></li>
-	  <li class="breadcrumb-item active" aria-current="page">Contact</li>
+	  <li class="breadcrumb-item"><a href="{% url 'home' %}">home</a></li>
+	  <li class="breadcrumb-item active" aria-current="page">contact</li>
 	</ol>
   </nav>
 
 	<div class="content">
 		<h2 class="page_hearding " id="contact_h2"> Contact Us</h2>
 		<div class="row">
-			<div class="col-sm-12 col-md-8 contact_container" >
+			<div class="col-sm-12 contact_container" >
 				<form class="form-horizontal contact_form" action="{% url 'contact' %}" method="post">
 					{% csrf_token %}
 					{% for field in form %}
@@ -65,36 +65,7 @@
 				</div>
 				
 			</div>
-			<div class="col-sm-12 col-md-4" >
-				<div class="card">
-					<div class="card-body" style="display: flex;">
-						<div style="margin-right: 5px;">Latest Uploads </div>
-					</div>
-				</div>
-				<div class="latest_sub">
-					<div class="latest_sub_item">
-						<img class="footer_latest_img" alt="latest" src="{% static 'images/c4.jpg' %}">
-						<p>Some latest upload content. Some latest upload content</p>
-					</div>
-					<br/>
-					<div class="latest_sub_item">
-						<img class="footer_latest_img" alt="latest" src="{% static 'images/c2.jpg' %}">
-						<p>Other latest upload</p>
-					</div>
-					<br/>
-					<div class="latest_sub_item">
-						<img class="footer_latest_img" alt="latest" src="{% static 'images/c3.jpg' %}">
-						<p>Some latest upload. Some latest upload content</p>
-					</div>
-					<br/>
-					<div class="latest_sub_item">
-						<img class="footer_latest_img" alt="latest" src="{% static 'images/c1.jpg' %}">
-						<p>Some latest upload. Some latest upload content</p>
-					</div>
-					
-				</div>
-	
-			</div>
+			
 		</div>
 		
 		

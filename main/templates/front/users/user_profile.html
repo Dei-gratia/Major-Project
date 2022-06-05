@@ -13,8 +13,8 @@
 <div class="content">
 	<nav aria-label="breadcrumb" style="--bs-breadcrumb-divider: '/';">
 		<ol class="breadcrumb">
-		  <li class="breadcrumb-item"><a href="/">Home</a></li>
-		  <li class="breadcrumb-item active" aria-current="page">Profile</li>
+		  <li class="breadcrumb-item"><a href="{% url 'home' %}">home</a></li>
+		  <li class="breadcrumb-item active" aria-current="page">profile</li>
 		</ol>
 	</nav>
 	<div class="page-heading-container">
@@ -31,7 +31,7 @@
 				<img class=" mx-auto d-block profile_img" alt="profile image" src="{{ object.image.url }}" id="profile_img"  >	
 				{{form|crispy }}
 				{% csrf_token %}
-				<p><input type="submit" class="button btn" value="Save profile"></p>	
+				<p style="display: flex; justify-content: end;"><input type="submit" class="button btn" value="Save profile"></p>	
 			</form>
 		
 	</div>

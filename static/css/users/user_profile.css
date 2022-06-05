@@ -1,5 +1,18 @@
-.contents-container {
-	background-color: rgba(0, 0, 0, 0.416);
+body {
+	background-image: url('/static/images/c1.jpg');
+}
+
+
+#slider_search_container {
+	display: none !important;
+}
+
+#lg-nav2 .lag-nav2-item-container a {
+	color: white;
+}
+
+.dropdown .dropdown-menu {
+	background-color: black;
 }
 
 
@@ -31,6 +44,10 @@
 
 .section_1 p {
 	padding: 5px 30px;
+}
+
+#slider_search_container {
+	display: none !important;
 }
 
 @media screen and (min-width: 769px) {

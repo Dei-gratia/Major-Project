@@ -33,7 +33,7 @@
 					</div>
 					<div class="col-sm-6">
 						
-						<p style="text-align: end; color: orange;" title="note rating">{{ note.average_rating }}.0
+						<p style="text-align: end; color: orange;" title="note rating">{{ note.average_rating|floatformat:2 }}
 							{% with ''|center:note.average_rating as range %}
 								{% for i in range %}
 									<i class="fa-solid fa-star" style="color: orange;"></i>
@@ -65,11 +65,11 @@
 				</div>
 				<h2 class="details-block-heading">Note overview</h2>
 
-				<p>{{ note.description }}</p>
+				<p>{{ note.description|linebreaks }}</p>
 
 				<div class="row" >
 					<div class="col-sm-12 col-md-8 contact_container" style="padding: 0;">
-						<p class="abt_txt">{{ note.body }}</p>
+						<p class="abt_txt">{{ note.body|linebreaks }}</p>
 						<br>
 						<div>
 							<div id="rating_success" class="alert alert-success d-flex align-items-center alert-dismissible fade show" style="margin-top: 10px;" role="alert">

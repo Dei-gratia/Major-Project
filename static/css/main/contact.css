@@ -37,7 +37,7 @@ background-color: rgba(255, 255, 255, 0.841);
   margin-left: auto;
   margin-bottom: 5px;
   color: white;
-  background-color: black;
+  background-color: #3f6ad8;
   border-radius: 5px;
   padding: 8px 20px;
 }
@@ -59,6 +59,23 @@ background-color: rgba(255, 255, 255, 0.841);
 	font-size: 45px;
 	
 	padding-bottom: 20px;
+}
+
+#slider_search_container {
+	display: none !important;
+}
+
+#lg-nav2 .lag-nav2-item-container a {
+	color: white;
+}
+
+.dropdown .dropdown-menu {
+	background-color: black;
+}
+
+.dropdown-menu > a:hover {
+    background-image: none;
+    background-color: #3f6ad8;
 }
 
   

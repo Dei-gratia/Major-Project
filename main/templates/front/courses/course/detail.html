@@ -35,7 +35,7 @@
 			{%	if	request.user.is_authenticated	%}
 				{% if student %}
 				<br>
-				<p>Already Enrolled </p>
+				<p>You are already enrolled in this course </p>
 				<a	href="{%	url	'student_course_detail'	course.id	%}"	class="">Go to Course</a>
 				{% else%}
 				<form	action="{%	url	'student_enroll_course'	%}"	method="post">

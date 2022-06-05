@@ -10,6 +10,26 @@ body {
   border-radius: 3px;
 }
 
+#slider_search_container {
+	display: none !important;
+}
+
+#lg-nav2 .lag-nav2-item-container a {
+	color: white;
+	
+}
+
+.dropdown .dropdown-menu {
+	background-color: black;
+}
+
+.dropdown-menu > a:hover {
+    background-image: none;
+    background-color: #3f6ad8;
+}
+
+
+
 .content_bm {
 	background-color: rgb(255, 255, 255);
 	
