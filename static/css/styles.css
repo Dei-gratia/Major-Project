@@ -634,6 +634,17 @@ span
 }
 
 
+.black-txt {
+	color: black;
+}
+
+.img-zoom {
+	transition: transform 330ms ease-in-out;
+}
+
+.img-zoom:hover {
+	transform: scale(1.1); 
+  }
 
 
   

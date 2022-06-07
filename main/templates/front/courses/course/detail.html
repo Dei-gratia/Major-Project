@@ -1,5 +1,6 @@
 {% extends 'front/master.html' %}
 {% load static %}
+{% load mathfilters %}
 
 {% block head %}
 <title>
@@ -19,36 +20,130 @@
 	</h1>
 	</div>
 	
-	<div class="jumbotron">
-		<div	class="details-block ">
-			<h2 class="details-block-heading">Overview</h2>
-			<p>
-			<a class="details-block-subject" href="{% url 'course_list_subject' subject=subject.slug order='-created'	%}">
-			{{	subject.title	}}</a>.
-			{{	course.modules.count	}}	modules.
-			Instructor:	{% if course.owner %}
-			{{	course.owner.profile.profile_name	}}
-			{% else %}Unknown{% endif %}
-	
-			</p>
-			{{	object.overview|linebreaks	}}
-			{%	if	request.user.is_authenticated	%}
-				{% if student %}
-				<br>
-				<p>You are already enrolled in this course </p>
-				<a	href="{%	url	'student_course_detail'	course.id	%}"	class="">Go to Course</a>
-				{% else%}
-				<form	action="{%	url	'student_enroll_course'	%}"	method="post">
-					{{	enroll_form	}}
-					{%	csrf_token	%}
-					<input	type="submit"	class="button btn enroll"	value="Enroll now">
-				</form>
+	<div class="row jumbotron" >
+		<div class="col-sm-12 col-md-8" style="padding: 0px;" >
+			<div class="details-block " >
+				<h2 class="details-block-heading">Overview</h2>
+				<p style="text-align: end; color: orange;" title="course rating">{{ course.get_average_rating|floatformat:2 }}
+					{% with ''|center:course.get_average_rating as range %}
+						{% for i in range %}
+							<i class="fa-solid fa-star" style="color: orange;"></i>
+						{% endfor %}
+					{% endwith %}
+					{% with 5|sub:course.get_average_rating as x %}
+						{% with ''|center:x as range %}
+							{% for i in range %}
+								<i class="fa-regular fa-star" style="color: orange;"></i>
+							{% endfor %}
+						{% endwith %}
+					{% endwith %}
+				</p>
+				<p>
+				{% if course.school_level %}<a href="{% url 'course_list_level' school_level=course.school_level.slug order='-created' %}"> {{ course.school_level }}</a>{% endif %} | {% if course.subject %}<a href="{% url 'course_list_subject' subject=course.subject.slug order='-created' %}"> {{ course.subject }}</a>{% endif %}. | 
+				{{ course.modules.count	}}	modules. | 
+				Instructor:	{% if course.owner %}
+				{{ course.owner.profile.profile_name }}
+				{% else %}Unknown{% endif %}
+					
+				</p>
+				{{ object.overview|linebreaks }}
+				{%	if	request.user.is_authenticated %}
+					{% if student %}
+					<br>
+					<p>You are already enrolled in this course </p>
+					<a	href="{%	url	'student_course_detail'	course.id	%}"	class="">Go to Course</a>
+					{% else%}
+					<form	action="{%	url	'student_enroll_course'	%}"	method="post">
+						{{	enroll_form	}}
+						{%	csrf_token	%}
+						<input	type="submit"	class="button btn enroll"	value="Enroll now">
+					</form>
+					{% endif %}
+				{%	else	%}
+				<a	href="{%	url	'student_registration'	%}"	class="button btn enroll">
+				Register to enroll
+				</a>
+				{%	endif	%}
+			</div>
+
+		</div>
+		
+		<div class="col-sm-12 col-md-4" >
+			<div class="card">
+				<div class="card-body" style="display: flex;">
+					<div style="margin-right: 5px;">Comments </div>
+				</div>
+			</div>
+
+			{% if user_review %}
+				<div class="latest_sub_item" style="display: flex; flex-direction: row;">
+					<img class="comment_img" alt="latest" src="{% static 'images/default_profile.png' %}">
+					<div>
+						<div class="comment_top"  ><h6 class="comment_name">You </h6><p class="comment_rate">
+							{% with ''|center:user_review.rate_value as range %}
+								{% for i in range %}
+									<i class="fa-solid fa-star" style="color: orange;"></i>
+								{% endfor %}
+							{% endwith %}
+							{% with 5|sub:user_review.rate_value as x %}
+							{% with ''|center:x as range %}
+								{% for i in range %}
+									<i class="fa-regular fa-star" style="color: orange;"></i>
+								{% endfor %}
+							{% endwith %}
+							{% endwith %}
+							
+							</i></p></div>
+						
+						<p class="comment_txt">{{ user_review.comment }}</p>
+						<p class="comment_date">{{ user_review.date|timesince }} ago</p>
+					</div>					
+				</div>
+			{% endif %}
+
+			{% for review in course.reviews.all %}
+				{% if review != user_review %}
+					<div class="latest_sub_item" style="display: flex; flex-direction: row;">
+						<img class="comment_img" alt="latest" src="{% static 'images/default_profile.png' %}">
+						<div>
+							<div class="comment_top"  ><h6 class="comment_name">{{ review.user.profile.profile_name.title}} </h6><p class="comment_rate">
+								{% with ''|center:review.rate_value as range %}
+									{% for i in range %}
+										<i class="fa-solid fa-star" style="color: orange;"></i>
+									{% endfor %}
+								{% endwith %}
+								{% with 5|sub:review.rate_value as x %}
+								{% with ''|center:x as range %}
+									{% for i in range %}
+										<i class="fa-regular fa-star" style="color: orange;"></i>
+									{% endfor %}
+								{% endwith %}
+								{% endwith %}
+								
+								</i></p></div>
+							
+							<p class="comment_txt">{{ review.comment }}</p>
+							<p class="comment_date">{{ review.date|timesince }} ago</p>
+						</div>
+						
+					</div>
 				{% endif %}
-			{%	else	%}
-			<a	href="{%	url	'student_registration'	%}"	class="button btn enroll">
-			Register to enroll
-			</a>
-			{%	endif	%}
+			{% empty %}
+					<p id="no_comments">No comments, 
+					<strong>
+						{%	if	request.user.is_authenticated %}
+							{% if student and not user_comment %}
+								go to course and add a review.
+							{% else %}
+								enroll to add a review.
+							{% endif %}
+						{% else %}
+							login and enroll to review course!
+						{% endif %}
+					</strong> </p>
+			{% endfor %}
+
+
 		</div>
 	</div>
 	

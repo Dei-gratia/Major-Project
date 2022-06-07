@@ -2,7 +2,7 @@
 {% load static %}
 
 {% block head %}
-	<title>Topic</title>
+	<title>All posts</title>
 	<link rel="stylesheet" href="{% static 'css/about.css' %}">
 	<link rel="stylesheet" href="{% static 'css/discussions/post_list.css' %}">
 {% endblock %}
@@ -12,8 +12,7 @@
 	<nav aria-label="breadcrumb" style="--bs-breadcrumb-divider: '/';" >
 		<ol class="breadcrumb">
 		  <li class="breadcrumb-item"><a href="index.html">home</a></li>
-		  <li class="breadcrumb-item"><a href="index.html">discussions</a></li>
-		  <li class="breadcrumb-item active" aria-current="page">topic</li>
+		  <li class="breadcrumb-item active" aria-current="page">all posts</li>
 		</ol>
 	</nav>
 
@@ -30,7 +29,7 @@
 		</div>
 		<div class="row">
 			<div class="col-md-4" id="abt_h1_container">
-				<h2 id="abt_h1"> {{ topic.title }}</h2>
+				<h2 id="abt_h1">All Posts</h2>
 				<div class="jumbotron">
 					<h1 class="display-4">ProjectMajor Disscussion Forum</h1>
 					<p class="lead">Welcome to our discussion forum. You can post your question or any related queries by simply clicking on the add post button. <br> Thankyou and Have a nice day!!</p>
@@ -41,11 +40,11 @@
 				<br>
 			</div>
 			<div class="col-md-8 ">
-				{% for post in topic.posts.all %}
+				{% for post in posts %}
 					<div class="card topic_card" >
 						<div class="div_top">
-							<a href="{% url 'post_detail' topic_id=topic.pk post_id=post.pk %}"><img src="{{ post.image.url }}" class="topic_img"></a>
-							<a href="{% url 'post_detail' topic_id=topic.pk post_id=post.pk %}" class="topic_title">{% if post.owner %}{{ post.owner.profile.profile_name }}{% endif %}</a>
+							<a href="{% url 'post_detail' topic_id=post.discussion_topic.pk post_id=post.pk %}"><img src="{{ post.image.url }}" class="topic_img"></a>
+							<a href="{% url 'post_detail' topic_id=post.discussion_topic.pk post_id=post.pk %}" class="topic_title">{% if post.owner %}{{ post.owner.profile.profile_name }}{% endif %}</a>
 							<p class="date small">{{ post.date }} </p>
 						</div>
 						<hr style="margin: 5px;">
@@ -108,7 +107,7 @@
 		var form = $(e.target)
 	
 		$.ajax({
-			url: '{% url "post_list" topic_id=topic.pk %}',
+			url: '{% url "all_posts" %}',
 			type: 'post',
 			data: form.serialize(),
 			error: function(xhr, ajaxOptions, thrownError){ alert(thrownError); },

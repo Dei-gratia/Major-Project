@@ -1,6 +1,7 @@
 from dataclasses import fields
 from django import forms
 from courses.models import Course
+from notes.models import Note
 from .models import Profile
 from django.utils.translation import gettext as _
 from django.contrib.auth.forms import UserCreationForm

@@ -40,4 +40,6 @@ urlpatterns = [
          name='note_detail'),
 
     path('<order>', views.NoteListView.as_view(), name='note_list'),
+
+    path('<note_id>/save/', views.save_note, name='save_note')
 ]

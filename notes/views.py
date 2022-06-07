@@ -3,6 +3,7 @@ from django.views.generic.base import TemplateResponseMixin, View
 from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
 from django.shortcuts import redirect, get_object_or_404
 from django.db.models import Count
+from requests import request
 from .models import Note
 from users.models import Review, Profile
 from main.models import Subject, SchoolLevel, Home, About
@@ -47,6 +48,17 @@ class NoteListView(TemplateResponseMixin,	View):
         })
 
 
+def save_note(request, note_id):
+    note = Note.objects.get(id=note_id)
+    if request.user in note.students.all():
+        note.students.remove(request.user)
+        print(note.students.all())
+        return JsonResponse({"success": True, "message": "Note saved"})
+    else:
+        note.students.add(request.user)
+        return JsonResponse({"success": True, "message": "Note saved"})
+
+
 class NoteDetailView(DetailView):
     model = Note
     template_name = 'front/notes/note/detail.html'
@@ -55,8 +67,19 @@ class NoteDetailView(DetailView):
         context = super(NoteDetailView, self).get_context_data(**kwargs)
         context['site'] = Home.objects.latest('updated')
         context['about'] = About.objects.latest('updated')
-        context['avg_rating'] = 0
         context['latest'] = Note.objects.all().order_by('-created')[:5]
+        saved = False
+        if self.request.user.is_authenticated:
+            user_review = self.object.reviews.filter(user=self.request.user)
+            if len(user_review) > 0:
+                user_review = user_review[0]
+            else:
+                user_review = False
+                context['user_review'] = user_review
+                print(user_review)
+            if self.request.user in self.object.students.all():
+                saved = True
+                context['saved'] = saved
         return context
 
     def post(self, request, *args, pk, **kwargs):

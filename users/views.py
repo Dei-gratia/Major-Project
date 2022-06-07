@@ -21,7 +21,7 @@ from django.contrib.auth import authenticate, login, logout
 from django.http import HttpResponseRedirect, JsonResponse
 from django.urls import reverse
 from main.models import Home, About
-from users.models import User
+from users.models import User, Review
 from users.forms import CustomUserCreationForm, CustomAuthenticationForm
 import time
 
@@ -170,3 +170,41 @@ class StudentCourseDetailView(DetailView):
         context['site'] = Home.objects.latest('updated')
         context['about'] = About.objects.latest('updated')
         return context
+
+    def post(self, request, *args, pk, **kwargs):
+        userprofile = request.user.profile
+        comment = request.POST['comment']
+        rating = request.POST['input-1']
+        course = get_object_or_404(
+            Course, id=pk, owner=request.user)
+        print(course)
+        user_review = course.reviews.filter(user=request.user)
+        if len(user_review) > 0:
+            user_review = user_review[0]
+        else:
+            user_review = False
+        print(user_review)
+
+        if comment == "" and rating == "":
+
+            return JsonResponse({"success": False, "message": "Please provide a rating or comment"})
+        if user_review:
+            course_total_ratings = float(course.total_ratings) -\
+                float(user_review[0].rate_value) + float(rating)
+            course_num_ratings = int(course.num_ratings)
+            # Review.objects.filter(user=user_review.user).update(rate_value=rating, comment=comment)
+            user_review.update(rate_value=rating, comment=comment)
+            print(user_review[0])
+            print(course_num_ratings, course_total_ratings)
+        else:
+            review = Review(content_object=course, user=request.user,
+                            rate_value=rating, comment=comment)
+            review.save()
+            course_num_ratings = int(course.num_ratings) + 1
+            course_total_ratings = int(course.total_ratings) + int(rating)
+
+        print(course_num_ratings, course_total_ratings)
+        Course.objects.filter(pk=pk).update(total_ratings=course_total_ratings,
+                                            num_ratings=course_num_ratings)
+
+        return JsonResponse({"success": True, "message": "Successfully rated"})

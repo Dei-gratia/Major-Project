@@ -107,8 +107,8 @@
 								<a id="note-title" href="{% url 'note_detail' pk=note.pk %}"><h4>{{ note.title }}</h4></a>
 								<div style="display: flex;">
 									<p style="opacity: 70%;">{{ note.created|timesince }} ago &nbsp; </p>
-									<p class="" style="display: inline; text-align: end; color: #FF9529;"> {{ note.average_rating|floatformat:"2"  }} {% if note.average_rating > 1.0 %} <i class="fa-solid fa-star-half-stroke"></i>
-										{% elif note.average_rating > 4.5 %} <i class="fa-solid fa-star"></i>
+									<p class="" style="display: inline; text-align: end; color: #FF9529;"> {{ note.get_average_rating|floatformat:"2"  }} {% if note.get_average_rating > 1.0 %} <i class="fa-solid fa-star-half-stroke"></i>
+										{% elif note.get_average_rating > 4.5 %} <i class="fa-solid fa-star"></i>
 										{% else %} <i class="fa-regular fa-star"></i>
 										{% endif %}</p>
 								</div>

@@ -48,6 +48,7 @@ def home(request):
         'courses': courses,
         'posts': posts,
         'quizzes': quizzes,
+        'latest': latest_courses,
         'latest_courses': latest_courses,
         'latest_quizzes': latest_quizzes,
         'latest_notes': latest_notes,

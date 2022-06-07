@@ -62,23 +62,17 @@ class DiscussionTopicDetailView(DetailView):
                         self).get_context_data(**kwargs)
         context['site'] = Home.objects.latest('updated')
         context['about'] = About.objects.latest('updated')
-        print(self.object.title)
         context['discussion_topic'] = self.object
         context['latest'] = Post.objects.all().order_by('-date')[:5]
         return context
 
     def post(self, request, *args, pk, **kwargs):
         userprofile = request.user.profile
-        print(args, kwargs, pk)
-        print(userprofile, '\n'*5)
         comment = request.POST['comment']
         rating = request.POST['input-1']
-        print(rating, comment, userprofile)
         discussion = get_object_or_404(
             DiscussionTopic, id=pk, owner=request.user)
-        print(discussion)
         user_review = discussion.reviews.filter(user=request.user)
-        print(user_review)
 
         if comment == "" and rating == "":
 
@@ -89,8 +83,7 @@ class DiscussionTopicDetailView(DetailView):
             discussion_num_ratings = float(discussion.num_ratings)
             # Review.objects.filter(user=user_review.user).update(rate_value=rating, comment=comment)
             user_review.update(rate_value=rating, comment=comment)
-            print(user_review[0])
-            print(discussion_num_ratings, discussion_total_ratings)
+
         else:
             review = Review(content_object=discussion, user=request.user,
                             rate_value=rating, comment=comment)
@@ -99,7 +92,6 @@ class DiscussionTopicDetailView(DetailView):
             discussion_total_ratings = float(
                 discussion.total_ratings) + float(rating)
 
-        print(discussion_num_ratings, discussion_total_ratings)
         DiscussionTopic.objects.filter(pk=pk).update(total_ratings=discussion_total_ratings,
                                                      num_ratings=discussion_num_ratings)
 
@@ -182,6 +174,28 @@ class DiscussionPostListView(TemplateResponseMixin,	View):
     def post(self,	request,	*args, topic_id,	**kwargs):
         discussion_topic = get_object_or_404(
             DiscussionTopic, id=topic_id, owner=request.user)
+        post_title = request.POST.get('post_title')
+        post_content = request.POST.get('post_content')
+        if post_title == "" and post_content == "":
+
+            return JsonResponse({"success": False, "message": "Both post title and post content can not be empty!!"})
+        new_post = Post(owner=request.user, title=post_title,
+                        post_content=post_content, discussion_topic=discussion_topic)
+
+        new_post.save()
+
+        return JsonResponse({"success": True, "message": "Your post has been posted!"})
+
+
+class AllPostListView(TemplateResponseMixin,	View):
+    template_name = 'front/discussions/topic/all_posts.html'
+
+    def get(self,	request):
+        posts = Post.objects.all()
+        return self.render_to_response({'posts':	posts, 'site': Home.objects.latest('updated'),
+                                        'about': About.objects.latest('updated')})
+
+    def post(self,	request,	*args,	**kwargs):
         post_title = request.POST.get('post_title')
         post_content = request.POST.get('post_content')
         if post_title == "" and post_content == "":

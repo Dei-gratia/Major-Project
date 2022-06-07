@@ -57,4 +57,8 @@ urlpatterns = [
     path('<order>',
          views.DiscussionTopicListView.as_view(),
          name='discussion_topic_list'),
+
+    path('all_posts/',
+         views.AllPostListView.as_view(),
+         name="all_posts")
 ]

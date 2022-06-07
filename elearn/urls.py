@@ -29,6 +29,7 @@ urlpatterns = [
     path('discussions/', include('discussions.urls')),
     path('api/',	include('courses.api.urls',	namespace='courses_api')),
     path('api/',	include('main.api.urls',	namespace='api')),
+    path('api/users/',	include('users.api.urls',	namespace='api_users')),
     path('api/',	include('notes.api.urls',	namespace='notes_api')),
     path('api/',	include('quizzes.api.urls',	namespace='quizzes_api')),
     path('api/',	include('discussions.api.urls',	namespace='discussion_api')),

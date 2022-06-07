@@ -29,17 +29,17 @@
 				<div class="row" >
 			
 					<div class="col-sm-6" style="padding: 0px;">
-						<img src="{{ note.cover_img.url }}" style="height: 100px;">
+						<img src="{{ note.cover_img.url }}" style="height: 100px; width: 150px;">
 					</div>
 					<div class="col-sm-6">
 						
-						<p style="text-align: end; color: orange;" title="note rating">{{ note.average_rating|floatformat:2 }}
-							{% with ''|center:note.average_rating as range %}
+						<p style="text-align: end; color: orange;" title="note rating">{{ note.get_average_rating|floatformat:2 }}
+							{% with ''|center:note.get_average_rating as range %}
 								{% for i in range %}
 									<i class="fa-solid fa-star" style="color: orange;"></i>
 								{% endfor %}
 							{% endwith %}
-							{% with 5|sub:note.average_rating as x %}
+							{% with 5|sub:note.get_average_rating as x %}
 								{% with ''|center:x as range %}
 									{% for i in range %}
 										<i class="fa-regular fa-star" style="color: orange;"></i>
@@ -48,8 +48,8 @@
 							{% endwith %}
 						</p>
 						<p style="text-align: end; font-style: italic; opacity: 75%;">Uploaded:  {{ note.created }} 
-							<i id="bookmark" style="padding: 5px;" title="bookmark"
-							class="{% if bookmark %}fa-solid{% else %}fa-regular{% endif%} fa-bookmark"></i>
+							<i id="save-note" style="padding: 5px;" title="Save note"
+							class="{% if saved %}fa-solid{% else %}fa-regular{% endif%} fa-bookmark"></i>
 							<i id="share" style="padding: 5px;" title="share" class="fa-solid fa-share-nodes"></i>
 						</p>
 						
@@ -82,7 +82,7 @@
 							</div>
 						</div>
 						
-						{% if not user_comment %}
+						{% if not user_review %}
 						<button data-bs-toggle="modal" data-bs-target="#rateNoteModal" id="rate_note" >Rate note</button>
 						{% endif %}
 						
@@ -110,17 +110,17 @@
 							</div>
 						</div>
 
-						{% if user_comment %}
+						{% if user_review %}
 							<div class="latest_sub_item" style="display: flex; flex-direction: row;">
 								<img class="comment_img" alt="latest" src="{% static 'images/default_profile.png' %}">
 								<div>
 									<div class="comment_top"  ><h6 class="comment_name">You </h6><p class="comment_rate">
-										{% with ''|center:user_comment.rate_value as range %}
+										{% with ''|center:user_review.rate_value as range %}
 											{% for i in range %}
 												<i class="fa-solid fa-star" style="color: orange;"></i>
 											{% endfor %}
 										{% endwith %}
-										{% with 5|sub:user_comment.rate_value as x %}
+										{% with 5|sub:user_review.rate_value as x %}
 										{% with ''|center:x as range %}
 											{% for i in range %}
 												<i class="fa-regular fa-star" style="color: orange;"></i>
@@ -130,24 +130,24 @@
 										
 										</i></p></div>
 									
-									<p class="comment_txt">{{ user_comment.comment }}</p>
-									<p class="comment_date">{{ user_comment.date|timesince }} ago</p>
+									<p class="comment_txt">{{ user_review.comment }}</p>
+									<p class="comment_date">{{ user_review.date|timesince }} ago</p>
 								</div>					
 							</div>
 						{% endif %}
 
-						{% for rating in note.ratings.all %}
-							{% if rating != user_comment %}
+						{% for review in note.reviews.all %}
+							{% if review != user_review %}
 								<div class="latest_sub_item" style="display: flex; flex-direction: row;">
 									<img class="comment_img" alt="latest" src="{% static 'images/default_profile.png' %}">
 									<div>
-										<div class="comment_top"  ><h6 class="comment_name">{{ rating.user_name.title}} </h6><p class="comment_rate">
-											{% with ''|center:rating.rate_value as range %}
+										<div class="comment_top"  ><h6 class="comment_name">{% if review.user %}{{ review.user.profile.profile_name.title }}{% else %}Anonymous {% endif %}</h6><p class="comment_rate">
+											{% with ''|center:review.rate_value as range %}
 												{% for i in range %}
 													<i class="fa-solid fa-star" style="color: orange;"></i>
 												{% endfor %}
 											{% endwith %}
-											{% with 5|sub:rating.rate_value as x %}
+											{% with 5|sub:review.rate_value as x %}
 											{% with ''|center:x as range %}
 												{% for i in range %}
 													<i class="fa-regular fa-star" style="color: orange;"></i>
@@ -157,18 +157,28 @@
 											
 											</i></p></div>
 										
-										<p class="comment_txt">{{ rating.comment }}</p>
-										<p class="comment_date">{{ rating.date|timesince }} ago</p>
+										<p class="comment_txt">{{ review.comment }}</p>
+										<p class="comment_date">{{ review.date|timesince }} ago</p>
 									</div>
 									
 								</div>
 							{% endif %}
 						{% empty %}
-								<p id="no_comments">No comments, <strong>be the first to leave a comment!</strong> </p>
+								<p id="no_comments">No reviews yet,  
+									<strong>
+										
+										be the first to leave a review!
+										
+									</strong> </p>
 						{% endfor %}
 
-						{% if not user_comment %}
-							<a data-bs-toggle="modal" data-bs-target="#rateNoteModal" id="leave_comment" ><p style="margin: 0  0 20px 20px;">Add Comment</p></a>					
+						
+						{%	if	request.user.is_authenticated %}
+							{% if not user_review %}
+							<a data-bs-toggle="modal" data-bs-target="#rateNoteModal" id="leave_comment" ><p style="margin: 0  0 20px 20px;">Add Review</p></a>					
+							{% endif %}
+						{% else %}
+						<a class="" class="nav-link" href="" data-bs-toggle="modal" data-bs-target="#myModal"><p style="margin: 0  0 20px 20px;">Login to add review</p></a>		
 						{% endif %}
 
 						<div class="card">
@@ -272,6 +282,8 @@
 		});
 		};
 
+
+
 		$('#form_rating').submit(function(e){
 		e.preventDefault();
 		var form = $(e.target)
@@ -299,7 +311,7 @@
 		})
 		})
 
-		$('#bookmark').click(function() {
+		$('#save-note').click(function() {
 			$(this).toggleClass('fa-solid fa-regular')
 		})
 
@@ -321,6 +333,23 @@
 		})
 		})
 
+		$('#save-note').click(function() {
+			$.ajax({
+			url: '{% url "save_note" note_id=note.id %}',
+			type: 'post',
+			error: function(xhr, ajaxOptions, thrownError){ alert(thrownError); },
+			success: function(data){
+				if (data.success === true) {
+					
+				} 
+				else {
+					console.log('error')
+					alert(`${data.message}`)
+				}
+				
+			}
+		})
+		})
 		
 	</script>
 {% endblock%}

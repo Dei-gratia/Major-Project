@@ -39,7 +39,7 @@
 				<a class="lg-nav-item" href="{% url 'user_profile' pk=user.pk %}">Profile</a>
 				<a class="lg-nav-item" href="{% url 'logout' %}">Logout</a>
 				{% else %}
-				<a class="lg-nav-item" href="{% url 'login' %}">Log in | Sign up</a>
+				<a class="lg-nav-item" class="nav-link" href="" data-bs-toggle="modal" data-bs-target="#myModal">Log in | Sign up</a>
 				{% endif %}
 			</div>
 			<div>
@@ -97,14 +97,12 @@
 			  </li>
 			  <li class="nav-item dropdown">
 				<a class="nav-link dropdown-toggle" href="{% url 'discussion_topic_list' %}" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-				  Discussions
+				  Discussion Forum
 				</a>
 				<ul class="dropdown-menu dropdown-menu-dark" aria-labelledby="navbarDropdown">		
-					<li><a class="dropdown-item" href="">Topics</a></li>
-					<li><a class="dropdown-item" href="#">Your Recents</a></li>
+					<li><a class="dropdown-item" href="{% url 'discussion_topic_list' %}">Discussion Topics</a></li>
 					<li><hr class="dropdown-divider"></li>
-					<li><a class="dropdown-item" href="#">People</a></li>
-					<li><a class="dropdown-item" href="#">Groups</a></li>
+					<li><a class="dropdown-item" href="{% url 'all_posts' %}">All Posts</a></li>
 				 
 				</ul>
 			  </li>
@@ -188,7 +186,7 @@
 				<a class="lag-nav2-item dropdown dropdown-toggle" href="{% url 'discussion_topic_list' %}" role="button" id="dropdownMenuLink" data-bs-hover="dropdown" aria-haspopup="true" aria-expanded="false">Discussion Forum</a>
 				<div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
 					<a class="dropdown-item" href="{% url 'discussion_topic_list' %}">Discussion Topics</a>
-					<a class="dropdown-item" href="{% url 'about' %}">All Posts</a>
+					<a class="dropdown-item" href="{% url 'all_posts' %}">All Posts</a>
 					<a class="dropdown-item" href="{% url 'manage_discussion_topic_list' %}">My Posts</a>
 				</div>
 			</div>
@@ -208,7 +206,9 @@
 				<div id="popular_top" >
 					<span >{{ site.slider1_txt }}:&nbsp; &nbsp;</span>
 					<ul id="popular_slider" >
-						<li>Popular item 1</li>
+						{% for l in latest %}
+						<li><a href="">{{ l.title }}</a></li>
+						{% endfor %}
 						<li>Items searched</li>
 						<li>Being Searched item 3</li>
 						<li>Searched item 4</li>

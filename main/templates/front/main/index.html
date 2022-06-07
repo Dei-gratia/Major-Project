@@ -38,13 +38,15 @@
 			<div id="carouselExampleIndicators2"  class="carousel slide carousel-fade" data-bs-ride="carousel">
 				<div class="carousel-inner">
 					{% for c in latest_courses %}
+					
 					<div class="carousel-item active">
 						<img src="{{ c.cover_image.url }}" class="d-block w-100" alt="...">
-						<div class="carousel-caption">
+						<a href="{% url 'course_detail' c.slug %}"><div class="carousel-caption">
 							<h5>{{ c.title }}</h5>
 							<p class="clipped-text">{{ c.overview }}</p>
-					   </div>
+					   </div></a>
 					</div>
+				
 					{% endfor %}
 				</div>
 			</div>
@@ -56,10 +58,12 @@
 							{% for n in latest_notes %}
 							<div class="carousel-item active">
 								<img src="{{ n.cover_img.url }}" class="d-block w-100" alt="...">
+								<a href="{% url 'note_detail' n.slug %}">
 								<div class="carousel-caption">
 									<h5>{{ n.title }}</h5>
 									<p class="clipped-text">{{ n.description }}</p>
 							   </div>
+								</a>
 							</div>
 							{% endfor %}
 						</div>
@@ -71,10 +75,12 @@
 							{% for q in latest_quizzes %}
 							<div class="carousel-item active">
 								<img src="{{ q.cover_img.url }}" class="d-block w-100" alt="...">
+								<a href="{% url 'quiz_detail' q.slug %}">
 								<div class="carousel-caption">
 									<h5>{{ q.title }}</h5>
 									<p class="clipped-text">{{ q.description }}</p>
 							   </div>
+								</a>
 							</div>
 							{% endfor %}
 						
@@ -101,16 +107,16 @@
 				<div class="row">
 					<div class="col-sm-6 card-home-content-container card-home-left">
 						<div class="card card-home-content">
-							<img src="{{ courses.first.cover_image.url }}" class="card-img-top" alt="...">
+							<a href="{% url 'course_detail' slug=courses.first.slug  %}"><img src="{{ courses.first.cover_image.url }}" class="card-img-top img-zoom" alt="..."></a>
 							<div class="card-body">
 								<div style="display: flex; justify-content: space-between;">
-									<h4 class="clipped-text">{{ courses.first.title }}</h4>
-									<p style="color: #FF9529;">{{ courses.first.average_rating|floatformat:2}} <i class="fa-solid fa-star-half-stroke"></i></p>
+									<a href="{% url 'course_detail' slug=courses.first.slug  %}" class="black-txt"><h4 class="clipped-text">{{ courses.first.title }}</h4></a>
+									<p style="color: #FF9529;">{{ courses.first.get_average_rating|floatformat:2}} {% if courses.first.get_average_rating < 1 %}<i class="fa-regular fa-star"></i>{% elif courses.first.get_average_rating > 4.5 %}<i class="fa-solid fa-star"></i> {% else %}<i class="fa-solid fa-star-half-stroke"></i>{% endif %}</p>
 									
 								</div>
 								  <p class="card-text clipped-text">{{ courses.first.overview }}</p>
 								  <div class="flex-separate">
-									<p class="card-text clipped-text" >{% if courses.first.school_level %}<a href="#">{{ courses.first.school_level }} </a>{% endif%} | {% if courses.first.subject %}<a href="#"> {{ courses.first.subject }}</a>{% endif %} </p>
+									<p class="card-text clipped-text" >{% if courses.first.school_level %}<a href="{% url 'course_list_level' school_level=courses.first.school_level.slug order='-created' %}">{{ courses.first.school_level }} </a>{% endif%} | {% if courses.first.subject %}<a href="{% url 'course_list_subject' subject=courses.first.subject.slug order='-created' %}"> {{ courses.first.subject }}</a>{% endif %} </p>
 									<p style="text-align: end; opacity: 70%;">{{ courses.first.created|timesince }}</p>
 								  </div>
 								  
@@ -121,14 +127,14 @@
 						<div class="card card-home-content card-home-side">
 							{% for course in courses|slice:"1:" %}
 							<div class="card-home-side-content" >
-								<img src="{{ course.cover_image.url }}" class="card-img-side" alt="...">
+								<a href="{% url 'course_detail' slug=course.slug  %}"><img src="{{ course.cover_image.url }}" class="card-img-side img-zoom" alt="..."></a>
 								<div class="card-home-side-contents" >
 									<div class="flex-separate" >
-										<h4 class="clipped-text">{{ course.title.title }}</h4>
-										<p style="color: #FF9529; padding: 5px;">{{ course.average_rating|floatformat:2}} <i class="fa-solid fa-star-half-stroke"></i></p>
+										<a href="{% url 'course_detail' slug=course.slug  %}" class="black-txt"><h4 class="clipped-text">{{ course.title.title }}</h4></a>
+										<p style="color: #FF9529;">{{ course.get_average_rating|floatformat:2}} {% if course.get_average_rating < 1 %}<i class="fa-regular fa-star"></i>{% elif course.get_average_rating > 4.5 %}<i class="fa-solid fa-star"></i> {% else %}<i class="fa-solid fa-star-half-stroke"></i>{% endif %}</p>
 									</div>
 									<div class="flex-separate" >
-										<p class="card-text clipped-text" >{% if course.school_level %}<a href="#">{{ course.school_level }} </a>{% endif%} | {% if course.subject %}<a href="#"> {{ course.subject }}</a>{% endif %} </p>
+										<p class="card-text clipped-text" >{% if course.school_level %}<a href="{% url 'course_list_level' school_level=course.school_level.slug order='-created' %}"> {{ course.school_level }}</a>{% endif %} | {% if course.subject %}<a href="{% url 'course_list_subject' subject=course.subject.slug order='-created' %}"> {{ course.subject }}</a>{% endif %} </p>
 										<p style="opacity: 70%; text-align: end;">{{ course.created|timesince}}</p>
 									</div>
 									
@@ -155,16 +161,16 @@
 	
 					<div class="col-sm-6 card-home-content-container card-home-left">
 						<div class="card card-home-content">
-							<img src="{{ notes.first.cover_img.url }}" class="card-img-top" alt="...">
+							<a href="{% url 'note_detail' slug=notes.first.slug  %}"><img src="{{ notes.first.cover_img.url }}" class="card-img-top img-zoom" alt="..."></a>
 							<div class="card-body">
 								<div style="display: flex; justify-content: space-between;">
-									<h4 class="clipped-text">{{ notes.first.title }}</h4>
-									<p style=" color: #FF9529;">{{ notes.first.average_rating }}<i class="fa-solid fa-star-half-stroke"></i></p>
+									<a href="{% url 'note_detail' slug=notes.first.slug  %}" class="black-txt"><h4 class="clipped-text">{{ notes.first.title }}</h4></a>
+									<p style="color: #FF9529;">{{ notes.first.get_average_rating|floatformat:2}} {% if notes.first.get_average_rating < 1 %}<i class="fa-regular fa-star"></i>{% elif notes.first.get_average_rating > 4.5 %}<i class="fa-solid fa-star"></i> {% else %}<i class="fa-solid fa-star-half-stroke"></i>{% endif %}</p>
 									
 								</div>
 								  <p class="card-text clipped-text">{{ notes.first.description }}</p>
 								  <div class="flex-separate">
-									<p class="card-text clipped-text"  >{% if notes.first.school_level %}<a href="#">{{ notes.first.school_level }} </a>{% endif%} | {% if notes.first.subject %}<a href="#"> {{ notes.first.subject }}</a>{% endif %} </p>
+									<p class="card-text clipped-text"  >{% if notes.first.school_level %}<a href="{% url 'note_list_level' school_level=notes.first.school_level.slug order='-created' %}">{{ notes.first.school_level }} </a>{% endif%} | {% if notes.first.subject %}<a href="{% url 'note_list_subject' subject=notes.first.subject.slug order='-created' %}"> {{ notes.first.subject }}</a>{% endif %} </p>
 									<p style="text-align: end; opacity: 70%;">{{ notes.first.created|timesince  }}</p>							  </div>
 							</div>
 						</div>
@@ -173,14 +179,14 @@
 						<div class="card card-home-content card-home-side">
 							{% for note in notes|slice:"1:" %}
 							<div class="card-home-side-content" >
-								<img src="{{ note.cover_img.url }}" class="card-img-side" alt="...">
+								<a href="{% url 'note_detail' slug=note.slug  %}"><img src="{{ note.cover_img.url }}" class="card-img-side img-zoom" alt="..."></a>
 								<div class="card-home-side-contents" >
 									<div class="flex-separate" >
-										<h4 class="clipped-text">{{ note.title.title }}</h4>
-										<p style="color: #FF9529; padding: 5px;">{{ note.average_rating|floatformat:2}} <i class="fa-solid fa-star-half-stroke"></i></p>
+										<a href="{% url 'note_detail' slug=note.slug  %}" class="black-txt"><h4 class="clipped-text">{{ note.title.title }}</h4></a>
+										<p style="color: #FF9529;">{{ note.get_average_rating|floatformat:2}} {% if note.get_average_rating < 1 %}<i class="fa-regular fa-star"></i>{% elif note.get_average_rating > 4.5 %}<i class="fa-solid fa-star"></i> {% else %}<i class="fa-solid fa-star-half-stroke"></i>{% endif %}</p>
 									</div>
 									<div class="flex-separate" >
-										<p class="card-text clipped-text" >{% if note.school_level %}<a href="#">{{ note.school_level }} </a>{% endif%} | {% if note.subject %}<a href="#"> {{ note.subject }}</a>{% endif %} </p>
+										<p class="card-text clipped-text" >{% if note.school_level %}<a href="{% url 'note_list_level' school_level=note.school_level.slug order='-created' %}">{{ note.school_level }} </a>{% endif%} | {% if note.subject %}<a href="{% url 'note_list_subject' subject=note.subject.slug order='-created' %}">{{ note.subject }}</a>{% endif %} </p>
 										<p style="opacity: 70%; text-align: end;">{{ note.created|timesince}}</p>
 									</div>
 									
@@ -206,16 +212,16 @@
 	
 					<div class="col-sm-6 card-home-content-container card-home-left">
 						<div class="card card-home-content">
-							<img src="{{ quizzes.first.cover_img.url }}" class="card-img-top" alt="...">
+							<a href="{% url 'quiz_detail' slug=quizzes.first.slug  %}"><img src="{{ quizzes.first.cover_img.url }}" class="card-img-top img-zoom" alt="..."></a>
 							<div class="card-body">
 								<div style="display: flex; justify-content: space-between;">
-									<h4 class="clipped-text">{{ quizzes.first.title }}</h4>
-									<p style=" color: #FF9529;">{{ quizzes.first.average_rating }}<i class="fa-solid fa-star-half-stroke"></i></p>
+									<a href="{% url 'quiz_detail' slug=quizzes.first.slug  %}" class="black-txt"><h4 class="clipped-text">{{ quizzes.first.title }}</h4></a>
+									<p style="color: #FF9529;">{{ quizzes.first.average_rating|floatformat:2}} {% if quizzes.first.average_rating < 1 %}<i class="fa-regular fa-star"></i>{% elif quizzes.first.average_rating > 4.5 %}<i class="fa-solid fa-star"></i> {% else %}<i class="fa-solid fa-star-half-stroke"></i>{% endif %}</p>
 									
 								</div>
 								  <p class="card-text clipped-text">{{ quizzes.first.description }}</p>
 								  <div class="flex-separate">
-									<p class="card-text clipped-text" >{% if quizzes.first.school_level %}<a href="#">{{ quizzes.first.school_level }} </a>{% endif%} | {% if quizzes.first.subject %}<a href="#"> {{ quizzes.first.subject }}</a>{% endif %} </p>
+									<p class="card-text clipped-text" >{% if quizzes.first.school_level %}<a href="{% url 'quiz_list_level' school_level=quizzes.first.school_level.slug order='-created' %}">{{ quizzes.first.school_level }} </a>{% endif%} | {% if quizzes.first.subject %}<a href="{% url 'quiz_list_subject' subject=quizzes.first.subject.slug order='-created' %}"> {{ quizzes.first.subject }}</a>{% endif %} </p>
 									<p style="text-align: end; opacity: 70%;">{{ quizzes.first.created|timesince  }}</p>							  </div>
 							</div>
 						</div>
@@ -224,14 +230,14 @@
 						
 							{% for quiz in quizzes|slice:"1:" %}
 							<div class="card-home-side-content">
-								<img src="{{ quiz.cover_img.url }}" class="card-img-side" alt="...">
+								<a href="{% url 'quiz_detail' slug=quiz.slug  %}"><img src="{{ quiz.cover_img.url }}" class="card-img-side img-zoom" alt="..."></a>
 								<div class="card-home-side-contents" >
 									<div class="flex-separate" >
-										<h4 class="clipped-text">{{ quiz.title.title }}</h4>
-										<p style="color: #FF9529; padding: 5px;">{{ quiz.average_rating|floatformat:2}} <i class="fa-solid fa-star-half-stroke"></i></p>
+										<a href="{% url 'quiz_detail' slug=quiz.slug  %}" class="black-txt"><h4 class="clipped-text">{{ quiz.title.title }}</h4></a>
+										<p style="color: #FF9529;">{{ quiz.average_rating|floatformat:2}} {% if quiz.average_rating < 1 %}<i class="fa-regular fa-star"></i>{% elif quiz.average_rating > 4.5 %}<i class="fa-solid fa-star"></i> {% else %}<i class="fa-solid fa-star-half-stroke"></i>{% endif %}</p>
 									</div>
 									<div class="flex-separate" >
-										<p class="card-text clipped-text" >{% if quiz.school_level %}<a href="#">{{ quiz.school_level }} </a>{% endif%} | {% if quiz.subject %}<a href="#"> {{ quiz.subject }}</a>{% endif %} </p>
+										<p class="card-text clipped-text" >{% if quiz.school_level %}<a href="{% url 'quiz_list_level' school_level=quiz.school_level.slug order='-created' %}">{{ quiz.school_level }} </a>{% endif%} | {% if quiz.subject %}<a href="{% url 'quiz_list_subject' subject=quiz.subject.slug order='-created' %}"> {{ quiz.subject }}</a>{% endif %} </p>
 										<p style="opacity: 70%; text-align: end;">{{ quiz.created|timesince}}</p>
 									</div>
 									
@@ -249,7 +255,7 @@
 					<h5 class="card-hearder-title" ><a href="{% url 'discussion_topic_list' %}">Discussion Forum</a> </h5>
 					<div class="card-hearder-sub-titles">
 						<a href="{% url 'discussion_topic_list' %}" class="card-hearder-sub-title">Discussion Topics</a>
-						<a href="#" class="card-hearder-sub-title">Posts</a>
+						<a href="{% url 'all_posts' %}" class="card-hearder-sub-title">All Posts</a>
 						
 					</div>
 				</div>
@@ -260,14 +266,14 @@
 							{% for post in posts|slice:"1:" %}
 							<div class="card topic_card" >
 								<div class="div_top">
-									<a href="{% url 'post_detail' topic_id=post.discussion_topic.pk post_id=post.pk %}"><img src="{{ post.image.url }}" class="topic_img"></a>
-									<a href="{% url 'post_detail' topic_id=post.discussion_topic.pk post_id=post.pk %}" class="topic_title">{% if post.owner %}{{ post.owner.profile.profile_name }}{% endif %}</a>
+									<h6 style="padding-left: 10px; padding-top: 10px;" >{% if post.owner %}{{ post.owner.profile.profile_name }}{% endif %} posted</h6>
 									<p class="date small">{{ post.date|timesince }} </p>
 								</div>
 								<hr style="margin: 5px;">
 								<h6 class="qns clipped-text">{{ post.title }}</h6>
 								<p class="qns clipped-text">{{ post.post_content }}?</p>
-								<hr style="margin-left: 5px; margin-right: 5px;">
+								
+								<a href="{% url 'post_detail' topic_id=post.discussion_topic.pk post_id=post.pk %}" class="" style="margin-left: auto; padding: 10px;">view post</a>
 							</div>
 							{% endfor %}
 							
@@ -281,7 +287,7 @@
 		</div>
 		<div class="col-md-12 col-lg-4 card_item card-block-right" >
 			
-			<div class="latest">
+			<div class="latest" id="latest">
 				<div class="card card-hearder" >
 					<h5 class="card-hearder-title" >Latest </h5>
 				</div>
@@ -313,27 +319,19 @@
 
 			</div>
 			
-			<div class="most-popular">
+			<div class="most-popular" id="most-popular">
+				
 				<div class="card card-hearder" >
-					<h5 class="card-hearder-title" >Most Popular </h5>
+					<h5 class="card-hearder-title" >Most popular </h5>
 				</div>
+				
 				<div>
+					{% for l in latest %}
 					<h6 class="latest-item" >
-						<a class="latest-number">1 </a> 
-						<a href="#" class="latest-link" >You wish lorem ipsum dolor sit </a>
+						<a class="latest-number"> {{ forloop.counter }} </a> 
+						<a href="#" class="latest-link" >{{ l.title }} </a>
 					</h6>
-					<h6 class="latest-item" >
-						<a class="latest-number">2 </a> 
-						<a href="#" class="latest-link" >You wish lorem ipsum dolor sit </a>
-					</h6>
-					<h6 class="latest-item" >
-						<a  class="latest-number" >3 </a> 
-						<a href="#" class="latest-link" >You wish lorem ipsum dolor sit </a>
-					</h6>
-					<h6 class="latest-item" >
-						<a class="latest-number">4 </a> 
-						<a href="#" class="latest-link" >You wish lorem ipsum dolor sit </a>
-					</h6>
+					{% endfor %}
 				</div>
 	
 			</div>

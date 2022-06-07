@@ -30,7 +30,7 @@
 			<div class="details-block">
 				<div class="row" >
 					<div class="col-sm-6" style="padding: 0px;">
-						<img src="{% static 'images/c1.jpg' %}" style="height: 100px;">
+						<img src="{{ quiz.cover_img.url }}" style="height: 100px; width: 150px;">
 					</div>
 					<div class="col-sm-6">
 						<p style="text-align: end; color: orange;" title="note rating">{{ quiz.average_rating|floatformat:"2" }}

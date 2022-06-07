@@ -98,22 +98,23 @@
 			<div class="details-block" id="details-block">
 				{%	for	course	in	courses%}
 				<div class="details-block-item" id="details-block-item">
-					{%	with	subject=course.subject	%}
 					<h3 class="details-block-heading"><a href="{% url 'course_detail' slug=course.slug %}">
-					{{	course.title	}}</a> <span class="rating">{{ course.average_rating}}
-						{% if course.average_rating > 1.0 %} <i class="fa-solid fa-star-half-stroke"></i>
-						{% elif course.average_rating > 4.5 %} <i class="fa-solid fa-star"></i>
+					{{	course.title	}}</a> <span class="rating">{{ course.get_average_rating}}
+						{% if course.get_average_rating > 1.0 %} <i class="fa-solid fa-star-half-stroke"></i>
+						{% elif course.get_average_rating > 4.5 %} <i class="fa-solid fa-star"></i>
 						{% else %} <i class="fa-regular fa-star"></i>
 						{% endif %}
 					</span></h3>
-					<p >
-					<a class="details-block-subject" href="{% url 'course_list_subject' subject=subject.slug order=order %}">
-					{{	subject	}}</a>.
-					{{	course.total_modules	}}	modules.
-					Instructor:	{% if course.owner %}{{	course.owner.profile.profile_name	}} 
-					{% else %}Uknown {% endif %}
+					<p >{% if course.school_level %}
+						<a class="details-block-subject" href="{% url 'course_list_level' school_level=course.school_level.slug order=order %}">
+						{{ course.school_level	}}</a>.{% endif %}
+						{% if course.subject %}
+						<a class="details-block-subject" href="{% url 'course_list_subject' subject=course.subject.slug order=order %}">
+						{{	course.subject	}}</a>.{% endif %}
+						{{	course.total_modules	}}	modules.
+						Instructor:	{% if course.owner %}{{	course.owner.profile.profile_name }} 
+						{% else %}Uknown {% endif %}
 					</p>
-					{%	endwith	%}
 					
 				</div>
 				
