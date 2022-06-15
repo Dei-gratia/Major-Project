@@ -15,3 +15,11 @@
 	margin: auto;
 
 }
+
+.lg-nav-background {
+	display: none !important;
+}
+
+.lg-nav2 {
+	display: none !important;
+}

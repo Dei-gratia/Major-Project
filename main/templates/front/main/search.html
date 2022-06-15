@@ -1,0 +1,115 @@
+{% extends 'front/master.html' %}
+{% load static %}
+
+{% block head %}
+<title>Home | E-Learn</title>
+<link rel="stylesheet" href="{% static 'css/common.css' %}">
+<link rel="stylesheet" href="{% static 'css/main/search.css' %}">
+{% endblock %}
+
+{% block main %}
+<div class="content">
+	<div class="page-heading-container">
+		<h1 class="page-heading">
+			Search Results for : "{{ query }}"
+		</h1>
+	</div>
+	{% if results %}
+		{% for queryset in results %}
+			{% if queryset.model_name == 'Course' %}
+				{% for course in queryset %}
+				<div class="details-block-item" id="details-block-item">
+					<h3 class="details-block-heading"><a href="{% url 'course_detail' slug=course.slug %}">
+					{{	course.title	}}</a> <span class="rating">{{ queryset.model_name }}
+					</span></h3>
+					<p >{% if course.school_level %}
+						<a class="details-block-subject" href="{% url 'course_list_level' school_level=course.school_level.slug order='-created' %}">
+						{{ course.school_level	}}</a>.{% endif %}
+						{% if course.subject %}
+						<a class="details-block-subject" href="{% url 'course_list_subject' subject=course.subject.slug order='-created' %}">
+						{{	course.subject	}}</a>.{% endif %}
+						{{	course.total_modules	}}	modules.
+						Instructor:	{% if course.owner %}{{	course.owner.profile.profile_name }} 
+						{% else %}Uknown {% endif %}
+					</p>
+				</div>
+				{% endfor %}
+			{% elif queryset.model_name == 'Note' %}
+				{% for note in queryset %}
+				<div class="details-block-item" id="details-block-item">
+					<h3 class="details-block-heading"><a href="{% url 'note_detail' slug=note.slug %}">
+					{{	note.title	}}</a> <span class="rating">{{ queryset.model_name }}
+					</span></h3>
+					<p >{% if note.school_level %}
+						<a class="details-block-subject" href="{% url 'note_list_level' school_level=note.school_level.slug order='-created' %}">
+						{{ note.school_level	}}</a>.{% endif %}
+						{% if note.subject %}
+						<a class="details-block-subject" href="{% url 'note_list_subject' subject=note.subject.slug order='-created' %}">
+						{{	note.subject	}}</a>.{% endif %}
+						{{	note.downloads	}}	downloads.
+						Upluaded by:	{% if note.owner %}{{	note.owner.profile.profile_name }} 
+						{% else %}Uknown {% endif %}
+					</p>
+				</div>
+				{% endfor %}
+
+			{% elif queryset.model_name == 'Quiz' %}
+				{% for quiz in queryset %}
+				<div class="details-block-item" id="details-block-item">
+					<h3 class="details-block-heading"><a href="{% url 'quiz_detail' slug=quiz.slug %}">
+					{{	quiz.title	}}</a> <span class="rating">{{ queryset.model_name }}
+					</span></h3>
+					<p >{% if quiz.school_level %}
+						<a class="details-block-subject" href="{% url 'quiz_list_level' school_level=quiz.school_level.slug order='-created' %}">
+						{{ quiz.school_level	}}</a>.{% endif %}
+						{% if quiz.subject %}
+						<a class="details-block-subject" href="{% url 'quiz_list_subject' subject=quiz.subject.slug order='-created' %}">
+						{{	quiz.subject	}}</a>.{% endif %}
+						{{	quiz.attemps	}}	attemps.
+						Upluaded by:	{% if quiz.owner %}{{	quiz.owner.profile.profile_name }} 
+						{% else %}Uknown {% endif %}
+					</p>
+				</div>
+				{% endfor %}
+
+			{% elif queryset.model_name == 'DiscussionTopic' %}
+				{% for topic in queryset %}
+				<div class="details-block-item" id="details-block-item">
+					<h3 class="details-block-heading"><a href="{% url 'topic_detail' slug=topic.slug %}">
+					{{	topic.title	}}</a> <span class="rating">{{ queryset.model_name }}
+					</span></h3>
+					
+				</div>
+				{% endfor %}
+
+			{% elif queryset.model_name == 'Post' %}
+				{% for post in queryset %}
+				<div class="details-block-item" id="details-block-item">
+					<h3 class="details-block-heading"><a href="{% url 'post_detail' topic_id=post.discussion_topic.pk post_id=post.pk %}">
+					{{	post.title	}}</a> <span class="rating">{{ queryset.model_name }}
+					</span></h3>
+				</div>
+				{% endfor %}
+			
+			{% endif %}
+		{% endfor %}
+	{% else %}
+		<h2>No results found for search {{ query }}</h2>
+	{% endif %}
+
+	<br>
+	<br>
+	<div class="banner" >
+	
+	</div>
+	<br>
+	<br>
+
+	
+	
+</div>
+{% endblock%}
+
+{% block script %}
+<script src="{% static 'js/index.js' %}"></script>
+{% endblock %}

@@ -17,9 +17,37 @@ from django.views.generic.detail import DetailView
 from users.forms import CourseEnrollForm
 from main.models import Home, About, SchoolLevel
 from main.mixins import OwnerEditMixin, OwnerMixin
+from django.db.models import Q, CharField
 
 
 # Create your views here.
+def search(request):
+    site = Home.objects.latest('updated')
+    about = About.objects.latest('updated')
+    print('in search')
+    if request.method == 'GET':  # this will be GET now
+        # do some research what it does
+        search_query = request.GET.get('search')
+        print(search_query)
+        # Add your models here, in any way you find best.
+        search_models = [Course, Module]
+
+        search_results = []
+        for model in search_models:
+            fields = [x for x in model._meta.fields if isinstance(
+                x, CharField)]
+            search_queries = [
+                Q(**{x.name + "__contains": search_query}) for x in fields]
+            q_object = Q()
+            for query in search_queries:
+                q_object = q_object | query
+
+            results = model.objects.filter(q_object)
+            results.model_name = results.model.__name__
+            search_results.append(results)
+        return render(request, "front/main/search.html", {"site": site, "about": about, "query": search_query, "results": search_results})
+    else:
+        return render(request, "front/main/search.html", {"site": site, "about": about, "query": search_query})
 
 
 class OwnerCourseMixin(OwnerMixin, LoginRequiredMixin):
@@ -33,7 +61,8 @@ class OwnerCourseEditMixin(OwnerCourseMixin,	OwnerEditMixin):
     success_url = reverse_lazy('manage_course_list')
     template_name = 'front/courses/manage/course/form.html'
     extra_context = {'site': Home.objects.latest('updated'),
-                     'about': About.objects.latest('updated')}
+                     'about': About.objects.latest('updated'),
+                     'latest': Course.objects.all().order_by('-created')[:5]}
 
 
 class ManageCourseListView(OwnerCourseMixin,	ListView):
@@ -55,7 +84,8 @@ class CourseDeleteView(PermissionRequiredMixin, OwnerCourseMixin,	DeleteView):
     success_url = reverse_lazy('manage_course_list')
     permission_required = 'courses.delete_course'
     extra_context = {'site': Home.objects.latest('updated'),
-                     'about': About.objects.latest('updated')}
+                     'about': About.objects.latest('updated'),
+                     'latest': Course.objects.all().order_by('-created')[:5]}
 
 
 class CourseModuleUpdateView(TemplateResponseMixin,	View):
@@ -112,7 +142,7 @@ class ContentCreateUpdateView(TemplateResponseMixin,	View):
     def get(self,	request,	module_id,	model_name,	id=None):
         form = self.get_form(self.model, instance=self.obj)
         return self.render_to_response({'form':	form, 'object':	self.obj, 'site': Home.objects.latest('updated'),
-                                        'about': About.objects.latest('updated')})
+                                        'about': About.objects.latest('updated'), 'latest': Course.objects.all().order_by('-created')[:5]})
 
     def post(self,	request,	module_id,	model_name,	id=None):
         form = self.get_form(self.model, instance=self.obj,
@@ -126,10 +156,10 @@ class ContentCreateUpdateView(TemplateResponseMixin,	View):
                 Content.objects.create(module=self.module, item=obj)
             return redirect('module_content_list',	self.module.id)
         return self.render_to_response({'form':	form, 'object':	self.obj, 'site': Home.objects.latest('updated'),
-                                        'about': About.objects.latest('updated')})
+                                        'about': About.objects.latest('updated'), 'latest': Course.objects.all().order_by('-created')[:5]})
 
 
-class ContentDeleteView(View):
+class ContentDeleteView(LoginRequiredMixin, View):
     def post(self,	request,	id):
         content = get_object_or_404(
             Content, id=id, module__course__owner=request.user)
@@ -146,7 +176,8 @@ class ModuleContentListView(TemplateResponseMixin,	View):
         module = get_object_or_404(
             Module, id=module_id, course__owner=request.user)
         return self.render_to_response({'module':	module, 'site': Home.objects.latest('updated'),
-                                        'about': About.objects.latest('updated')})
+                                        'about': About.objects.latest('updated'),
+                                        'latest': Course.objects.all().order_by('-created')[:5]})
 
 
 class ModuleOrderView(CsrfExemptMixin, JsonRequestResponseMixin, 	View):
@@ -206,7 +237,8 @@ class CourseListView(TemplateResponseMixin,	View):
             'courses':	courses,
             'order': order,
             'site': Home.objects.latest('updated'),
-            'about': About.objects.latest('updated')})
+            'about': About.objects.latest('updated'),
+            'latest': Course.objects.all().order_by('-created')[:5]})
 
 
 class CourseDetailView(DetailView):

@@ -7,8 +7,10 @@ from django.views.generic.base import TemplateResponseMixin, View
 from django.http import JsonResponse
 from quizzes.models import Quiz
 from notes.models import Note
-from discussions.models import Post
+from discussions.models import DiscussionTopic, Post
 import random
+from django.db.models import Q, CharField
+
 
 # Create your views here.
 
@@ -56,6 +58,42 @@ def home(request):
     }
 
     return render(request, 'front/main/index.html', context)
+
+
+def search_all(request):
+    site = Home.objects.latest('updated')
+    about = About.objects.latest('updated')
+    if request.method == 'GET':  # this will be GET now
+        # do some research what it does
+        search_query = request.GET.get('search')
+        # Add your models here, in any way you find best.
+        search_models = [Course, Note, Quiz, DiscussionTopic, Post]
+
+        search_results = []
+        for model in search_models:
+            fields = [x for x in model._meta.fields if isinstance(
+                x, CharField)]
+            search_queries = [
+                Q(**{x.name + "__contains": search_query}) for x in fields]
+            q_object = Q()
+            for query in search_queries:
+                q_object = q_object | query
+
+            results = model.objects.filter(q_object)
+            results.model_name = results.model.__name__
+            search_results.append(results)
+        return render(request, "front/main/search.html", {"site": site, "about": about, "query": search_query, "results": search_results})
+    else:
+        return render(request, "front/main/search.html", {"site": site, "about": about, "query": search_query})
+
+
+def search(request, models_list):
+    site = Home.objects.latest('updated')
+    about = About.objects.latest('updated')
+    if request.method == 'GET':  # this will be GET now
+        # do some research what it does
+        search_query = request.GET.get('search')
+    return render(request, "front/main/search.html", {"site": site, "about": about, "query": search_query})
 
 
 class AboutView(TemplateResponseMixin, View):

@@ -129,5 +129,10 @@
 {%	endblock	%}
 {% block script%}
 	<script src="{% static 'js/common.js' %}"></script>
+	<script>
+		
+		$('#search_form_lg').attr('action', '{% url "course_search" %}');
+       
+	</script>
 	
 {% endblock %}

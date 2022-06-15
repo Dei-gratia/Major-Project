@@ -1,4 +1,6 @@
 from django.urls import path
+
+from main.views import search
 from . import views
 urlpatterns = [
     path('',	views.CourseListView.as_view(),	name='course_list'),
@@ -67,5 +69,7 @@ urlpatterns = [
          name='course_detail'),
 
     path('<order>/',	views.CourseListView.as_view(),	name='course_list'),
+
+    path('all/search/', views.search, name='course_search'),
 
 ]

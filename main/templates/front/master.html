@@ -20,6 +20,7 @@
 	<!-- Fontawesome -->
 	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css" />
 
+	
 	{% block head %}
 
 	{% endblock %}
@@ -45,8 +46,8 @@
 			<div>
 				<div class="lg-nav-social-icons">
 					{% for social in about.socials.all %}
-					<a id="{% if social.social_name == 'facebook' %}cfb{% elif social.social_name == 'twitter' %}ctw{% elif social.social_name == 'instagram' %}cig{% elif social.social_name == 'linkedin' %}cin{% elif social.social_name == 'youtube' %}cyt{% endif %}"
-					 title="{{ social.display_title }}">
+					<a style="color: white;" id="{% if social.social_name == 'facebook' %}cfb{% elif social.social_name == 'twitter' %}ctw{% elif social.social_name == 'instagram' %}cig{% elif social.social_name == 'linkedin' %}cin{% elif social.social_name == 'youtube' %}cyt{% endif %}"
+					 title="{{ social.display_title }}" href="{{ social.link }}">
 					 <i class="{{ social.social_font_owesome_icon }}"></i></a>
 					{% endfor %}
 				</div>
@@ -58,7 +59,7 @@
 	
 	<nav class="navbar sm-nav navbar-expand-lg navbar-dark bg-dark">
 		<div class="container-fluid">
-			<a class="navbar-brand d-lg-none" href="#">
+			<a class="navbar-brand d-lg-none" href="{% url 'home' %}">
 				<img src="{% static 'images/edu.jpg' %}" alt="" width="25" height="20" class="d-inline-block align-text-center">
 				<strong style="color: #3f6ad8;">E-</strong>LEARN
 			</a>
@@ -131,7 +132,7 @@
 		<div class="card " id="logo_lg" >
 			<div class="card-body card-logo-lg" style="display: flex;">
 				<div style="margin: auto;" class="d-none d-lg-block">
-					<a class="navbar-brand" href="#" style="color: black; font-size: 25px; font-weight: 900;">
+					<a class="navbar-brand" href="{% url 'home' %}" style="color: black; font-size: 25px; font-weight: 900;">
 						<img src="{% static 'images/edu.jpg' %}" alt="" width="25" height="20" class="d-inline-block align-text-center">
 						<strong style="color: #3f6ad8; font-size: 25px;">E-</strong>LEARN
 					</a>
@@ -150,7 +151,7 @@
 				<div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
 					<a class="dropdown-item" href="#latest">Latest</a>
 					<a class="dropdown-item" href="#most-popular">Most Popular</a>
-					<a class="dropdown-item" href="#subscibe">Subscribe</a>
+					<a class="dropdown-item" href="/#subscribe">Subscribe</a>
 				</div>
 			</div> 
 			
@@ -207,16 +208,13 @@
 					<span >{{ site.slider1_txt }}:&nbsp; &nbsp;</span>
 					<ul id="popular_slider" >
 						{% for l in latest %}
-						<li><a href="">{{ l.title }}</a></li>
+						<li><a href="#">{{ l.title }}</a></li>
 						{% endfor %}
-						<li>Items searched</li>
-						<li>Being Searched item 3</li>
-						<li>Searched item 4</li>
 					</ul>
 				</div>
 			</div>
 			<div class="col-md-5">
-				<form class="d-flex mr-auto search_form_lg" method="get" action="" id="search_form_lg">
+				<form class="d-flex mr-auto search_form_lg" method="get" action="{% url 'search_all' %}" id="search_form_lg">
 					<div class="input-group rounded d-flex">
 						<input type="search" name="search" class="form-control rounded" placeholder="Search" aria-label="Search" aria-describedby="search-addon" />
 						<span class="input-group-text border-0" type="submit" id="search-addon">
@@ -289,11 +287,11 @@
 			<div class="col-md-5 col-sm-12">
 				<h6 class="footer_header">Latest</h6>
 				<div class="footer_section">
-					{% for n in latest_notes %}
+					{% for n in latest %}
 					<div class="footer_latest">
-						<a><img class="footer_latest_img" alt="latest" src="{{ n.cover_img.url }}"></a>
+						<a><img class="footer_latest_img" alt="latest" src="{% if n.cover_img %}{{ n.cover_img.url }}{% elif n.image %}{{ n.image.url }}{% else %}{{ n.cover_image.url }}{% endif %}"></a>
 						<a href=""><h6>{{ n.title }}</h6></a>
-						<p class="clipped-text-one">{{ n.description }}</p>
+						<p class="clipped-text-one">{% if n.description %}{{ n.description }}{% else %}{{ n.overview }}{% endif %}</p>
 					</div>
 					{% endfor %}
 					
@@ -443,7 +441,11 @@
 										<label for="email" class="col-sm-2 control-label">
 											Email*</label>
 										<div class="col-sm-10">
-											<input type="email" class="form-control" id="user_email" name="user_email" placeholder="Email" />
+											<input type="email" class="form-control" id="user_email" name="user_email" placeholder="Email"
+											pattern="[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{1,63}$"
+													title="Please enter a valid address which includes an @ symbol"  
+													oninvalid="setCustomValidity('Please enter a valid email address')"
+													onkeyup="setCustomValidity('')" required  />
 										</div>
 									</div>
 									<br/>
@@ -585,7 +587,6 @@
  	})
 
 	 	$('.dropdown').hover(function() { $(this).addClass('show'); $(this).find('.dropdown-menu').addClass('show');}, function() {$(this).removeClass('show'); $(this).find('.dropdown-menu').removeClass('show');});
-		
 		
 
 	</script>

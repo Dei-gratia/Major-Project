@@ -193,7 +193,8 @@ class AllPostListView(TemplateResponseMixin,	View):
     def get(self,	request):
         posts = Post.objects.all()
         return self.render_to_response({'posts':	posts, 'site': Home.objects.latest('updated'),
-                                        'about': About.objects.latest('updated')})
+                                        'about': About.objects.latest('updated'),
+                                        'latest': Post.objects.all().order_by('-date')[:5]})
 
     def post(self,	request,	*args,	**kwargs):
         post_title = request.POST.get('post_title')
