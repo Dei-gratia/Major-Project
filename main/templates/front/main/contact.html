@@ -24,14 +24,14 @@
 					{% for field in form %}
 						{% if field.name == "name" %}
 						<div class="form-group">
-							<input class="form-control contact_input" type="text" name="name" placeholder="Name*" 
+							<input class="form-control contact_input" title="Name should not be left blank." type="text" name="name" placeholder="Name*" 
 								oninvalid="this.setCustomValidity('Please enter your name')" onkeyup="setCustomValidity('')" required>
 						</div>
 						{% endif %}
 						
 						{% if field.name == "email" %}
 						<div class="form-group">
-							<input class="form-control contact_input" type="email" name="email" placeholder="Email*" 
+							<input class="form-control contact_input" title="Email should not be left blank." type="email" name="email" placeholder="Email*" 
 								pattern="[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{1,63}$" 
 								oninvalid="setCustomValidity('Please enter a valid email address')" onkeyup="setCustomValidity('')" required>
 						</div>
@@ -55,10 +55,10 @@
 				<br/>
 				<div style="display: flex; flex-direction: column; align-items: center;">
 					<h4>Connect With Us</h4>
-					<div class="social_icons_abt">
-						{% for social in about.social_set.all %}
-							<a id="{% if social.social_name == 'facebook' %}cfb{% elif social.social_name == 'twitter' %}ctw{% elif social.social_name == 'instagram' %}cig{% elif social.social_name == 'linkedin' %}cin{% elif social.social_name == 'youtube' %}cyt{% endif %}"
-							title="{{ social.display_title }}">
+					<div class="social_icons">
+						{% for social in about.socials.all %}
+							<a id="{% if social.social_name.lower == 'facebook' %}cfb{% elif social.social_name.lower == 'twitter' %}ctw{% elif social.social_name.lower == 'instagram' %}cig{% elif social.social_name.lower == 'linkedin' %}cin{% elif social.social_name.lower == 'youtube' %}cyt{% elif social.social_name.lower == 'github' %}cgit{% endif %}"
+							title="{{ social.display_title }}" href="{{ social.link }}">
 							<i class="{{ social.social_font_owesome_icon }}"></i></a>
 						{% endfor %}
 					</div>
@@ -75,4 +75,54 @@
 {% endblock%}
 
 {% block script %}
+
+<script>
+	
+	$('.contact_form').submit(function(e){
+        e.preventDefault();
+
+		$(window).scrollTop(0)
+		$('#ajax-loader').show()
+		$('#loading-text').text("Please wait...")
+		$('body').css({ overflow: 'hidden',height: '100vh' });
+		
+		var form = $(e.target);
+		
+        $.ajax({
+            url: '{% url "contact" %}',
+            type: 'post',
+            data: form.serialize(),
+            error: function(xhr, ajaxOptions, thrownError){ 
+				alert(thrownError); 
+				$('#ajax-loader').hide();
+			},
+            success: function(data){
+				if (data.success === true) {
+					current_location = window.location.pathname
+					txt = current_location.split('/')
+					$('#loading-text').text("Message sent")
+					$('#ajax-loader').delay(2000).fadeOut()
+					
+					setTimeout(function(){
+						$('#ajax-loader').hide();
+						$('body').css({ overflow: 'auto' });
+					},2000); 
+					alert(`${data.message}`)
+					location.reload();
+					
+				} 
+				else {
+					alert(`${data.message}`)
+					$('#ajax-loader').hide()
+					$('body').css({ overflow: 'auto' });
+				}
+				
+				
+			}
+        })
+ 	})
+	
+
+</script>
+
 {% endblock %}

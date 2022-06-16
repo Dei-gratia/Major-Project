@@ -10,6 +10,8 @@ from notes.models import Note
 from discussions.models import DiscussionTopic, Post
 import random
 from django.db.models import Q, CharField
+from django.conf import settings
+from django.core.mail import send_mail
 
 
 # Create your views here.
@@ -118,10 +120,14 @@ class ContactView(TemplateResponseMixin, View):
     def post(self,	request,	*args, **kwargs):
         form = ContactForm(request.POST)
         if form.is_valid():
-            # form.save()
+            form.save()
             contact_email = form.cleaned_data['email']
-            email_subject = f'Major project new contact: {form.cleaned_data["name"]}, {form.cleaned_data["email"]}'
-            email_message = form.cleaned_data['message']
+            contact_name = form.cleaned_data["name"]
+            email_subject = f'E-Lean contact: {form.cleaned_data["name"]}, {form.cleaned_data["email"]}'
+            email_message = f"Name: {contact_name}\nEmail: {contact_email}\n \n{form.cleaned_data['message']}"
             print(contact_email, email_subject, email_message)
+            send_mail(email_subject, email_message,
+                      settings.CONTACT_EMAIL, settings.ADMIN_EMAILS)
+            return JsonResponse({"success": True, "message": "Thank you for getting in touch, our team will get back to you as soon as possible"})
 
-        return JsonResponse({"success": True, "message": "Thank you for getting in touch, our team will get back to you"})
+        return JsonResponse({"success": False, "message": "Error sending message, Please try again"})

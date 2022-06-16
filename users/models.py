@@ -88,6 +88,7 @@ class Profile(models.Model):
     image = models.ImageField(default='profilepics/default.png',
                               upload_to=f'profilepics/')
     updated = models.DateTimeField(auto_now=True)
+    last_activity = models.DateTimeField(default=timezone.now)
 
     def save(self, *args, **kwargs):
         if not self.profile_name:

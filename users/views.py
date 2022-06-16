@@ -2,6 +2,7 @@ import email
 from django.http import Http404
 from django.shortcuts import render, get_object_or_404
 from requests import request
+from discussions.models import Post
 from main.models import Home, About, SchoolLevel, Specialisation, Subject
 from django.urls import reverse_lazy, reverse
 from django.views.generic.edit import CreateView
@@ -10,20 +11,24 @@ from django.contrib.auth import authenticate,	login
 from django.views.generic.edit import FormView
 from django.contrib.auth.mixins import LoginRequiredMixin
 from main.models import SchoolLevel, Subject, Specialisation
+from notes.models import Note
+from quizzes.models import Quiz
 from users.models import User, Profile
 from .forms import CourseEnrollForm, UserProfileForm
 from django.views.generic.list import ListView
 from courses.models import Course
 from django.views.generic.detail import DetailView
 from django.views.generic.edit import UpdateView
+from django.views.generic.base import TemplateResponseMixin, View
 from django.shortcuts import redirect, render
 from django.contrib.auth import authenticate, login, logout
 from django.http import HttpResponseRedirect, JsonResponse
 from django.urls import reverse
-from main.models import Home, About
+from main.models import Home, About, Contact
 from users.models import User, Review
 from users.forms import CustomUserCreationForm, CustomAuthenticationForm
-import time
+from django.utils import timezone
+from datetime import timedelta
 
 
 # Create your views here.
@@ -208,3 +213,32 @@ class StudentCourseDetailView(DetailView):
                                             num_ratings=course_num_ratings)
 
         return JsonResponse({"success": True, "message": "Successfully rated"})
+
+
+class DashboardView(LoginRequiredMixin, TemplateResponseMixin, View):
+    template_name = 'front/users/dashboard.html'
+
+    def get(self,	request):
+        site = Home.objects.latest('updated')
+        about = About.objects.latest('updated')
+        user = request.user
+        last_activity = user.profile.last_activity
+        new_messages = Contact.objects.filter(
+            date__gte=last_activity).count()
+        new_posts = Post.objects.filter(date__gte=last_activity).count()
+        new_notes = Note.objects.filter(created__gte=last_activity).count()
+        new_courses = Course.objects.filter(created__gte=last_activity).count()
+        new_quizzes = Quiz.objects.filter(created__gte=last_activity).count()
+        new_reviews = Review.objects.filter(date__gte=last_activity).count()
+        new_users = User.objects.filter(date_joined__gte=last_activity).count()
+        total_posts = Post.objects.all().count()
+        total_courses = Course.objects.all().count()
+        total_notes = Note.objects.all().count()
+        total_quizzes = Quiz.objects.all().count()
+        total_users = User.objects.all().count()
+        total_reviews = Review.objects.all().count()
+        print(new_messages, new_courses, new_notes, new_posts,
+              new_quizzes, new_reviews, new_users, total_reviews)
+        return self.render_to_response({'site': site, 'about': about, 'user': user, 'new_users': new_users, 'new_messages': new_messages, 'new_courses': new_courses,
+                                        'new_notes': new_notes, 'new_quizzes': new_quizzes, 'new_posts': new_posts, 'new_reviews': new_reviews, 'total_reviews': total_reviews, 'total_posts': total_posts,
+                                        'total_courses': total_courses, 'total_notes': total_notes, 'total_quizzes': total_quizzes, 'total_users': total_users})

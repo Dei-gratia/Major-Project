@@ -1,0 +1,236 @@
+.mysidebar {
+	background-color: rgb(55, 55, 55);
+	color: white;
+	height: 100%;
+}
+
+.mysidebar a {
+	background-color: rgb(55, 55, 55);
+	color: rgba(255, 255, 255, 0.764);
+	border: none;
+}
+
+.mysidebar a:hover {
+	background-color: rgb(69, 69, 69);
+	color: white;
+}
+
+.selected {
+	background-color: rgb(69, 69, 69) !important;
+}
+
+#sidebar-nav {
+    width: 200px;
+	
+}
+
+li {
+	text-decoration: none;
+	list-style-type: none;
+	background-color: rgb(55, 55, 55);
+}
+
+.top_items {
+	display: flex;
+	padding: 10px;
+	background-color: white;
+}
+
+#search_form {
+	margin-left: 5px;
+	border: none;
+}
+
+.sidebar_user {
+	display: flex;
+	
+}
+
+.sidebar_user_section {
+	padding: 5px;
+	max-width: 160px;
+	
+}
+
+.account_img {
+	padding: 10px; 
+	border-radius: 42.5px;
+	width: 85px;
+	height: 85px;
+}
+
+.sidebar-user-links a {
+	color: gray;
+	padding: 2px;
+}
+
+#top-search {
+	border: none;
+	outline: none;
+}
+
+#sidebar_collapse_btn {
+	color: rgb(55, 55, 55);
+	padding: 5px;
+}
+
+#sidebar_collapse_btn:hover {
+	color: blue;
+}
+
+#top-search:focus, #top-search:hover {
+	box-shadow: none;
+	background-color: rgba(128, 128, 128, 0.101);
+	border-radius: 0;
+}
+
+.search_input {
+	display: flex;
+	max-width: 400px;
+}
+
+.search_input:hover {
+	opacity: 0.7;
+}
+
+button[type="submit"] {
+	width: 40px;
+	padding: 0;
+	margin: 0;
+	border: 1px solid rgba(128, 128, 128, 0.101);
+	border-radius: inherit;
+	cursor: pointer;
+	opacity: 0.7;
+	
+  }
+
+  .hide {
+	  display: none;
+  }
+
+  .show {
+	  display: block;
+  }
+  
+  button[type="submit"]:hover {
+	opacity: 1;
+  }
+  
+  button[type="submit"]:focus,
+  input[type="search"]:focus {
+	box-shadow: 0 0 3px 0 #1183d6;
+	border-color: #1183d6;
+	outline: none;
+  }
+
+.row_count {
+	border-radius: 5px;
+	margin: 5px;
+	outline: none;
+	border: 1px solid gray;
+}
+
+.table-active {
+	
+}
+
+.page-header {
+	background-image: url('../../images/c3.jpg');
+	height: 300px;
+	background-size: contain;
+	padding: 0;
+	margin: 0;
+	
+}
+
+.page-header-content {
+	margin: 0;
+	color: white;
+	display: flex;
+	justify-content: space-around;
+	background-color: rgba(0, 0, 0, 0.555);
+	height: 150px;
+
+}
+
+.page-header-content div {
+	margin: auto;
+}
+
+.dashboard-card {
+	height: 110px;
+	border-radius: 1px;
+	transition: transform ease 300ms;
+}
+
+.dashboard-card:hover {
+	transform: translate(0, -5px);
+	box-shadow: 0 5px 15px rgba(171, 171, 171, 0.8);
+}
+
+.dashboard-icon {
+	color: white; 
+	padding: 12px 5px; 
+	margin: 15px 10px; 
+	border-radius: 5px;
+	height: 74px;
+	width: 74px;
+	text-align:center;
+	display: inline-block;
+   
+
+}
+
+.card-sub-title {
+	text-align: center;
+	color: black;
+}
+
+.card-sub-title:hover {
+	color: inherit;
+}
+
+
+.message-icon {
+	background-color: red;
+}
+
+.posts-icon {
+	background-color: green;
+	
+}
+
+.courses-icon {
+	background-color: lightblue;
+}
+
+.notes-icon {
+	background-color: orange;
+}
+
+.quiz-icon {
+	background-color: blue;
+}
+
+.review-icon {
+	background-color: gray;
+}
+
+.card-title {
+
+}
+
+@media screen and (min-width: 992px) {
+	
+}
+
+.sidebar-user-name {
+    text-overflow: ellipsis; 
+    width: 110px; 
+    white-space: nowrap; 
+    overflow:hidden; 
+    }
+
+.total-count {
+	color: gray;
+}

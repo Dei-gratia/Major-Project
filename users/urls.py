@@ -30,4 +30,6 @@ urlpatterns = [
          views.StudentCourseDetailView.as_view(),
          name='student_course_detail_module'),
 
+    path('dashboard/', views.DashboardView.as_view(), name='dashboard'),
+
 ]

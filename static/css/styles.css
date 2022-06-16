@@ -244,7 +244,12 @@ span
 	background-color: white;
   }
 
-  #cyt:hover, #cin:hover, #cig:hover,#ctw:hover, #cfb:hover {
+  #cgit {
+	  color: black;
+	  background-color: white;
+  }
+
+  #cyt:hover, #cin:hover, #cig:hover,#ctw:hover, #cfb:hover, #cgit:hover {
 	  background-color: rgb(186, 185, 185) !important;
   }
   
@@ -509,6 +514,7 @@ span
     color: #fff;
     background: rgba(0, 0, 0, 0.5);
     padding-top: 25%;
+	z-index: 100;
     display: none;
 }
 

@@ -249,9 +249,9 @@ class CourseDetailView(DetailView):
         context = super(CourseDetailView, self).get_context_data(**kwargs)
         context['enroll_form'] = CourseEnrollForm(
             initial={'course': self.object})
-        user_review = self.object.reviews.filter(user=self.request.user)
 
-        if len(user_review) > 0:
+        if self.request.user.is_authenticated:
+            user_review = self.object.reviews.filter(user=self.request.user)
             user_review = user_review[0]
         else:
             user_review = False
