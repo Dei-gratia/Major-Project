@@ -20,3 +20,7 @@
 .contents-container {
 	padding: 10px;
 }
+
+#slider_search_container {
+	display: none !important;
+}

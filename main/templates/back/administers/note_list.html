@@ -1,0 +1,143 @@
+{% extends 'back/master.html' %}
+{% load static %}
+
+{% block head %}
+<title>Admin Notes List | E-Learn</title>
+
+<link href="https://cdn.datatables.net/1.12.1/css/dataTables.bootstrap5.min.css">
+<link href="https://cdn.datatables.net/responsive/2.3.0/css/responsive.bootstrap5.min.css">
+<link href="https://cdn.datatables.net/select/1.4.0/css/select.bootstrap5.min.css">
+<link rel="stylesheet" href="{% static 'css/back/tables.css' %}">
+
+{% endblock %}
+
+
+{% block main %}
+<label style="margin: 10px;"> Select All <input type="checkbox" name="select_all" value="1" id="select-all"></label> 
+<div class="btn-container" >
+	<button class="btn-top" id="view">View Selected</button>
+	<button class="btn-top" id="edit">Edit Selected</button>
+	<button class="btn-top" id="verify">Verify Selected</button>
+	<button class="btn-top btn-delete" id="delete">Delete Selected</button>
+
+</div>
+
+<table id="notes" class="table responsive table-striped dt-responsive nowrap" style="width:100%;  background-color: white;">
+	<thead>
+		
+		<tr>
+			<th>Id </th>
+			<th>title</th>
+			<th>Uploaded By</th>
+			<th>Image</th>
+			<th>School Level</th>
+			<th>Subject</th>
+			<th class="description">Desciption</th>
+			<th>Date Uploaded</th>
+			<th>Average Rating</th>
+			<th>Downloads</th>
+			<th>tags</th>
+			<th>Slug</th>
+			<th>File</th>
+			<th>Verified </th>
+			<th>Manage</th>
+			
+		</tr>
+	</thead>
+	<tbody>
+		{% for note in notes %}
+		<tr id="{{ note.pk }}" class="data">
+			<td > <span><i class="fa-solid fa-circle-plus expand"></i> </span>{{ note.id }}</td>
+			<td>{{ note.title }}</td>
+			<td> {{ note.owner.profile.profile_name }}</td>
+			<td>{{ note.cover_img.url }}</td>
+			<td>{{ note.school_level }}</td>
+			<td>{{ note.subject }}</td>
+			<td >{{ note.description }}</td>
+			<td>{{ note.date }}</td>
+			<td>{{ note.average_rating }}</td>
+			<td>>{{ note.downloads }}</td>
+			<td>>{{ note.tags }}</td>
+			<td>{{ note.slug }}</td>
+			<td>{% if note.file %}{{ note.file.url }}{% else %}No Files {% endif %}</td>
+			{% if note.verified != 0 and note.verified != "" %}<td class="yes">YES</td>{% else %}<td class="no">No</td>{% endif %} 
+			<td><div class="">
+				<a href="{% url 'note_detail' slug=note.slug %}" class="cell-btn"><i class="fa-solid fa-eye" id=""></i> View&nbsp;</a>
+				<a href="{% url 'back_note_edit' pk=note.pk %}" class="cell-btn"><i class="fa-solid fa-pencil" id=""></i> Edit&nbsp;&nbsp;&nbsp;</a>
+				<form role="form" id="form_verify" class="form-horizontal" method="post">
+					{% csrf_token %}
+					<input name="note_id" value="{{ note.pk }}" hidden="true">
+					<button  type="submit" id="verify-note" style="width: 88px;"   class="cell-btn btn-verify" > <i class="fa-solid {% if note.verified == 1 %}fa-circle-xmark{% else %}fa-circle-check{% endif %}"></i>{% if note.verified == 1 %} un-Verify {% else %}Verify {% endif %}</button>
+				</form>
+				<a href="{% url 'back_note_delete' pk=note.pk %}" class="cell-btn cell-btn-delete"><i class="fa-solid fa-trash" id=""></i> Delete</a>
+			</div></td>
+			
+		</tr>
+		
+		{% endfor %}
+		
+	</tbody>
+</table>
+{% endblock %}
+
+{% block script %}
+
+<script src="https://cdn.datatables.net/1.12.1/js/jquery.dataTables.min.js"></script>
+<script src="https://cdn.datatables.net/1.12.1/js/dataTables.bootstrap5.min.js"></script>
+<script src="https://cdn.datatables.net/responsive/2.3.0/js/dataTables.responsive.min.js"></script>
+<script src="https://cdn.datatables.net/responsive/2.3.0/js/responsive.bootstrap5.min.js"></script>
+<script src="https://cdn.datatables.net/select/1.4.0/js/dataTables.select.min.js"></script>
+
+<script src="{% static 'js/administers/notes.js' %}"></script>
+<script>
+	$.ajaxSetup({
+		data: {csrfmiddlewaretoken: '{{ csrf_token }}' },
+		});
+
+	
+	$('form').submit(function(e){
+        e.preventDefault();
+		$(window).scrollTop(0)
+		$('#ajax-loader').show()
+		$('#loading-text').text("Please Wait...")
+		$('body').css({ overflow: 'hidden',height: '100vh' });
+		
+		var form = $(e.target);
+        $.ajax({
+            url: '{% url "back_note_list" %}',
+            type: 'post',
+            data: form.serialize(),
+            error: function(xhr, ajaxOptions, thrownError){ 
+				alert(thrownError); 
+				$('#ajax-loader').hide();
+			},
+            success: function(data){
+				if (data.success === true) {
+					current_location = window.location.pathname
+					txt = current_location.split('/')
+					$('#loading-text').text("Verified!")
+					$('#ajax-loader').delay(500).fadeOut()
+
+					setTimeout(function(){
+						$('#ajax-loader').hide();
+						$('body').css({ overflow: 'auto' });
+					},600); 
+					alert(`${data.message}`)
+					location.reload()
+					
+				} 
+				else {
+					alert(`${data.message}`)
+					$('#ajax-loader').hide()
+					$('body').css({ overflow: 'auto' });
+					location.reload()
+				}
+				
+			}
+        })
+ 	})
+
+</script>
+
+{% endblock %}
+

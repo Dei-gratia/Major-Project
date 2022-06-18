@@ -12,6 +12,10 @@ span
     white-space:nowrap
 }
 
+#navbar-brand:hover {
+	opacity: 0.8 !important;
+}
+
 #search-addon {
 	background-color: rgba(0, 0, 0, 0.611);
 	outline: none;

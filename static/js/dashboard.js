@@ -4,8 +4,10 @@ function sidebarUpdate() {
 	var viewportWidth = window.innerWidth;
 	if (viewportWidth >= 768) {
 		sidebar.classList.add("show");
+		sidebar.classList.remove("hide");
 	} else {
 		sidebar.classList.remove("show");
+		sidebar.classList.add('hide')
 	}
 }
 
@@ -21,16 +23,4 @@ $('#top-search').focusout(function() {
 	
 })
 
-$(document).ready(function () {
-    var table = $('#example').DataTable();
- 
-    $('#example tbody').on('click', 'tr', function () {
-        $(this).toggleClass('table-active');
-		console.log('toggled', this.name)
-    });
- 
-    $('#button').click(function () {
-        alert(table.rows('.table-active').data().length + ' row(s) selected');
-    });
-});
 

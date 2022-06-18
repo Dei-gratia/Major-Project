@@ -54,6 +54,8 @@ INSTALLED_APPS = [
     'discussions',
     "crispy_forms",
     "crispy_bootstrap5",
+    'administers',
+
 ]
 
 MIDDLEWARE = [

@@ -1,0 +1,119 @@
+{% extends 'back/master.html' %}
+
+{% block head %}
+<title>Admin Dashboard | E-Learn</title>
+
+{% endblock %}
+
+
+{% block main %}
+
+<div class="page-header" >
+	<div class="page-header-content">
+		<div>
+			<h3>{{ new_users }}</h3>
+			<p>New Users</p>
+		</div>
+		<div>
+			<h3>{{ total_reviews}} </h3>
+			<p>Reviews</p>
+		</div>
+		<div>
+			<h3>72</h3>
+			<p>Todos</p>
+		</div>
+	</div>
+	
+</div>
+
+<div class="row" style="margin: 5px;">
+	<div class="col-lg-6">
+		<a href="#" >
+			<div class="card dashboard-card" style="display: flex; flex-direction: row; justify-content: space-between;">
+				<i style="color: white;" class="fa-solid fa-envelope message-icon fa-3x dashboard-icon"></i>
+				<div style="padding: 10px;">
+					<h3 class="card-title" style="">{{ new_messages }} New Massages</h3>
+					<a href="{% url 'contact' %}"><p class="card-sub-title" style="text-align: center;">Contact</p></a>
+				</div>
+				
+			</div>
+		</a>
+	</div>
+	
+	<div class="col-lg-6">
+		<a href="#" >
+			<div class="card dashboard-card" style="display: flex; flex-direction: row; justify-content: space-between;">
+				<i class="fa-solid fa-comments posts-icon fa-3x dashboard-icon"></i>
+				<div style="padding: 10px;">
+					<h3 class="card-title" >{{ new_posts }} New Posts</h3>
+					<a href="{% url 'discussion_topic_list' %}"><p class="card-sub-title" >Discussion Forum</p></a>
+				</div>
+				
+			</div>
+		</a>
+	</div>
+	
+
+	<div class="col-lg-6">
+		<a href="#" >
+			<div class="card dashboard-card" style="display: flex; flex-direction: row; justify-content: space-between;">
+				<i  class="fa-solid fa-play courses-icon fa-3x dashboard-icon" ></i>
+				<div style="padding: 10px;">
+					<h3 class="card-title">{{ new_courses }} New Courses</h3>
+					<a href="{% url 'course_list' %}"><p class="card-sub-title" style="text-align: center;">Courses</p></a>
+				</div>
+				
+			</div>
+		</a>									
+	</div>
+
+	<div class="col-lg-6">
+		<a href="#">
+			<div class="card dashboard-card" style="display: flex; flex-direction: row; justify-content: space-between;">
+				<i  class="fa-solid fa-clipboard notes-icon fa-3x dashboard-icon"></i>
+				<div style="padding: 10px;">
+					<h3 class="card-title" >{{ new_notes }} New Notes</h3>
+					<a href="{% url 'note_list' %}"><p class="card-sub-title" style="text-align: center;">Notes</p></a>
+				</div>
+				
+			</div>
+		</a>
+	</div>
+
+	<div class="col-lg-6">
+		<a href="#">
+			<div class="card dashboard-card" style="display: flex; flex-direction: row; justify-content: space-between;">
+				<i  class="fa-solid fa-list-check quiz-icon fa-3x dashboard-icon"></i>
+				<div style="padding: 10px;">
+					<h3 class="card-title" style="">{{ new_quizzes }} New Quiz</h3>
+					<a href="{% url 'quiz_list' %}"><p class="card-sub-title" style="text-align: center;">Quizzes</p></a>
+				</div>
+				
+			</div>
+		</a>
+		
+	</div>
+
+	<div class="col-lg-6">
+		<a href="#">
+			<div class="card dashboard-card" style="display: flex; flex-direction: row; justify-content: space-between;">
+				<i  class="fa-solid fa-star-half-stroke review-icon fa-3x dashboard-icon"></i>
+				<div style="padding: 10px;">
+					<h3 class="card-title" >{{ new_reviews }} New Item Reviews</h3>
+					<a href="{% url 'quiz_list' %}"><p class="card-sub-title" style="text-align: center;">Quizzes</p></a>
+				</div>
+				
+			</div>
+		</a>
+		
+	</div>
+
+
+</div>
+
+
+{% endblock %}
+
+{% block script %}
+
+{% endblock %}

@@ -1,0 +1,192 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<link rel="apple-touch-icon" sizes="180x180" href="{% static 'images/favicon/apple-touch-icon.png' %}">
+	<link rel="icon" type="image/png" sizes="32x32" href="{% static 'images/favicon/favicon-32x32.png' %}">
+	<link rel="icon" type="image/png" sizes="16x16" href="{% static 'images/favicon/favicon-16x16.png' %}">
+	<link rel="manifest" href="{% static 'images/favicon/site.webmanifest' %}">
+
+	<!-- Bootstrap CSS -->
+	
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
+	<!-- Fontawesome -->
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
+
+	<link rel="stylesheet" href="{% static 'css/styles.css' %}">
+	
+	<link rel="stylesheet" href="{% static 'css/users/dashboard.css' %}">
+
+	{% block head %}
+
+	{% endblock %}
+</head>
+<body>
+	<div id="ajax-loader">
+		<p id="loading-text">Please wait ...</p>
+		<div class="lds-ripple"><div></div><div></div></div>
+	</div>
+	
+	<div class="content"  >
+		<div class="row" >
+			<div class="container-fluid" style="padding: 0; "  >
+				<div class="row flex-nowrap" >
+					<div class="col-auto px-0 col-lg-0"  >
+						<div id="sidebar" class="collapse collapse-horizontal border-end mysidebar" style=" transition: 0s;">
+							<div id="sidebar-nav" class="list-group border-0 rounded-0 text-sm-start min-vh-100">
+								<a href="{% url 'home' %}" class="list-group-item border-end-0 d-inline-block text-truncate" style="font-size: 25px;" data-bs-parent="#sidebar"><i class="fa-solid fa-book-open-reader"></i></i> <span><strong style="color: #3f6ad8; font-size: 25px;">E-</strong>LEARN</span> </a>
+								<a href="{% url 'dashboard' %}" class="list-group-item border-end-0 d-inline-block text-truncate" data-bs-parent="#sidebar"><i class="fa-solid fa-bolt"></i> <span><strong>Admin</strong>Dashboard</span> </a>
+								<div class="sidebar_user" style="padding: 0; margin: 0;">
+									<div class="sidebar-user-avatar">
+										<a href="{% url 'user_profile' pk=request.user.pk %}">
+											<img class="account_img"  src="{{ request.user.profile.image.url }}" alt="avatar">
+										</a>
+									</div>
+									<div class="sidebar_user_section">
+										<div class="sidebar-user-name">{% if request.user.profile.profile_name %}{{ request.user.profile.profile_name }}{% else %}Admin{% endif %}</div>
+										<div class="sidebar-user-links">
+											<a href="{% url 'user_profile' pk=request.user.pk %}" data-toggle="tooltip" data-placement="bottom" title="Profile"><i class="fa-solid fa-user"></i></i></a>
+											<a href="account.html" data-toggle="tooltip" data-placement="bottom" title="Messages"><i class="fa-solid fa-envelope"></i></a>
+											<a href="javascript:void(0)" class="enable-tooltip" data-placement="bottom" title="Settings"><i class="fa-solid fa-gear"></i></i></a>
+											<a href="{% url 'logout' %}" data-toggle="tooltip" data-placement="bottom" title="Logout"><i class="fa-solid fa-right-from-bracket"></i></a>
+										</div>
+									</div>
+								</div>
+	
+								<a href="{% url 'admin_dashboard' %}" class="list-group-item {% if dashboard %}selected{% endif %}"   data-bs-parent="#sidebar"><i class="fa-solid fa-house"></i></i> <span>Dashboard</span></a>
+								
+								<li>
+									<a href="#collapseUsers"  class="list-group-item " data-bs-parent="#sidebar" role="button" data-bs-toggle="collapse" aria-expanded="false" aria-controls="collapseUsers"><i class="fa-solid fa-user-group"></i> Users <span class='total-count' >&nbsp; ({{ total_users }})</span></a>
+									<ul class="collapse"   id="collapseUsers" style="margin-bottom: 0;">
+										<li>
+											<a href="" class="list-group-item " data-bs-parent="#sidebar"><i class="fa-solid fa-user-plus"></i></i> <span>Add User</span></a>
+										</li>
+										<li>
+											<a href="" class="list-group-item " data-bs-parent="#sidebar"><i class="fa-solid fa-users"></i> <span>Users List</span></a>
+										</li>
+									</ul>
+								</li>
+
+								<li>
+									<a href="#collapseCourses" class="list-group-item {% if courses %}selected{% endif %}" data-bs-parent="#sidebar" role="button" data-bs-toggle="collapse" aria-expanded="false" aria-controls="collapseNotes"><i class="fa-solid fa-play"></i> Courses <span class="total-count">&nbsp;({{ total_courses }}) </span></a>
+									<ul class="collapse" id="collapseCourses" style="margin-bottom: 0;">
+										<li>
+											<a href="{% url 'course_create' %}" class="list-group-item " data-bs-parent="#sidebar"><i class="fa-solid fa-notes-medical"></i> <span>Uplod Course</span></a>
+										</li>
+										<li>
+											<a href="{% url 'manage_course_list' %}" class="list-group-item " data-bs-parent="#sidebar"><i class="fa-solid fa-bookmark"></i> <span>My Courses</span></a>
+										</li>
+										<li>
+											<a href="{% url 'course_list' %}" class="list-group-item " data-bs-parent="#sidebar"><i class="fa-solid fa-list"></i> <span>Courses List</span></a>
+										</li>
+										
+									</ul>
+								</li>
+
+
+								
+								<li>
+									<a href="#collapseNotes" class="list-group-item {% if notes %}selected{% endif %} " data-bs-parent="#sidebar" role="button" data-bs-toggle="collapse" aria-expanded="false" aria-controls="collapseNotes"><i class="fa-solid fa-clipboard"></i> Notes <span class="total-count">&nbsp;({{ total_notes }}) </span></a>
+									<ul class="collapse" id="collapseNotes" style="margin-bottom: 0;">
+										<li>
+											<a href="{% url 'note_create' %}" class="list-group-item " data-bs-parent="#sidebar"><i class="fa-solid fa-notes-medical"></i> <span>Uplod Notes</span></a>
+										</li>
+										<li>
+											<a href="{% url 'manage_note_list' %}" class="list-group-item " data-bs-parent="#sidebar"><i class="fa-solid fa-upload"></i> <span>My Notes</span></a>
+										</li>
+										<li>
+											<a href="{% url 'back_note_list' %}" class="list-group-item " data-bs-parent="#sidebar"><i class="fa-solid fa-list"></i> <span>Notes List</span></a>
+										</li>
+										
+									</ul>
+								</li>
+								
+								<li>
+									<a href="#collapseQuizzes" class="list-group-item {% if quizzes %}selected{% endif %}" data-bs-parent="#sidebar" role="button" data-bs-toggle="collapse" aria-expanded="false" aria-controls="collapseQuizzes"><i class="fa-solid fa-list-check"></i> Quizzes <span class="total-count">&nbsp;({{ total_quizzes }}) </span></a>
+									<ul class="collapse" id="collapseQuizzes" style="margin-bottom: 0;">
+										<li>
+											<a href="{% url 'quiz_create' %}" class="list-group-item " data-bs-parent="#sidebar"><i class="fa-solid fa-square-plus"></i> <span>Add Quizzes</span></a>
+										</li>
+										<li>
+											<a href="{% url 'manage_quiz_list' %}" class="list-group-item " data-bs-parent="#sidebar"><i class="fa-solid fa-square-plus"></i> <span>My Quizzes</span></a>
+										</li>
+										<li>
+											<a href="{% url 'quiz_list' %}" class="list-group-item " data-bs-parent="#sidebar"><i class="fa-solid fa-list"></i> <span>Quizzes List</span></a>
+										</li>
+										
+									</ul>
+								</li>
+
+								<li>
+									<a href="#collapsePosts" class="list-group-item {% if posts %}selected{% endif %}" data-bs-parent="#sidebar" role="button" data-bs-toggle="collapse" aria-expanded="false" aria-controls="collapsePosts"><i class="fa-solid fa-envelopes-bulk"></i> Discussion Forum<span class="total-count">&nbsp;({{ total_posts }}) </span></a>
+									<ul class="collapse" id="collapsePosts" style="margin-bottom: 0;">
+										<li>
+											<a href="{% url 'manage_discussion_topic_list' %}" class="list-group-item " data-bs-parent="#sidebar"><i class="fa-solid fa-square-plus"></i> <span>Add Post</span></a>
+										</li>
+										<li>
+											<a href="{% url 'manage_discussion_topic_list' %}" class="list-group-item " data-bs-parent="#sidebar"><i class="fa-solid fa-square-plus"></i> <span>My Posts</span></a>
+										</li>
+										<li>
+											<a href="{% url 'all_posts' %}" class="list-group-item " data-bs-parent="#sidebar"><i class="fa-solid fa-list"></i> <span>Posts List</span></a>
+										</li>
+									</ul>
+								</li>
+
+
+								<li>
+									<a href="#collapseSiteSettings" class="list-group-item {% if Settings %}selected{% endif %}" data-bs-parent="#sidebar" role="button" data-bs-toggle="collapse" aria-expanded="false" aria-controls="collapseSiteSettings"><i class="fa-solid fa-gears"></i> <span>Site Settings</span></a>
+									<ul class="collapse" id="collapseSiteSettings" style="margin-bottom: 0;">
+										<li>
+											<a href="" class="list-group-item " data-bs-parent="#sidebar"><i class="fa-solid fa-house"></i></i> <span>Home</span></a>
+										</li>
+										<li>
+											<a href="" class="list-group-item " data-bs-parent="#sidebar"><i class="fa-solid fa-circle-info"></i> <span>About</span></a>
+										</li>
+										<li>
+											<a href="" class="list-group-item " data-bs-parent="#sidebar"><i class="fa-solid fa-address-card"></i> <span>Contact</span></a>
+										</li>
+									</ul>
+								</li>
+								<a href="#" class="list-group-item {% if themes %}selected{% endif %}" data-bs-parent="#sidebar"><i class="fa-solid fa-palette"></i> <span>Themes</span></a>
+								
+							</div>
+						</div>
+					</div>
+					<main class="col " style=" background-color: rgb(225, 225, 225);; padding: 0px;" >
+						
+						<div class="top_items" >
+							<a href="#" id="sidebar_collapse_btn" data-bs-target="#sidebar" data-bs-toggle="collapse" class=""><i class="fa-solid fa-bars"></i></a>
+							<form class="form_search" action="" style="width: 100%; margin-left:20px;" method="" id="search_form">
+								<div class="form-group search_input" >
+									<input type="search" id="top-search" name="top-search" class="form-control" placeholder="Search..">
+									<button id="btn_search" class="hide" type="submit"><i class="fa-solid fa-magnifying-glass"></i></button>
+								</div>
+							</form>
+						</div>
+						{% block main %}
+	
+						{% endblock %}
+						
+					</main>
+				</div>
+			</div>
+			
+		</div>
+
+	</div>
+
+	
+
+	<!-- jQuery first, then Popper.js, then Bootstrap JS -->
+	<script src="https://code.jquery.com/jquery-3.5.1.js" ></script>
+	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script>
+	<script src="{% static 'js/dashboard.js' %}"></script>
+	{% block script %}
+
+	{% endblock %}
+
+</body>
+</html>

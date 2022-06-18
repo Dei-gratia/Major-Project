@@ -1,0 +1,101 @@
+.form_search {
+	display: none;
+}
+
+.dtr-details li  {
+	background-color: white !important;
+}
+
+.even.selected {
+	background-color: blue !important;
+	color: white !important;
+}
+
+.odd.selected {
+	background-color: #3f6ad8 !important;
+	color: white !important;
+}
+
+.fa-circle-plus {
+	color: #3f6ad8 !important;
+}
+
+.fa-circle-minus {
+	color: red !important;
+}
+
+th {
+	white-space: nowrap;
+}
+
+td { min-width: 120px; }
+
+.description {
+	min-width: 300px;
+}
+
+.btn-container {
+	display: inline; 
+	background-color: #0d6efd ; 
+	padding: 8px 0px; 
+	border-radius: 3px; 
+	margin: 10px;
+}
+
+.btn-top {
+	border: none; 
+	background: transparent;
+	color: white;
+	padding: 7px 10px;
+	border-radius: 3px;
+}
+
+.btn-top:hover {
+	background: #0e63e2 ;
+}
+
+#edit, #view, #delete, #verify {
+	display: none;
+}
+
+.btn-delete {
+	background-color: red;
+}
+
+.btn-delete:hover {
+	background-color: rgb(223, 0, 0);
+}
+
+
+
+.cell-btn {
+	width: 77px;
+	padding: 5px 10px;
+	border: none;
+	margin: 2px;
+	border-radius: 3px;
+	white-space: nowrap;
+}
+
+.btn-verify {
+	padding: 5px;
+	width: 88px; 
+	color:blue;
+	border-radius: 3px;
+	margin: 2px;
+
+}
+
+.cell-btn:hover {
+	background-color: #0e63e2;
+	color: white;
+}
+
+.cell-btn-delete {
+	color: red;
+}
+
+.cell-btn-delete:hover {
+	background-color: red;
+	color: white;
+}

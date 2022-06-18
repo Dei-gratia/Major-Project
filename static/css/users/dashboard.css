@@ -234,3 +234,12 @@ button[type="submit"] {
 .total-count {
 	color: gray;
 }
+
+.yes {
+	color: green !important;
+}
+
+.no {
+	color: red !important;
+	
+}
