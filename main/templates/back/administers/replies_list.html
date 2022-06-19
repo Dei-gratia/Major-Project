@@ -2,7 +2,7 @@
 {% load static %}
 
 {% block head %}
-<title>Admin Notes List | E-Learn</title>
+<title>Admin Replies List | E-Learn</title>
 
 <link href="https://cdn.datatables.net/1.12.1/css/dataTables.bootstrap5.min.css">
 <link href="https://cdn.datatables.net/responsive/2.3.0/css/responsive.bootstrap5.min.css">
@@ -15,7 +15,7 @@
 {% block main %}
 <div class="page-heading-container">
 	<h1 class="page-heading">
-		All Notes Table
+		All Replies Table
 	</h1>
 </div>
 <label id="l-select-all" style="margin: 10px;"> Select All <input type="checkbox" name="select_all" value="1" id="select-all"></label> 
@@ -32,49 +32,34 @@
 		
 		<tr>
 			<th>Id </th>
-			<th>title</th>
-			<th>Uploaded By</th>
-			<th>School Level</th>
-			<th>Subject</th>
-			<th class="description">Desciption</th>
-			<th>Date Uploaded</th>
-			<th>Average Rating</th>
-			<th>Downloads</th>
-			<th>tags</th>
-			<th>Slug</th>
+			<th class="description">Reply Content</th>
+			<th>Reply By</th>
+			<th>To Post</th>
 			<th>Image</th>
-			<th>File</th>
+			<th>Date Uploaded</th>
 			<th>Verified </th>
 			<th>Manage</th>
 			
 		</tr>
 	</thead>
 	<tbody>
-		{% for note in notes %}
-		<tr id="{{ note.pk }}" class="data">
-			<td > <span><i class="fa-solid fa-circle-plus expand"></i> </span>{{ note.id }}</td>
-			<td>{{ note.title }}</td>
-			<td> {{ note.owner.profile.profile_name }}</td>
-			<td>{{ note.school_level }}</td>
-			<td>{{ note.subject }}</td>
-			<td>{{ note.description }}</td>
-			<td>{{ note.date }}</td>
-			<td>{{ note.get_average_rating }}</td>
-			<td>{{ note.downloads }}</td>
-			<td>{{ note.tags }}</td>
-			<td>{{ note.slug }}</td>
-			<td><img class="cell-img"  src="{{ note.cover_img.url }}"></td>
-			<td>{% if note.file %}{{ note.file.url }}{% else %}No Files {% endif %}</td>
-			{% if note.verified != 0 and note.verified != "" %}<td class="yes">YES</td>{% else %}<td class="no">No</td>{% endif %} 
+		{% for replie in replies %}
+		<tr id="{{ replie.pk }}" class="data">
+			<td > <span><i class="fa-solid fa-circle-plus expand"></i> </span>{{ replie.id }}</td>
+			<td>{{ replie.replie_content }}</td>
+			<td> {{ replie.user.profile.profile_name }}</td>
+			<td>{{ replie.post }}</td>
+			<td>{{ replie.date }}</td>
+			<td><img class="cell-img"  src="{{ replie.image.url }}"></td>
+			{% if replie.verified != 0 and replie.verified != "" %}<td class="yes">YES</td>{% else %}<td class="no">No</td>{% endif %} 
 			<td><div class="">
-				<a href="{% url 'note_detail' slug=note.slug %}" class="cell-btn"><i class="fa-solid fa-eye" id=""></i> View&nbsp;</a>
-				<a href="{% url 'back_note_edit' pk=note.pk %}" class="cell-btn"><i class="fa-solid fa-pencil" id=""></i> Edit&nbsp;&nbsp;&nbsp;</a>
+				<a href="{% url 'back_replie_edit' pk=replie.pk %}" class="cell-btn"><i class="fa-solid fa-pencil" id=""></i> Edit&nbsp;&nbsp;&nbsp;</a>
 				<form role="form" id="form_verify" class="form-horizontal" method="post">
 					{% csrf_token %}
-					<input name="note_id" value="{{ note.pk }}" hidden="true">
-					<button  type="submit" id="verify-note" style="width: 88px;"   class="cell-btn btn-verify" > <i class="fa-solid {% if note.verified == 1 %}fa-circle-xmark{% else %}fa-circle-check{% endif %}"></i>{% if note.verified == 1 %} un-Verify {% else %}Verify {% endif %}</button>
+					<input name="replie_id" value="{{ replie.pk }}" hidden="true">
+					<button  type="submit" id="verify-replie" style="width: 88px;"   class="cell-btn btn-verify" > <i class="fa-solid {% if replie.verified == 1 %}fa-circle-xmark{% else %}fa-circle-check{% endif %}"></i>{% if replie.verified == 1 %} un-Verify {% else %}Verify {% endif %}</button>
 				</form>
-				<a href="{% url 'back_note_delete' pk=note.pk %}" class="cell-btn cell-btn-delete"><i class="fa-solid fa-trash" id=""></i> Delete</a>
+				<a href="{% url 'back_replie_delete' pk=replie.pk %}" class="cell-btn cell-btn-delete"><i class="fa-solid fa-trash" id=""></i> Delete</a>
 			</div></td>
 			
 		</tr>
@@ -109,7 +94,7 @@
 		
 		var form = $(e.target);
         $.ajax({
-            url: '{% url "back_note_list" %}',
+            url: '{% url "back_replie_list" %}',
             type: 'post',
             data: form.serialize(),
             error: function(xhr, ajaxOptions, thrownError){ 

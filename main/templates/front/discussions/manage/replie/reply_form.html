@@ -5,9 +5,9 @@
 {% block head %}
 <title>
 	{% if object %}
-		Edit discussion topic	"{{	object.title }}"
+		Edit Reply	"{{	object.title }}"
 	{%	else %}
-		Create a new discussion topic
+		Create a new reply
 	{% endif %}
 </title>
 <link rel="stylesheet" href="{% static 'css/courses/manage/form.css' %}">
@@ -20,18 +20,18 @@
 	<div class="page-heading-container">
 		<h1 class="page_hearding">
 		{% if object %}
-		Edit discussion topic	"{{	object.title }}"
+		Edit reply for post	"{{	object.post }}"
 		{% else %}
-		Create a new discussion topic
+		Create a reply
 		{% endif %}
 		</h1>
 	</div>
 	<div class="contents-container">
-        <h2 class="page-sub-heading">Discussion topic info</h2>
+        <h2 class="page-sub-heading">Reply info</h2>
         <form class="form-horizontal" action=""	method="post">
             {{form|crispy }}
             {% csrf_token %}
-            <p><input type="submit" class="button btn" value="Save discussion topic"></p>
+            <p><input type="submit" class="button btn" value="Save Reply"></p>
         </form>
 	</div>
 {%	endblock %}

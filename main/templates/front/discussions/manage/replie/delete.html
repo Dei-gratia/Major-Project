@@ -3,7 +3,7 @@
 
 {% block head %}
 <title>
-	Delete	course
+	Delete	Reply
 </title>
 <link rel="stylesheet" href="{% static 'css/common.css' %}">
 <link rel="stylesheet" href="{% static 'css/courses/manage/delete.css' %}">
@@ -13,12 +13,12 @@
 {% block main %}
 <div class="content">
 	<div class="page-heading-container">
-		<h1 class="page-heading">Delete	topic "{{ object.title	}}"</h1>
+		<h1 class="page-heading">Delete	reply "{{ object.replie_content	}}"</h1>
 	</div>
 	<div class="contents-container">
         <form class="form-delete" action=""	method="post">
             {%	csrf_token	%}
-            <p>Are	you	sure you want to delete	Discussion Topic "{{	object	}}"?</p>
+            <p>Are	you	sure you want to delete	reply "{{	object.replie_content	}}" <br>For post "{{ object.post.title }}"<br>By "{% if reply.user.profile %}{{ reply.user.profile.profile_name }}{% else %}Anonymous {% endif %}"?</p>
             <input id="btn-delete"	type="submit"	class="btn"	value="Confirm">
         </form>
 	</div>

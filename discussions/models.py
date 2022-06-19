@@ -15,9 +15,11 @@ class DiscussionTopic(models.Model):
                                      related_name='discussion_topics',
                                      on_delete=models.CASCADE)
     title = models.CharField(max_length=254)
+    description = models.TextField(blank=True)
     cover_img = models.ImageField(
         upload_to='discussions/images/', default='discussions/images/topic_default.jpg')
-    number_of_posts = models.IntegerField(default=0)
+    tags = models.TextField(blank=True)
+    verified = models.IntegerField(default=1)
 
     date = models.DateTimeField(auto_now=True)
 
@@ -34,7 +36,7 @@ class Post(models.Model):
         DiscussionTopic, related_name='posts', on_delete=models.SET_NULL, null=True, blank=True)
     image = models.ImageField(
         upload_to="discussions/images/", default="discussions/images/default.png")
-
+    verified = models.IntegerField(default=1)
     date = models.DateTimeField(auto_now=True)
 
     def __str__(self):
@@ -49,7 +51,7 @@ class Replie(models.Model):
         Post, related_name='replies', on_delete=models.CASCADE)
     image = models.ImageField(
         upload_to="discussions/images/", default="discussions/images/default.png")
-
+    verified = models.IntegerField(default=1)
     date = models.DateTimeField(auto_now=True)
 
     def __str__(self):

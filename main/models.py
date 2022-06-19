@@ -82,7 +82,7 @@ class Contact(models.Model):
     name = models.CharField(max_length=254, blank=False)
     email = models.EmailField(max_length=254, blank=False)
     message = models.TextField(blank=True)
-
+    seen = models.IntegerField(default=0)
     date = models.DateTimeField(auto_now=True)
 
     def __str__(self):

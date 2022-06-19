@@ -106,7 +106,7 @@ class OwnerDiscussionMixin(OwnerMixin, LoginRequiredMixin):
 
 
 class OwnerDiscussionEditMixin(OwnerDiscussionMixin,	OwnerEditMixin):
-    fields = ['school_level', 'subject', 'title',
+    fields = ['school_level', 'subject', 'title', 'description',
               'cover_img', ]
     success_url = reverse_lazy('manage_discussion_topic_list')
     template_name = 'front/discussions/manage/topic/form.html'

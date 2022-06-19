@@ -2,7 +2,7 @@
 {% load static %}
 
 {% block head %}
-<title>Admin Notes List | E-Learn</title>
+<title>Admin Quizzes List | E-Learn</title>
 
 <link href="https://cdn.datatables.net/1.12.1/css/dataTables.bootstrap5.min.css">
 <link href="https://cdn.datatables.net/responsive/2.3.0/css/responsive.bootstrap5.min.css">
@@ -15,7 +15,7 @@
 {% block main %}
 <div class="page-heading-container">
 	<h1 class="page-heading">
-		All Notes Table
+		All Quizzes Table
 	</h1>
 </div>
 <label id="l-select-all" style="margin: 10px;"> Select All <input type="checkbox" name="select_all" value="1" id="select-all"></label> 
@@ -33,48 +33,50 @@
 		<tr>
 			<th>Id </th>
 			<th>title</th>
+			<th>Number of Questions</th>
+			<th>Duration</th>
 			<th>Uploaded By</th>
 			<th>School Level</th>
 			<th>Subject</th>
 			<th class="description">Desciption</th>
 			<th>Date Uploaded</th>
 			<th>Average Rating</th>
-			<th>Downloads</th>
+			<th>attemps</th>
 			<th>tags</th>
 			<th>Slug</th>
 			<th>Image</th>
-			<th>File</th>
 			<th>Verified </th>
 			<th>Manage</th>
 			
 		</tr>
 	</thead>
 	<tbody>
-		{% for note in notes %}
-		<tr id="{{ note.pk }}" class="data">
-			<td > <span><i class="fa-solid fa-circle-plus expand"></i> </span>{{ note.id }}</td>
-			<td>{{ note.title }}</td>
-			<td> {{ note.owner.profile.profile_name }}</td>
-			<td>{{ note.school_level }}</td>
-			<td>{{ note.subject }}</td>
-			<td>{{ note.description }}</td>
-			<td>{{ note.date }}</td>
-			<td>{{ note.get_average_rating }}</td>
-			<td>{{ note.downloads }}</td>
-			<td>{{ note.tags }}</td>
-			<td>{{ note.slug }}</td>
-			<td><img class="cell-img"  src="{{ note.cover_img.url }}"></td>
-			<td>{% if note.file %}{{ note.file.url }}{% else %}No Files {% endif %}</td>
-			{% if note.verified != 0 and note.verified != "" %}<td class="yes">YES</td>{% else %}<td class="no">No</td>{% endif %} 
+		{% for quiz in quizzes %}
+		<tr id="{{ quiz.pk }}" class="data">
+			<td > <span><i class="fa-solid fa-circle-plus expand"></i> </span>{{ quiz.id }}</td>
+			<td>{{ quiz.title }}</td>
+			<td>{{ quiz.number_of_questions }}</td>
+			<td>{{ quiz.duration }}</td>
+			<td> {{ quiz.owner.profile.profile_name }}</td>
+			<td>{{ quiz.school_level }}</td>
+			<td>{{ quiz.subject }}</td>
+			<td >{{ quiz.description }}</td>
+			<td>{{ quiz.date }}</td>
+			<td>{{ quiz.average_rating }}</td>
+			<td>>{{ quiz.students.count }}</td>
+			<td>>{{ quiz.tags }}</td>
+			<td>{{ quiz.slug }}</td>
+			<td><img class="cell-img"  src="{{ quiz.cover_img.url }}"></td>
+			{% if quiz.verified != 0 and quiz.verified != "" %}<td class="yes">YES</td>{% else %}<td class="no">No</td>{% endif %} 
 			<td><div class="">
-				<a href="{% url 'note_detail' slug=note.slug %}" class="cell-btn"><i class="fa-solid fa-eye" id=""></i> View&nbsp;</a>
-				<a href="{% url 'back_note_edit' pk=note.pk %}" class="cell-btn"><i class="fa-solid fa-pencil" id=""></i> Edit&nbsp;&nbsp;&nbsp;</a>
+				<a href="{% url 'quiz_detail' slug=quiz.slug %}" class="cell-btn"><i class="fa-solid fa-eye" id=""></i> View&nbsp;</a>
+				<a href="{% url 'back_quiz_edit' pk=quiz.pk %}" class="cell-btn"><i class="fa-solid fa-pencil" id=""></i> Edit&nbsp;&nbsp;&nbsp;</a>
 				<form role="form" id="form_verify" class="form-horizontal" method="post">
 					{% csrf_token %}
-					<input name="note_id" value="{{ note.pk }}" hidden="true">
-					<button  type="submit" id="verify-note" style="width: 88px;"   class="cell-btn btn-verify" > <i class="fa-solid {% if note.verified == 1 %}fa-circle-xmark{% else %}fa-circle-check{% endif %}"></i>{% if note.verified == 1 %} un-Verify {% else %}Verify {% endif %}</button>
+					<input name="quiz_id" value="{{ quiz.pk }}" hidden="true">
+					<button  type="submit" id="verify-quiz" style="width: 88px;"   class="cell-btn btn-verify" > <i class="fa-solid {% if quiz.verified == 1 %}fa-circle-xmark{% else %}fa-circle-check{% endif %}"></i>{% if quiz.verified == 1 %} un-Verify {% else %}Verify {% endif %}</button>
 				</form>
-				<a href="{% url 'back_note_delete' pk=note.pk %}" class="cell-btn cell-btn-delete"><i class="fa-solid fa-trash" id=""></i> Delete</a>
+				<a href="{% url 'back_quiz_delete' pk=quiz.pk %}" class="cell-btn cell-btn-delete"><i class="fa-solid fa-trash" id=""></i> Delete</a>
 			</div></td>
 			
 		</tr>
@@ -109,7 +111,7 @@
 		
 		var form = $(e.target);
         $.ajax({
-            url: '{% url "back_note_list" %}',
+            url: '{% url "back_quiz_list" %}',
             type: 'post',
             data: form.serialize(),
             error: function(xhr, ajaxOptions, thrownError){ 

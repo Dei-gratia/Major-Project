@@ -250,7 +250,7 @@ class CourseDetailView(DetailView):
         context['enroll_form'] = CourseEnrollForm(
             initial={'course': self.object})
 
-        if self.request.user.is_authenticated:
+        if self.request.user.is_authenticated and len(self.object.reviews.filter(user=self.request.user)) > 0:
             user_review = self.object.reviews.filter(user=self.request.user)
             user_review = user_review[0]
         else:

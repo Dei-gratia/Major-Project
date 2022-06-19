@@ -3,7 +3,7 @@
 
 {% block head %}
 <title>
-	Delete	course
+	Delete	Post
 </title>
 <link rel="stylesheet" href="{% static 'css/common.css' %}">
 <link rel="stylesheet" href="{% static 'css/courses/manage/delete.css' %}">
@@ -13,12 +13,12 @@
 {% block main %}
 <div class="content">
 	<div class="page-heading-container">
-		<h1 class="page-heading">Delete	topic "{{ object.title	}}"</h1>
+		<h1 class="page-heading">Delete	post "{{ object.title	}}"</h1>
 	</div>
 	<div class="contents-container">
         <form class="form-delete" action=""	method="post">
             {%	csrf_token	%}
-            <p>Are	you	sure you want to delete	Discussion Topic "{{	object	}}"?</p>
+            <p>Are	you	sure you want to delete	Post "{{	object	}}"?</p>
             <input id="btn-delete"	type="submit"	class="btn"	value="Confirm">
         </form>
 	</div>

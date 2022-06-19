@@ -62,12 +62,16 @@
 									<a href="#collapseUsers"  class="list-group-item " data-bs-parent="#sidebar" role="button" data-bs-toggle="collapse" aria-expanded="false" aria-controls="collapseUsers"><i class="fa-solid fa-user-group"></i> Users <span class='total-count' >&nbsp; ({{ total_users }})</span></a>
 									<ul class="collapse"   id="collapseUsers" style="margin-bottom: 0;">
 										<li>
-											<a href="" class="list-group-item " data-bs-parent="#sidebar"><i class="fa-solid fa-user-plus"></i></i> <span>Add User</span></a>
+											<a href="{% url 'back_user_create' %}" class="list-group-item " data-bs-parent="#sidebar"><i class="fa-solid fa-user-plus"></i></i> <span>Add User</span></a>
 										</li>
 										<li>
-											<a href="" class="list-group-item " data-bs-parent="#sidebar"><i class="fa-solid fa-users"></i> <span>Users List</span></a>
+											<a href="{% url 'back_user_list' %}" class="list-group-item " data-bs-parent="#sidebar"><i class="fa-solid fa-users"></i> <span>Users List</span></a>
 										</li>
 									</ul>
+								</li>
+
+								<li>
+									<a href="{% url 'back_contact_list' %}"  class="list-group-item " data-bs-parent="#sidebar" role="button"  aria-expanded="false" aria-controls="collapseUsers"><i class="fa-solid fa-user-group"></i> Contacts <span class='total-count' >&nbsp; ({{ total_contacts }})</span></a>
 								</li>
 
 								<li>
@@ -80,13 +84,11 @@
 											<a href="{% url 'manage_course_list' %}" class="list-group-item " data-bs-parent="#sidebar"><i class="fa-solid fa-bookmark"></i> <span>My Courses</span></a>
 										</li>
 										<li>
-											<a href="{% url 'course_list' %}" class="list-group-item " data-bs-parent="#sidebar"><i class="fa-solid fa-list"></i> <span>Courses List</span></a>
+											<a href="{% url 'back_course_list' %}" class="list-group-item " data-bs-parent="#sidebar"><i class="fa-solid fa-list"></i> <span>Courses List</span></a>
 										</li>
 										
 									</ul>
 								</li>
-
-
 								
 								<li>
 									<a href="#collapseNotes" class="list-group-item {% if notes %}selected{% endif %} " data-bs-parent="#sidebar" role="button" data-bs-toggle="collapse" aria-expanded="false" aria-controls="collapseNotes"><i class="fa-solid fa-clipboard"></i> Notes <span class="total-count">&nbsp;({{ total_notes }}) </span></a>
@@ -114,23 +116,38 @@
 											<a href="{% url 'manage_quiz_list' %}" class="list-group-item " data-bs-parent="#sidebar"><i class="fa-solid fa-square-plus"></i> <span>My Quizzes</span></a>
 										</li>
 										<li>
-											<a href="{% url 'quiz_list' %}" class="list-group-item " data-bs-parent="#sidebar"><i class="fa-solid fa-list"></i> <span>Quizzes List</span></a>
+											<a href="{% url 'back_quiz_list' %}" class="list-group-item " data-bs-parent="#sidebar"><i class="fa-solid fa-list"></i> <span>Quizzes List</span></a>
 										</li>
 										
 									</ul>
 								</li>
 
 								<li>
-									<a href="#collapsePosts" class="list-group-item {% if posts %}selected{% endif %}" data-bs-parent="#sidebar" role="button" data-bs-toggle="collapse" aria-expanded="false" aria-controls="collapsePosts"><i class="fa-solid fa-envelopes-bulk"></i> Discussion Forum<span class="total-count">&nbsp;({{ total_posts }}) </span></a>
+									<a href="#collapsePosts" class="list-group-item {% if posts or topics or replies %}selected{% endif %}" data-bs-parent="#sidebar" role="button" data-bs-toggle="collapse" aria-expanded="false" aria-controls="collapsePosts"><i class="fa-solid fa-envelopes-bulk"></i> Discussion Forum<span class="total-count">&nbsp;({{ total_posts }}) </span></a>
 									<ul class="collapse" id="collapsePosts" style="margin-bottom: 0;">
 										<li>
-											<a href="{% url 'manage_discussion_topic_list' %}" class="list-group-item " data-bs-parent="#sidebar"><i class="fa-solid fa-square-plus"></i> <span>Add Post</span></a>
+											<a href="{% url 'discussion_topic_create' %}" class="list-group-item " data-bs-parent="#sidebar"><i class="fa-solid fa-square-plus"></i> <span>Add Discussion Topic</span></a>
 										</li>
 										<li>
-											<a href="{% url 'manage_discussion_topic_list' %}" class="list-group-item " data-bs-parent="#sidebar"><i class="fa-solid fa-square-plus"></i> <span>My Posts</span></a>
+											<a href="{% url 'manage_discussion_topic_list' %}" class="list-group-item " data-bs-parent="#sidebar"><i class="fa-solid fa-user"></i> <span>My Discussion Topics</span></a>
 										</li>
 										<li>
-											<a href="{% url 'all_posts' %}" class="list-group-item " data-bs-parent="#sidebar"><i class="fa-solid fa-list"></i> <span>Posts List</span></a>
+											<a href="{% url 'back_topic_list' %}" class="list-group-item " data-bs-parent="#sidebar"><i class="fa-solid fa-list"></i> <span>Discussion Topics List</span></a>
+										</li>
+										<li>
+											<a href="{% url 'back_post_create' %}" class="list-group-item " data-bs-parent="#sidebar"><i class="fa-solid fa-square-plus"></i> <span>Add Post</span></a>
+										</li>
+										<li>
+											<a href="{% url 'manage_discussion_topic_list' %}" class="list-group-item " data-bs-parent="#sidebar"><i class="fa-solid fa-user"></i> <span>My Posts</span></a>
+										</li>
+										<li>
+											<a href="{% url 'back_post_list' %}" class="list-group-item " data-bs-parent="#sidebar"><i class="fa-solid fa-list"></i> <span>Posts List</span></a>
+										</li>
+										<li>
+											<a href="{% url 'back_replie_create' %}" class="list-group-item " data-bs-parent="#sidebar"><i class="fa-solid fa-square-plus"></i> <span>Add Reply</span></a>
+										</li>
+										<li>
+											<a href="{% url 'back_replie_list' %}" class="list-group-item " data-bs-parent="#sidebar"><i class="fa-solid fa-list"></i> <span>Replies List</span></a>
 										</li>
 									</ul>
 								</li>

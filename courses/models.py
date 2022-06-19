@@ -30,6 +30,9 @@ class Course(models.Model):
     total_ratings = models.FloatField(default=0.0)
     num_ratings = models.IntegerField(default=0)
     average_rating = models.FloatField(default=0.0)
+    tags = models.TextField(blank=True)
+    verified = models.IntegerField(default=1)
+
     created = models.DateTimeField(auto_now_add=True)
     students = models.ManyToManyField(
         User, related_name='courses_enrolled', blank=True)

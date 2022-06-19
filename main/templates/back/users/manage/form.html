@@ -5,9 +5,9 @@
 {% block head %}
 <title>
 	{% if object %}
-		Edit course	"{{	object.title }}"
+		Edit User	"{{	object.email }}"
 	{%	else %}
-		Create a new course
+		Create a new user
 	{% endif %}
 </title>
 <link rel="stylesheet" href="{% static 'css/courses/manage/form.css' %}">
@@ -19,18 +19,18 @@
 	<div class="page-heading-container">
 		<h1 class="page-heading">
 			{% if object %}
-				Edit course	"{{	object.title }}"
+				Edit user	"{{	object.email }}"
 			{% else %}
-				Create a new course
+				Create a new user
 			{% endif %}
 		</h1>
 	</div>
 	<div class="contents-container">
-        <h2 class="page-sub-heading">Course	info</h2>
+        <h2 class="page-sub-heading">User	info</h2>
         <form class="form-horizontal"	action=""	method="post">
             {{form|crispy }}
             {%	csrf_token	%}
-            <p><input	type="submit" class="button btn"	value="Save	course"></p>
+            <p><input	type="submit" class="button btn"	value="Save	User"></p>
         </form>
 	</div>
 {%	endblock %}
