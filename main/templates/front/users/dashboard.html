@@ -1,0 +1,312 @@
+{% extends 'front/master.html' %}
+{% load static %}
+{% load index %}
+
+{% block head %}
+<title>
+	{%	block	title	%}
+	{%	if	subject	%}
+			{{	subject.title	}}	Notes
+	{%	else	%}
+        All	Notes
+    {%	endif	%}
+{%	endblock	%}
+</title>
+
+<link rel="stylesheet" href="{% static 'css/notes/note_list.css' %}">
+<link rel="stylesheet" href="{% static 'css/common.css' %}">
+<link rel="stylesheet" href="{% static 'css/users/dashboard.css' %}">
+
+{% endblock %}
+
+{% block main %}
+	<div class="content" id="container">
+		<div class="page-heading-container">
+			<h1 class="page-heading">
+				User Dashboard
+			</h1>	
+		</div>
+		
+		<div class="contents-container">
+			<div class="side-bar">
+				<h3 class="side-bar-heading"></h3>
+				<ul	id="side-bar-list" class="side-bar-list">
+					<div class="sidebar_user" style="padding: 0; margin: 0;">
+						<div class="sidebar-user-avatar">
+							<a href="{% url 'user_profile' pk=request.user.pk %}">
+								<img class="account_img"  src="{{ user.profile.image.url }}" alt="avatar">
+							</a>
+						</div>
+						<div class="sidebar_user_section">
+							<h3 class="side-bar-heading" style=" font-size:medium; word-wrap: break-word; max-width: 108px;">{% if user.profile.profile_name %}{{ user.profile.profile_name }}{% else %}User{% endif %}</h3>
+							<div class="sidebar-user-links">
+								<a href="{% url 'user_profile' pk=user.pk %}" data-toggle="tooltip" data-placement="bottom" title="Profile"><i class="fa-solid fa-user"></i></i></a>
+								<a href="#" data-toggle="tooltip" data-placement="bottom" title="Notifications"><i class="fa-solid fa-bell"></i></a>
+								<a href="javascript:void(0)" class="enable-tooltip" data-placement="bottom" title="Settings"><i class="fa-solid fa-gear"></i></i></a>
+								<a href="{% url 'logout' %}" data-toggle="tooltip" data-placement="bottom" title="Logout"><i class="fa-solid fa-right-from-bracket"></i></a>
+							</div>
+						</div>
+					</div>
+					<li class="side-bar-list-item selected" id="dashboard-link">
+						<a	href="#">Dashboard</a>
+					</li>
+
+					<li	class="side-bar-list-item {% if is_posts %}selected{% endif %}">
+						<a	href="#posts">
+						Posts
+						<br><span class="total-item">{{	posts.count }} posts</span>
+						</a>
+					</li>
+
+					<li	class="side-bar-list-item {% if is_courses%}selected{% endif %}">
+						<a	href="#courses">
+						Courses
+						<br><span class="total-item">{{	courses.count }} courses</span>
+						</a>
+					</li>
+
+					<li	class="side-bar-list-item {% if is_notes %}selected{% endif %}">
+						<a	href="#notes">
+						Notes
+						<br><span class="total-item">{{	notes.count }} notes</span>
+						</a>
+					</li>
+
+					<li	class="side-bar-list-item {% if is_quizzes %}selected{% endif %}">
+						<a	href="#quizzes">
+						Quizzes
+						<br><span class="total-item">{{	quizzes.count }} quizzes</span>
+						</a>
+					</li>
+
+				</ul>
+			</div>
+			
+			<div class="details-block" id="details-block">
+
+				<div id="posts">
+					<div class="card card-hearder" >
+						<h5 class="card-hearder-title" ><a href="#posts">My Posts</a> </h5>
+						<div class="card-hearder-sub-titles">
+							<a href="{% url 'all_posts' %}" class="card-hearder-sub-title">All Posts</a>
+							<a href="{% url 'manage_discussion_topic_list' %}" class="card-hearder-sub-title">My Discussion Topics</a>
+							<a href="{% url 'discussion_topic_create' %}" class="card-hearder-sub-title">Create New Discussion Topic</a>
+							<a href="{% url 'all_posts' %}" class="card-hearder-sub-title">New Post</a>
+						</div>
+					</div>
+					
+					{%	for	post in	posts %}
+					<div class="card" >
+						<div class="row">
+							<div class="">
+								<a class="note-image" href="{% url 'post_detail' topic_id=post.discussion_topic.pk post_id=post.pk %}"><img src="{{ post.image.url }}" class="img_note" alt="..."></a>
+							`	<div class="card-body ">
+								<div style="display: flex; justify-content: space-between;">
+									<a id="quiz-title" href="{% url 'post_detail' topic_id=post.discussion_topic.pk post_id=post.pk %}"><h4>{{ post.title }}</h4></a>
+									<div style="display: flex;">
+										<p style="opacity: 70%;">{{ post.date|timesince }} ago &nbsp; </p>
+									</div>
+									
+								</div>
+								<p class="card-text">{{ post.post_content }}</p>
+								
+							</div>
+
+							</div>
+						
+							<div class="p-inline-container" >
+								<div>
+									<p class="p-inline"><a class="details-block-subject" href="">{% if post.discussion_topic %}{{ post.discussion_topic }}{% endif %}</a></p>&nbsp;
+								</div>
+								
+								&nbsp;<p class="p-inline uploader"> Posted by: {% if post.owner != None or post.owner != "" %}{{	post.owner.profile.profile_name	}} 
+									{% else %}Annonymous {% endif %}</p>
+							</div>
+							
+						</div>
+						
+					</div>
+					{% empty %}
+					You haven't posted anything yet.<br>
+					Create your first <a href="{% url 'all_posts' %}">post!</a>
+					{%	endfor	%}
+				
+					
+				</div>
+				<br>
+
+				<div id="courses">
+					<div class="card card-hearder" >
+						<h5 class="card-hearder-title" ><a href="#courses">Enrolled Courses</a> </h5>
+						<div class="card-hearder-sub-titles">
+							<a href="{% url 'course_list' %}" class="card-hearder-sub-title">All Courses</a>
+							<a href="{% url 'manage_course_list' %}" class="card-hearder-sub-title">My Uploaded Courses</a>
+							<a href="{% url 'course_create' %}" class="card-hearder-sub-title">Upload Course</a>
+						</div>
+					</div>
+					{%	for	course in	courses %}
+					<div class="card">
+						<div class="row">
+							<div class="">
+								<a class="note-image" href="{% url 'course_detail' slug=course.slug %}"><img src="{{ course.cover_image.url }}" class="img_note" alt="..."></a>
+							`	<div class="card-body ">
+								<div style="display: flex; justify-content: space-between;">
+									<a id="quiz-title" href="{% url 'course_detail' slug=course.slug %}"><h4>{{ course.title }}</h4></a>
+									<div style="display: flex;">
+										<p style="opacity: 70%;">{{ course.created|timesince }} ago &nbsp; </p>
+										<p class="" style="display: inline; text-align: end; color: #FF9529;"> {{ course.get_average_rating|floatformat:"2"  }} {% if note.get_average_rating > 1.0 %} <i class="fa-solid fa-star-half-stroke"></i>
+											{% elif course.get_average_rating > 4.5 %} <i class="fa-solid fa-star"></i>
+											{% else %} <i class="fa-regular fa-star"></i>
+											{% endif %}</p>
+									</div>
+									
+								</div>
+								<p class="card-text">{{ course.overview }}</p>
+								
+							</div>
+
+							</div>
+						
+							<div class="p-inline-container" >
+								<div>
+									<p class="p-inline"><a class="details-block-subject" href="">{% if course.school_level %}{{ course.school_level }}{% endif %}</a></p>&nbsp;
+									<p class="p-inline"><a class="details-block-subject" href="">{% if course.school_level %}{{ course.subject }}{% endif %}</a></p>
+								</div>
+								&nbsp;<p class="p-inline uploader"> Uploded by: {% if course.owner != None or course.owner != "" %}{{	course.owner.profile.profile_name	}} 
+									{% else %}Uknown {% endif %}</p>
+							</div>
+							
+						</div>
+						
+					</div>
+					{% empty %}
+					You haven't enrolled in any course yet.<br>
+					Find a <a href="{% url 'course_list' %}">course </a> and enroll!
+					{%	endfor	%}
+				</div>
+				<br>
+				
+				
+				<div id="notes">
+					<div class="card card-hearder" >
+						<h5 class="card-hearder-title" ><a href="#notes">My Saved Notes</a> </h5>
+						<div class="card-hearder-sub-titles">
+							<a href="{% url 'note_list' %}" class="card-hearder-sub-title">All Notes</a>
+							<a href="{% url 'manage_note_list' %}" class="card-hearder-sub-title">My Uploaded Notes</a>
+							<a href="{% url 'note_create' %}" class="card-hearder-sub-title">Upload Note</a>
+						</div>
+					</div>
+					{%	for	note in	notes %}
+					<div class="card">
+						<div class="row">
+							<div class="">
+								<a class="note-image" href="{% url 'note_detail' slug=note.slug %}"><img src="{{ note.cover_img.url }}" class="img_note" alt="..."></a>
+							`	<div class="card-body ">
+								<div style="display: flex; justify-content: space-between;">
+									<a id="quiz-title" href="{% url 'note_detail' slug=note.slug %}"><h4>{{ note.title }}</h4></a>
+									<div style="display: flex;">
+										<p style="opacity: 70%;">{{ note.created|timesince }} ago &nbsp; </p>
+										<p class="" style="display: inline; text-align: end; color: #FF9529;"> {{ note.get_average_rating|floatformat:"2"  }} {% if note.get_average_rating > 1.0 %} <i class="fa-solid fa-star-half-stroke"></i>
+											{% elif note.get_average_rating > 4.5 %} <i class="fa-solid fa-star"></i>
+											{% else %} <i class="fa-regular fa-star"></i>
+											{% endif %}</p>
+									</div>
+									
+								</div>
+								<p class="card-text">{{ note.description }}</p>
+								
+							</div>
+
+							</div>
+						
+							<div class="p-inline-container" >
+								<div>
+									<p class="p-inline"><a class="details-block-subject" href="">{% if note.school_level %}{{ note.school_level }}{% endif %}</a></p>&nbsp;
+									<p class="p-inline"><a class="details-block-subject" href="">{% if note.school_level %}{{ note.subject }}{% endif %}</a></p>
+								</div>
+								&nbsp;<p class="p-inline uploader"> Uploded by: {% if note.owner != None or note.owner != "" %}{{	note.owner.profile.profile_name	}} 
+									{% else %}Uknown {% endif %}</p>
+							</div>
+							
+						</div>
+						
+					</div>
+					{% empty %}
+					You haven't saved in any notes yet.<br>
+					Find <a href="{% url 'course_list' %}"> notes</a> and save?
+					{%	endfor	%}
+					
+				</div>
+				<br>
+
+				<div id="quizzes">
+					<div class="card card-hearder" >
+						<h5 class="card-hearder-title" ><a href="#quizzes">Quizzes Attempted</a> </h5>
+						<div class="card-hearder-sub-titles">
+							<a href="{% url 'quiz_list' %}" class="card-hearder-sub-title">All Quizzes</a>
+							<a href="{% url 'manage_course_list' %}" class="card-hearder-sub-title">My Uploaded Quizzes</a>
+							<a href="{% url 'quiz_create' %}" class="card-hearder-sub-title">Upload Quiz</a>
+						</div>
+					</div>
+	
+					{%	for	quiz in	quizzes %}
+					<div class="card">
+						<div class="row">
+							<div class="">
+								<a class="note-image" href="{% url 'quiz_detail' slug=quiz.slug %}"><img src="{{ quiz.cover_img.url }}" class="img_note" alt="..."></a>
+							`	<div class="card-body ">
+								<div style="display: flex; justify-content: space-between;">
+									<a id="quiz-title" href="{% url 'quiz_detail' slug=quiz.slug %}"><h4>{{ quiz.title }}</h4></a>
+									<div style="display: flex;">
+										<p style="opacity: 70%;">{{ quiz.created|timesince }} ago &nbsp; </p>
+										<p class="" style="display: inline; text-align: end; color: #FF9529;"> {{ quiz.average_rating|floatformat:"2"  }} {% if quiz.average_rating > 1.0 %} <i class="fa-solid fa-star-half-stroke"></i>
+											{% elif quiz.average_rating > 4.5 %} <i class="fa-solid fa-star"></i>
+											{% else %} <i class="fa-regular fa-star"></i>
+											{% endif %}</p>
+									</div>
+									
+								</div>
+								<p class="card-text">{{ quiz.description }}</p>
+								
+							</div>
+	
+							</div>
+						
+							<div class="p-inline-container" >
+								<div>
+									<p class="p-inline"><a class="details-block-subject" href="">{% if quiz.school_level %}{{ quiz.school_level }}{% endif %}</a></p>&nbsp;
+									<p class="p-inline"><a class="details-block-subject" href="">{% if quiz.school_level %}{{ quiz.subject }}{% endif %}</a></p>
+								</div>
+								&nbsp;<p class="p-inline uploader"> Uploded by: {% if quiz.owner != None or quiz.owner != "" %}{{	quiz.owner.profile.profile_name	}} 
+									{% else %}Uknown {% endif %}</p>
+							</div>
+							
+						</div>
+						
+					</div>
+					{% empty %}
+					You haven't taken in any quizzes yet.<br>
+					Browse available <a href="{% url 'quiz_list' %}"> quizzes</a>
+					{%	endfor	%}
+
+				</div>
+				
+			</div>
+		</div>
+		
+	</div>
+    
+{%	endblock	%}
+{% block script%}
+	<script src="{% static 'js/common.js' %}"></script>
+	<script>
+		$('.side-bar-list-item a').click(function(e) {
+			console.log(this)
+			$('#dashboard-link').removeClass('selected')
+			$('.side-bar-list-item a').removeClass('selected');
+			$(this).addClass('selected');
+	})
+
+	</script>
+	
+{% endblock %}

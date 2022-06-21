@@ -7,4 +7,5 @@ urlpatterns = [
     path('search/<models_list>/', views.search, name='search'),
     path('about/', views.AboutView.as_view(), name='about'),
     path('contact/', views.ContactView.as_view(), name='contact')
+
 ]

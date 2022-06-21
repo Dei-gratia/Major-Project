@@ -38,7 +38,7 @@
 						<div id="sidebar" class="collapse collapse-horizontal border-end mysidebar" style=" transition: 0s;">
 							<div id="sidebar-nav" class="list-group border-0 rounded-0 text-sm-start min-vh-100">
 								<a href="{% url 'home' %}" class="list-group-item border-end-0 d-inline-block text-truncate" style="font-size: 25px;" data-bs-parent="#sidebar"><i class="fa-solid fa-book-open-reader"></i></i> <span><strong style="color: #3f6ad8; font-size: 25px;">E-</strong>LEARN</span> </a>
-								<a href="{% url 'dashboard' %}" class="list-group-item border-end-0 d-inline-block text-truncate" data-bs-parent="#sidebar"><i class="fa-solid fa-bolt"></i> <span><strong>Admin</strong>Dashboard</span> </a>
+								<a href="{% url 'admin_dashboard'  %}" class="list-group-item border-end-0 d-inline-block text-truncate" data-bs-parent="#sidebar"><i class="fa-solid fa-bolt"></i> <span><strong>Admin</strong>Dashboard</span> </a>
 								<div class="sidebar_user" style="padding: 0; margin: 0;">
 									<div class="sidebar-user-avatar">
 										<a href="{% url 'user_profile' pk=request.user.pk %}">
@@ -49,7 +49,7 @@
 										<div class="sidebar-user-name">{% if request.user.profile.profile_name %}{{ request.user.profile.profile_name }}{% else %}Admin{% endif %}</div>
 										<div class="sidebar-user-links">
 											<a href="{% url 'user_profile' pk=request.user.pk %}" data-toggle="tooltip" data-placement="bottom" title="Profile"><i class="fa-solid fa-user"></i></i></a>
-											<a href="account.html" data-toggle="tooltip" data-placement="bottom" title="Messages"><i class="fa-solid fa-envelope"></i></a>
+											<a href="" data-toggle="tooltip" data-placement="bottom" title="Messages"><i class="fa-solid fa-envelope"></i></a>
 											<a href="javascript:void(0)" class="enable-tooltip" data-placement="bottom" title="Settings"><i class="fa-solid fa-gear"></i></i></a>
 											<a href="{% url 'logout' %}" data-toggle="tooltip" data-placement="bottom" title="Logout"><i class="fa-solid fa-right-from-bracket"></i></a>
 										</div>

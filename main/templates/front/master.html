@@ -1,4 +1,5 @@
 {% load static %}
+{% load socialaccount %}
 
 <!DOCTYPE html>
 <html lang="en">
@@ -31,13 +32,14 @@
 		<p id="loading-text">Please wait ...</p>
 		<div class="lds-ripple"><div></div><div></div></div>
 	</div>
+
 	<div class="lg-nav-background">
 		<div class="lg-nav">
 			<div class="lg-nav-items-container">
 				<a class="lg-nav-item" href="{% url 'about' %}" href="{{ social.link }}">About</a>
 				<a class="lg-nav-item" href="{% url 'contact' %}">Contact</a>
 				{% if user.is_authenticated %}
-				<a class="lg-nav-item" href="{% url 'dashboard' %}">User Dashboard</a>
+				<a class="lg-nav-item" href="{% url 'dashboard' pk=request.user.pk %}">User Dashboard</a>
 				<a class="lg-nav-item" href="{% url 'user_profile' pk=user.pk %}">Profile</a>
 				<a class="lg-nav-item" href="{% url 'logout' %}">Logout</a>
 				{% else %}
@@ -82,9 +84,11 @@
 			  <li class="nav-item">
 				<a class="nav-link active" aria-current="page" href="/">Home</a>
 			  </li>
+			  {% if user.is_authenticated %}
 			  <li class="nav-item">
-				<a class="nav-link" href="{% url 'dashboard' %}">Dashboard</a>
+				<a class="nav-link" href="{% url 'dashboard' pk=request.user.pk %}">Dashboard</a>
 			  </li>
+			  {% endif %}
 			  <li class="nav-item">
 				<a class="nav-link" href="{% url 'course_list' %}">Courses</a>
 			  </li>
@@ -108,9 +112,11 @@
 				 
 				</ul>
 			  </li>
+			  {% if user.is_authenticated %}
 			  <li class="nav-item">
 				<a class="nav-link" href="{% url 'user_profile' pk=request.user.pk %}">Profile</a>
 			  </li>
+			  {% endif %}
 			  <li class="nav-item">
 				<a class="nav-link" href="{% url 'about' %}">About Us</a>
 			  </li>
@@ -127,6 +133,8 @@
 
 		</div>
 	</nav>
+
+	{% include 'includes/messages.html' %}
 
 	<div class="master-container" >
 	
@@ -241,66 +249,70 @@
 
 	<footer class="footer">
 		<h2 style="font-weight: 900;"><span style="color: #3f6ad8;">E-</span>LEARN</h2>
-		<p>{{ site.footer_abt_txt }}</p>
+		<div class="dynamic-footer">
+			<p>{{ site.footer_abt_txt }}</p>
 
-		<div class="social_icons">
-			{% for social in about.social_set.all %}
-				<a id="{% if social.social_name == 'facebook' %}fb{% elif social.social_name == 'twitter' %}tw{% elif social.social_name == 'instagram' %}ig{% elif social.social_name == 'linkedin' %}in{% elif social.social_name == 'youtube' %}yt{% endif %}"
-					title="{{ social.display_title }}">
-					<i class="{{ social.social_font_owesome_icon }}"></i>
-				</a>
-			{% endfor %}
+			<div class="social_icons">
+				{% for social in about.social_set.all %}
+					<a id="{% if social.social_name == 'facebook' %}fb{% elif social.social_name == 'twitter' %}tw{% elif social.social_name == 'instagram' %}ig{% elif social.social_name == 'linkedin' %}in{% elif social.social_name == 'youtube' %}yt{% endif %}"
+						title="{{ social.display_title }}">
+						<i class="{{ social.social_font_owesome_icon }}"></i>
+					</a>
+				{% endfor %}
 
-		</div>
-
-		<div class="row">
-			<div class="col-md-3 col-sm-4">
-				<a href="/about"><h6 class="footer_header">About</h6></a>
-
-				<div class="footer_section">
-					<a href=""><i class="fa-solid fa-location-dot"></i> {{ about.addresses.all.first.address }}</p></a><p>
-					<p><i class="fa-solid fa-phone"></i> {{ about.phone_numbers.all.first.phone }}</p>
-					<p><i class="fa-solid fa-envelope"></i> {{ about.emails.all.first.email }}</p>
-				</div>
 			</div>
-			<div class="col-md-2 col-sm-4">
-				<h6 class="footer_header">Information</h6>
-				<div class="footer_section">
-					<a href="/about"><p> About</p></a>
-					<a href="/"><p>Blog</p></a>
-					<a href="/contact"><p>Contact</p></a>
-					<a href="/contact"><p>Help & Support</p></a>		
-				</div>
-			</div>
-			<div class="col-md-2 col-sm-4">
-				<h6 class="footer_header">Catergories</h6>
-				<div class="footer_section">
-					<a href=""><p>Sciences</p></a>
-					<a href=""><p>Arts</p></a>
-					<a href=""><p>Commecial</p></a>
-					<a href=""><p>Bisiness</p></a>
-					<a href=""><p>History</p></a>
-				</div>
-			</div>
-			<div class="col-md-5 col-sm-12">
-				<h6 class="footer_header">Latest</h6>
-				<div class="footer_section">
-					{% for n in latest %}
-					<div class="footer_latest">
-						<a><img class="footer_latest_img" alt="latest" src="{% if n.cover_img %}{{ n.cover_img.url }}{% elif n.image %}{{ n.image.url }}{% else %}{{ n.cover_image.url }}{% endif %}"></a>
-						<a href=""><h6>{{ n.title }}</h6></a>
-						<p class="clipped-text-one">{% if n.description %}{{ n.description }}{% else %}{{ n.overview }}{% endif %}</p>
+
+			<div class="row">
+				<div class="col-md-3 col-sm-4">
+					<a href="/about"><h6 class="footer_header">About</h6></a>
+
+					<div class="footer_section">
+						<a href=""><i class="fa-solid fa-location-dot"></i> {{ about.addresses.all.first.address }}</p></a><p>
+						<p><i class="fa-solid fa-phone"></i> {{ about.phone_numbers.all.first.phone }}</p>
+						<p><i class="fa-solid fa-envelope"></i> {{ about.emails.all.first.email }}</p>
 					</div>
-					{% endfor %}
-					
 				</div>
+				<div class="col-md-2 col-sm-4">
+					<h6 class="footer_header">Information</h6>
+					<div class="footer_section">
+						<a href="/about"><p> About</p></a>
+						<a href="/"><p>Blog</p></a>
+						<a href="/contact"><p>Contact</p></a>
+						<a href="/contact"><p>Help & Support</p></a>		
+					</div>
+				</div>
+				<div class="col-md-2 col-sm-4">
+					<h6 class="footer_header">Catergories</h6>
+					<div class="footer_section">
+						<a href=""><p>Sciences</p></a>
+						<a href=""><p>Arts</p></a>
+						<a href=""><p>Commecial</p></a>
+						<a href=""><p>Bisiness</p></a>
+						<a href=""><p>History</p></a>
+					</div>
+				</div>
+				<div class="col-md-5 col-sm-12">
+					<h6 class="footer_header">Latest</h6>
+					<div class="footer_section">
+						{% for n in latest %}
+						<div class="footer_latest">
+							<a><img class="footer_latest_img" alt="latest" src="{% if n.cover_img %}{{ n.cover_img.url }}{% elif n.image %}{{ n.image.url }}{% else %}{{ n.cover_image.url }}{% endif %}"></a>
+							<a href=""><h6>{{ n.title }}</h6></a>
+							<p class="clipped-text-one">{% if n.description %}{{ n.description }}{% else %}{{ n.overview }}{% endif %}</p>
+						</div>
+						{% endfor %}
+						
+					</div>
+				</div>
+				
 			</div>
-			
+			<hr class="hr_footer"/>
+			<div class="copyright">
+				Copyright &#169; 2022. All rights reserved
+			</div>
+
 		</div>
-		<hr class="hr_footer"/>
-		<div class="copyright">
-			Copyright &#169; 2022. All rights reserved
-		</div>
+		
 
 	</footer>
 	<!-- ========= END FOOTER =========== -->
@@ -431,7 +443,7 @@
 									OR</div>
 							</div>
 							<div class="col-lg-8 d-none"  id="password_reset">
-								<form role="form"  class="form-horizontal" id="form-password-reset">
+								<form role="form" action="{% url 'password_reset' %}" method="post" class="form-horizontal" id="form-password-reset">
 									{% csrf_token  %}
 									<div class="form-group">
 										<label for="email" class="col-sm-2 control-label">
@@ -459,7 +471,7 @@
 							</div>
 							<div class="col-lg-4 text-center sign-with justify-content-center" >
 								
-								<button type="button" class="btn btn-icon btn-block text-left " id="btn_google"><span><img src="https://img.icons8.com/color/48/000000/google-logo.png" class="img-fluid mr-1" width="25"></span> Sign up with Google</button>
+								<a  href="{% provider_login_url 'google' method='aouth2' %}" class="btn btn-icon btn-block text-left " style="border-radius: 5px;" id="btn_google"><span><img src="https://img.icons8.com/color/48/000000/google-logo.png" class="img-fluid mr-1" width="25"></span> Sign up with Google</a>
 							</div>
 						</div>
 						
@@ -499,40 +511,10 @@
 
 		$('#btn-reset-password').click(function() {
 			$('#myModal').modal('hide')
-			var form = $('#form-password-reset')
-			
+			$('#loading-text').text("Please wait...")
 			$('#ajax-loader').show()
 			
-			$.ajax({
-            url: '{% url "password_reset" %}',
-            type: 'post',
-            data: form.serialize(),
-            error: function(xhr, ajaxOptions, thrownError){ 
-				$('#myModal').modal('show')
-				$('#ajax-loader').hide();
-				alert(thrownError); 
-			},
-            success: function(data){
-				if (data.success === true) {
-					$('#loading-text').text("Resetting password")
-					alert(`${data.message}`)
-					$('#ajax-loader').delay(2000).fadeOut()
-					window.location = '{% url "login" %}';
-					window.setTimeout(function(){
-						$('#ajax-loader').hide();
-						
-					},2000); 
-				} 
-				else {
-					
-					alert(`${data.message}`)
-					$('#myModal').modal('show')
-					$('#ajax-loader').hide();
-					
-				}
-			}
-        })
-
+			
 		})
 
 		$('.auth-form').submit(function(e){

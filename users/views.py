@@ -13,6 +13,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from main.models import SchoolLevel, Subject, Specialisation
 from notes.models import Note
 from quizzes.models import Quiz
+from django.db.models import Count
 from users.models import User, Profile
 from .forms import CourseEnrollForm, UserProfileForm
 from django.views.generic.list import ListView
@@ -27,8 +28,20 @@ from django.urls import reverse
 from main.models import Home, About, Contact
 from users.models import User, Review
 from users.forms import CustomUserCreationForm, CustomAuthenticationForm
-from django.utils import timezone
-from datetime import timedelta
+from django.core.mail import send_mail, BadHeaderError
+from django.http import HttpResponse
+from django.template.loader import render_to_string
+from django.db.models.query_utils import Q
+from django.utils.http import urlsafe_base64_encode
+from django.contrib.auth.tokens import default_token_generator
+from django.utils.encoding import force_bytes
+from django.conf import settings
+from django.contrib import messages
+import re
+
+
+# for validating an Email
+regex = r'\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,}\b'
 
 
 # Create your views here.
@@ -41,26 +54,20 @@ def login_view(request):
         if "first_name" not in request.POST:  # some condition to distinguish between login and registration form
             email = request.POST['email']
             password = request.POST['password']
-            print(email, password)
             user = authenticate(request, email=email, password=password)
             if user is not None:
                 login(request, user)
-                print("logged in", user.profile)
                 return JsonResponse({"success": True, "message": "Successfully loggedin"})
             else:
-                print("not logged in", user)
                 return JsonResponse({"success": False, "message": True, "message": "Invalid Login details"})
         else:
             registration_form = CustomUserCreationForm(request.POST)
-            print(registration_form)
 
             if registration_form.is_valid():
                 # register
-                print(registration_form)
-                print("is valid")
                 user = registration_form.save()
-                login(request, user)
-                print("logged in", user)
+                login(request, user,
+                      backend='django.contrib.auth.backends.ModelBackend')
                 return JsonResponse({"success": True, "message": "Successfully loggedin"})
             else:
                 print("is not valid")
@@ -78,11 +85,38 @@ def logout_view(request):
 
 
 def password_reset(request):
-
     if request.method == "POST":
         user_email = request.POST['user_email']
-        print(user_email)
-        return JsonResponse({"success": True, "message": True, "message": "Password reset link sent, please check you email"})
+        if(re.fullmatch(regex, user_email)):
+            associated_users = User.objects.filter(Q(email=user_email))
+            if associated_users.exists():
+                for user in associated_users:
+                    subject = "E-Learn | Password Reset Requested"
+                    email_template_name = "front/users/password_reset_email.txt"
+                    c = {
+                        "email": user.email,
+                        'domain': '127.0.0.1:8000',
+                        'site_name': 'E-Learn',
+                        "uid": urlsafe_base64_encode(force_bytes(user.pk)),
+                        "user": user,
+                        'token': default_token_generator.make_token(user),
+                        'protocol': 'http',
+                    }
+                    email = render_to_string(email_template_name, c)
+                    try:
+                        send_mail(subject, email, settings.CONTACT_EMAIL,
+                                  [user.email], fail_silently=False)
+                    except BadHeaderError:
+                        return HttpResponse('Invalid header found.')
+                    messages.success(
+                        request, 'A message with reset password instructions has been sent to your inbox.')
+                    return redirect("home")
+            else:
+                messages.error(request, "No such user with given email")
+                return redirect('login')
+        else:
+            messages.error(request, "Invalid email address")
+            return redirect('login')
 
 
 def email_reset(request):
@@ -182,13 +216,11 @@ class StudentCourseDetailView(DetailView):
         rating = request.POST['input-1']
         course = get_object_or_404(
             Course, id=pk, owner=request.user)
-        print(course)
         user_review = course.reviews.filter(user=request.user)
         if len(user_review) > 0:
             user_review = user_review[0]
         else:
             user_review = False
-        print(user_review)
 
         if comment == "" and rating == "":
 
@@ -199,8 +231,6 @@ class StudentCourseDetailView(DetailView):
             course_num_ratings = int(course.num_ratings)
             # Review.objects.filter(user=user_review.user).update(rate_value=rating, comment=comment)
             user_review.update(rate_value=rating, comment=comment)
-            print(user_review[0])
-            print(course_num_ratings, course_total_ratings)
         else:
             review = Review(content_object=course, user=request.user,
                             rate_value=rating, comment=comment)
@@ -208,7 +238,6 @@ class StudentCourseDetailView(DetailView):
             course_num_ratings = int(course.num_ratings) + 1
             course_total_ratings = int(course.total_ratings) + int(rating)
 
-        print(course_num_ratings, course_total_ratings)
         Course.objects.filter(pk=pk).update(total_ratings=course_total_ratings,
                                             num_ratings=course_num_ratings)
 
@@ -218,27 +247,15 @@ class StudentCourseDetailView(DetailView):
 class DashboardView(LoginRequiredMixin, TemplateResponseMixin, View):
     template_name = 'front/users/dashboard.html'
 
-    def get(self,	request):
+    def get(self,	request, pk):
         site = Home.objects.latest('updated')
         about = About.objects.latest('updated')
-        user = request.user
-        last_activity = user.profile.last_activity
-        new_messages = Contact.objects.filter(
-            date__gte=last_activity).count()
-        new_posts = Post.objects.filter(date__gte=last_activity).count()
-        new_notes = Note.objects.filter(created__gte=last_activity).count()
-        new_courses = Course.objects.filter(created__gte=last_activity).count()
-        new_quizzes = Quiz.objects.filter(created__gte=last_activity).count()
-        new_reviews = Review.objects.filter(date__gte=last_activity).count()
-        new_users = User.objects.filter(date_joined__gte=last_activity).count()
-        total_posts = Post.objects.all().count()
-        total_courses = Course.objects.all().count()
-        total_notes = Note.objects.all().count()
-        total_quizzes = Quiz.objects.all().count()
-        total_users = User.objects.all().count()
-        total_reviews = Review.objects.all().count()
-        print(new_messages, new_courses, new_notes, new_posts,
-              new_quizzes, new_reviews, new_users, total_reviews)
-        return self.render_to_response({'site': site, 'about': about, 'user': user, 'new_users': new_users, 'new_messages': new_messages, 'new_courses': new_courses,
-                                        'new_notes': new_notes, 'new_quizzes': new_quizzes, 'new_posts': new_posts, 'new_reviews': new_reviews, 'total_reviews': total_reviews, 'total_posts': total_posts,
-                                        'total_courses': total_courses, 'total_notes': total_notes, 'total_quizzes': total_quizzes, 'total_users': total_users})
+        user = get_object_or_404(User, pk__iexact=pk)
+        posts = Post.objects.filter(owner=user)
+        notes = Note.objects.filter(owner=user)
+        courses = Course.objects.filter(owner=user)
+        quizzes = Quiz.objects.filter(owner=user)
+        reviews = Review.objects.filter(user=user)
+
+        return self.render_to_response({'site': site, 'about': about, 'user': user,  'courses': courses,
+                                        'notes': notes, 'quizzes': quizzes, 'posts': posts, 'reviews': reviews, })
