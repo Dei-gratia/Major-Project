@@ -371,9 +371,9 @@
 			<div class="subscribe" id="subscribe">
 				<h3 class="subscribe_txt" >Subscribe</h3>
 				<p >Get all the latest content and stay updated</p>
-				<form class="subscribe_form">
+				<form class="subscribe_form" action="{% url 'subscribe' %}" method="post" style="background-color: white; border-radius: 3px;">
 					<input class="subscribe_input" type="email" id="email" name="email" placeholder="Email">
-					<a class="subscribe_button"  type="submit"><i class="fa fa-arrow-right"></i></a>
+					<button  class="subscribe_button" id="subscribe_button"  type="submit"><i class="fa fa-arrow-right"></i></button>
 				</form>
 			</div>
 			<br>

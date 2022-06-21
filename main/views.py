@@ -1,7 +1,7 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from courses.models import Course
-from main.models import Contact, Home, About
-from .forms import ContactForm
+from main.models import Contact, Home, About, Subscriber
+from .forms import ContactForm, SubscriberForm
 from django.views.generic.detail import DetailView
 from django.views.generic.base import TemplateResponseMixin, View
 from django.http import JsonResponse
@@ -12,9 +12,20 @@ import random
 from django.db.models import Q, CharField
 from django.conf import settings
 from django.core.mail import send_mail
+from django.views.decorators.csrf import csrf_exempt
+from django.template.loader import render_to_string
+from django.db.models.query_utils import Q
+from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
+from django.contrib.auth.tokens import default_token_generator
+from django.utils.encoding import force_bytes, force_str
+from django.core.mail import send_mail, BadHeaderError
+from django.http import HttpResponse
+from django.contrib import messages
+import re
 
 
 # Create your views here.
+regex = r'\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,}\b'
 
 
 def home(request):
@@ -96,6 +107,63 @@ def search(request, models_list):
         # do some research what it does
         search_query = request.GET.get('search')
     return render(request, "front/main/search.html", {"site": site, "about": about, "query": search_query})
+
+
+def random_digits():
+    return "%0.12d" % random.randint(0, 999999999999)
+
+
+@csrf_exempt
+def subscribe(request):
+    if request.method == 'POST':
+        email = request.POST['email']
+        print(email)
+        if(re.fullmatch(regex, email)):
+            subscriber = Subscriber.objects.filter(email=email)
+            if subscriber.count() < 1:
+                sub = Subscriber(email=email, conf_num=random_digits())
+                sub.save()
+                subject = "E-Learn | Subscription Confirmation"
+                html_content = 'Hello \nThank you for signing up for my email newsletter! \
+					Please complete the process by \
+					<a href="{}?email={}&conf_num={} "> clicking here to \
+						confirm your registration</a>.'.format(request.build_absolute_uri('/subscribe/confirm/'),
+                                             sub.email,
+                                             sub.conf_num)
+
+                try:
+                    print(html_content)
+                    send_mail(subject, html_content, settings.CONTACT_EMAIL,
+                              [sub.email], fail_silently=False)
+                except BadHeaderError:
+                    return HttpResponse('Invalid header found.')
+                messages.success(
+                    request, 'Thank you for subscribing. Please check your inbox for confirmation email to complete the process! ')
+                return redirect("home")
+            else:
+                messages.success(request, "Email address already subscribed")
+                return redirect('home')
+        else:
+            messages.error(request, "Invalid email address")
+            return redirect('home')
+    else:
+        return redirect('home')
+
+
+def subscribe_confirm(request):
+    sub = Subscriber.objects.get(email=request.GET['email'])
+    print(sub)
+    print(
+        f'saved number is {sub.conf_num} getted number is {request.GET["conf_num"]}')
+    if sub.conf_num == request.GET['conf_num']:
+        sub.confirmed = True
+        sub.save()
+        messages.success(
+            request, " Thank you for confirming your subscription")
+        return redirect('home')
+    else:
+        messages.error(request, "Invalid email link. Action Denied")
+        return redirect('home')
 
 
 class AboutView(TemplateResponseMixin, View):

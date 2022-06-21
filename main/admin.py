@@ -1,6 +1,6 @@
 from django.contrib import admin
 from .models import Home, HomeImage, About, Phone, Email, Social, Contact, \
-    AboutImage, Address, SchoolLevel, Subject, Specialisation, Program
+    AboutImage, Address, SchoolLevel, Subject, Specialisation, Program, Subscriber
 
 # Register your models here.
 
@@ -85,3 +85,6 @@ class ProgramAdmin(admin.ModelAdmin):
 class SubjectAdmin(admin.ModelAdmin):
     list_display = ['title', 'slug']
     prepopulated_fields = {'slug': ('title',)}
+
+
+admin.site.register(Subscriber)
