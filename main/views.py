@@ -28,6 +28,10 @@ import re
 regex = r'\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,}\b'
 
 
+def random_digits():
+    return "%0.12d" % random.randint(0, 999999999999)
+
+
 def home(request):
     site = Home.objects.latest('updated')
     about = About.objects.latest('updated')
@@ -107,10 +111,6 @@ def search(request, models_list):
         # do some research what it does
         search_query = request.GET.get('search')
     return render(request, "front/main/search.html", {"site": site, "about": about, "query": search_query})
-
-
-def random_digits():
-    return "%0.12d" % random.randint(0, 999999999999)
 
 
 @csrf_exempt

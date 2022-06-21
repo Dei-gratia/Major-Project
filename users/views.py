@@ -32,9 +32,9 @@ from django.core.mail import send_mail, BadHeaderError
 from django.http import HttpResponse
 from django.template.loader import render_to_string
 from django.db.models.query_utils import Q
-from django.utils.http import urlsafe_base64_encode
+from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
 from django.contrib.auth.tokens import default_token_generator
-from django.utils.encoding import force_bytes
+from django.utils.encoding import force_bytes, force_str
 from django.conf import settings
 from django.contrib import messages
 import re
@@ -56,7 +56,8 @@ def login_view(request):
             password = request.POST['password']
             user = authenticate(request, email=email, password=password)
             if user is not None:
-                login(request, user)
+                login(request, user,
+                      backend='django.contrib.auth.backends.ModelBackend')
                 return JsonResponse({"success": True, "message": "Successfully loggedin"})
             else:
                 return JsonResponse({"success": False, "message": True, "message": "Invalid Login details"})
@@ -65,10 +66,30 @@ def login_view(request):
 
             if registration_form.is_valid():
                 # register
-                user = registration_form.save()
-                login(request, user,
-                      backend='django.contrib.auth.backends.ModelBackend')
-                return JsonResponse({"success": True, "message": "Successfully loggedin"})
+                user = registration_form.save(commit=False)
+                user.is_active = False
+                user.save()
+                subject = "E-Learn | Activate your account"
+                email_template_name = "front/users/account_activation_email.txt"
+                c = {
+                    "email": user.email,
+                    'domain': '127.0.0.1:8000',
+                    'site_name': 'E-Learn',
+                    "uid": urlsafe_base64_encode(force_bytes(user.pk)),
+                    "user": user,
+                    'token': default_token_generator.make_token(user),
+                    'protocol': 'http',
+                }
+                email = render_to_string(email_template_name, c)
+                try:
+                    send_mail(subject, email, settings.CONTACT_EMAIL,
+                              [user.email], fail_silently=False)
+                except BadHeaderError:
+                    return HttpResponse('Invalid header found.')
+                messages.success(
+                    request, 'Please confirm your email address to complete the registration.')
+                # return redirect("home")
+                return JsonResponse({"success": False, "message": "Please confirm your email address to complete the registration."})
             else:
                 print("is not valid")
 
@@ -77,6 +98,23 @@ def login_view(request):
         'registration_form': registration_form if registration_form else CustomUserCreationForm(),
     }
     return render(request, 'front/users/authentication.html', obj)
+
+
+def activate(request, uidb64, token):
+    try:
+        uid = force_str(urlsafe_base64_decode(uidb64))
+        user = User.objects.get(pk=uid)
+    except(TypeError, ValueError, OverflowError, User.DoesNotExist):
+        user = None
+    if user is not None and default_token_generator.check_token(user, token):
+        user.is_active = True
+        user.save()
+        login(request, user, backend='django.contrib.auth.backends.ModelBackend')
+        messages.success(
+            request, 'Thank you for your email confirmation. You are now logigged into your account.')
+        return redirect('home')
+    else:
+        return HttpResponse('Activation link is invalid!')
 
 
 def logout_view(request):
