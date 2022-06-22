@@ -17,15 +17,50 @@ Libraries: Bootstrap, JQuery
 example images:
 
 Login Page
-
-<img src = “[../projectpics/1loginpage.png](https://github.com/Dei-gratia/Major-Project/blob/main/projectpics/1loginpage.png)” width = 200 height = 150>
-
-Login
-<img src = “[../projectpics/2login.png]” width = 200 height = 150>
+[loginpage](/projectpics/1loginpage.png)
 
 Login
-<img src = “ ../projectpics/2login.png ” width = 200 height = 150>
+![login](/projectpics/2login.png)
 
 Register
+![register](/projectpics/3register.png)
 
-![](2login.png)
+Home
+![home](/projectpics/5home1.png)
+![home](/projectpics/5home4.png)
+
+About
+![about](/projectpics/6about.png)
+
+Contact
+![contact](/projectpics/6contact.png)
+
+Profile
+![profile](/projectpics/8profile1.png)
+
+Courses
+![courses](/projectpics/9course1.png)
+![courses](/projectpics/9course2.png)
+![courses](/projectpics/9course3.png)
+
+Notes
+![notes](/projectpics/10notes1.png)
+![notes](/projectpics/10notes2.png)
+![notes](/projectpics/10notes3.png)
+
+
+Quizzes
+![quizzes](/projectpics/11quizzes1.png)
+![quizzes](/projectpics/11quizzes2.png)
+![quizzes](/projectpics/11quizzes3.png)
+
+Discussion Forum
+![discussion forum](/projectpics/12discussions1.png)
+![discussion forum](/projectpics/12discussions.png)
+![discussion forum](/projectpics/12discussions.png)
+
+
+API
+![api](/projectpics/9courses8.png)
+![api](/projectpics/10notes7.png)
+![api](/projectpics/11quizzes8.png)
