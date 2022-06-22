@@ -16,6 +16,16 @@ Libraries: Bootstrap, JQuery
 
 example images:
 
-Login
+Login Page
 
-<img src = “projectpics/1loginpage.png” width = 200 height = 150>
+<img src = “[../projectpics/1loginpage.png](https://github.com/Dei-gratia/Major-Project/blob/main/projectpics/1loginpage.png)” width = 200 height = 150>
+
+Login
+<img src = “[../projectpics/2login.png]” width = 200 height = 150>
+
+Login
+<img src = “ ../projectpics/2login.png ” width = 200 height = 150>
+
+Register
+
+![](2login.png)
