@@ -1,6 +1,9 @@
 # Major-Project
 Repository for my Computer Science and Engineering degree final project June 2022
 E-Leaning website with RESTFull API using python Django.
+
+ [Live Project Demo Link](https://elearn-mproject.herokuapp.com/)
+
 The project has 7 apps which are:
 1. Main app: contains the common and general views in the project as well as all the project templates
 2. Users app: contains all the views related to users like user authentication, profiles, Dashboard etc
