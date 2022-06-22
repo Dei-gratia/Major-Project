@@ -13,3 +13,9 @@ The project has 7 apps which are:
 Languages: Python, Javascript, HTML, CSS
 Frameworks: Django
 Libraries: Bootstrap, JQuery
+
+example images:
+
+Login
+
+<img src = “project_images/login.jpg” width = 200 height = 150>
