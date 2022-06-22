@@ -18,4 +18,4 @@ example images:
 
 Login
 
-<img src = “project_images/login.jpg” width = 200 height = 150>
+<img src = “projectpics/1loginpage.png” width = 200 height = 150>
