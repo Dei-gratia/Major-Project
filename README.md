@@ -58,7 +58,7 @@ Quizzes view
 Discussion Forum views
 ![discussion forum](/projectpics/12discussions1.png)
 ![discussion forum](/projectpics/12discussions2.png)
-![discussion forum](/projectpics/12discussions.3png)
+![discussion forum](/projectpics/12discussions3.png)
 
 
 API views
