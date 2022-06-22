@@ -14,7 +14,8 @@ Languages: Python, Javascript, HTML, CSS
 Frameworks: Django
 Libraries: Bootstrap, JQuery
 
-example images:
+Example images:
+This are sample images of the project taken during the testing of the project with "sample data!"
 
 Login Page
 [loginpage](/projectpics/1loginpage.png)
@@ -25,42 +26,45 @@ Login
 Register
 ![register](/projectpics/3register.png)
 
-Home
+Home views
 ![home](/projectpics/5home1.png)
 ![home](/projectpics/5home4.png)
 
-About
+About views
 ![about](/projectpics/6about.png)
 
-Contact
-![contact](/projectpics/6contact.png)
+Contact views
+![contact](/projectpics/7contact.png)
 
-Profile
+Profile views
 ![profile](/projectpics/8profile1.png)
 
-Courses
-![courses](/projectpics/9course1.png)
-![courses](/projectpics/9course2.png)
-![courses](/projectpics/9course3.png)
+Courses viewa
+![courses](/projectpics/9courses1.png)
+![courses](/projectpics/9courses2.png)
+![courses](/projectpics/9courses3.png)
 
-Notes
+Notes view
 ![notes](/projectpics/10notes1.png)
 ![notes](/projectpics/10notes2.png)
 ![notes](/projectpics/10notes3.png)
 
 
-Quizzes
+Quizzes view
 ![quizzes](/projectpics/11quizzes1.png)
 ![quizzes](/projectpics/11quizzes2.png)
 ![quizzes](/projectpics/11quizzes3.png)
 
-Discussion Forum
+Discussion Forum views
 ![discussion forum](/projectpics/12discussions1.png)
-![discussion forum](/projectpics/12discussions.png)
-![discussion forum](/projectpics/12discussions.png)
+![discussion forum](/projectpics/12discussions2.png)
+![discussion forum](/projectpics/12discussions.3png)
 
 
-API
-![api](/projectpics/9courses8.png)
-![api](/projectpics/10notes7.png)
-![api](/projectpics/11quizzes8.png)
+API views
+![api](/projectpics/9courses11.png)
+![api](/projectpics/10notes10.png)
+![api](/projectpics/11quizzes11.png)
+
+
+More project screenshots [screenshots](/projectpics/)
